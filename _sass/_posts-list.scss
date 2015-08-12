@@ -1,0 +1,16 @@
+.post-item{
+  margin-bottom: 3em;
+
+  &:last-child{
+    margin-bottom: 0;
+  }
+}
+
+.post-item__title{
+  margin-bottom: 0.3em;
+}
+
+.post-item__date{
+  @extend %keyword;
+  padding: 1px 4px;
+}

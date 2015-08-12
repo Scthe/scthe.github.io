@@ -1,0 +1,16 @@
+.pagination{
+  margin-bottom: 3em;
+}
+
+.pagination__inner{
+  text-align:center;
+}
+
+.pagination__item{
+  @extend %activable;
+  padding: 10px 20px;
+
+  &:hover{
+    text-decoration: underline;
+  }
+}

@@ -1,0 +1,28 @@
+baseurl: ""
+github_account: "https://github.com/Scthe"
+title: "Scthe's blog"
+tagline: 'Scthe blog'
+sidebar_image: /images/cover.jpg
+
+markdown: kramdown
+highlighter: pygments
+
+kramdown:
+  input: GFM
+  syntax_highlighter: pygments
+
+
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "Scthe"
+
+exclude:
+  - "README.md"
+  - "CNAME"
+  - "Gemfile"
+  - "Gemfile.lock"

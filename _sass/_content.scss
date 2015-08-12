@@ -1,0 +1,30 @@
+.content{
+  @extend %side-panel-content-common;
+  overflow-x: hidden;
+
+  @include below-lg{
+    overflow: visible;
+  }
+
+  @include above-lg{
+    margin-left: $side-panel-width;
+  }
+}
+.content__inner{
+
+  padding: 35px $content-left-padding 35px;
+
+  @include below-md{
+  }
+
+  @include md-to-lg{
+    margin: 0px auto;
+    width: $text-column-width;
+  }
+
+  @include above-lg{
+    padding: 80px 40px 100px;
+    margin: 0px auto;
+    width: $text-column-width;
+  }
+}

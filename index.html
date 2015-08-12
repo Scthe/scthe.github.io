@@ -1,0 +1,18 @@
+---
+layout: default
+show_home_button: false
+---
+
+<div class="posts-list">
+  <ul class="posts-list__inner">
+    {% for post in site.posts %}
+      <li class="post-item">
+        <h2 class="post-item__title"><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h2>
+        <span class="post-item__date">
+          {{ post.date | date: "%B %Y"}}
+        </span>
+        {{ post.excerpt }}
+      </li>
+    {% endfor %}
+  </ul>
+</div>

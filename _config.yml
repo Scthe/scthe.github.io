@@ -2,7 +2,6 @@ baseurl: ""
 github_account: "https://github.com/Scthe"
 title: "Scthe's blog"
 tagline: 'Scthe blog'
-sidebar_image: /images/cover.jpg
 
 markdown: kramdown
 highlighter: pygments
@@ -17,6 +16,13 @@ defaults:
     scope:
       path: ""
       type: "posts"
+    values:
+      layout: "post"
+      author: "Scthe"
+  -
+    scope:
+      path: ""
+      type: "drafts"
     values:
       layout: "post"
       author: "Scthe"

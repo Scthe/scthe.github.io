@@ -1,10 +1,4 @@
-{% if page.featured_image %}
-  {% assign side_img = page.featured_image %}
-{% else %}
-  {% assign side_img = site.sidebar_image %}
-{% endif %}
-
-<div class="side-panel" style="background-image: url({{ site.baseurl }}{{ side_img }});">
+<div class="side-panel">
   <div class="side-panel__inner">
 
     {% if page.display_post %}

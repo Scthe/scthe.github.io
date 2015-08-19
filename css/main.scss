@@ -22,8 +22,10 @@ $font-base: 'Bitter', serif;
 $font-heading: 'Open Sans', sans-serif;
 
 $color-base: #222;
-$color-accent: #23aece; /* #ce2323 */
+$color-accent: #517ca2; /*#23aece; /* #ce2323 */
 $color-blockquote: #666;
+/*$selection-color: lighten($color-accent, 35%);*/
+$selection-color: lighten($color-accent, 40%);
 
 $left-border-blockquote: #ddd;
 
@@ -32,12 +34,10 @@ $lg-screen-width: 60em;   /* 900px */
 $xl-screen-width: 135em;  /* 2160px */
 
 $side-panel-width: 35%;
-$side-panel-darken-factor: 0.2;
-$side-panel-greyscale-factor: 0.4;
+$side-panel-background: #517ca2;
 
 $content-left-padding: 20px; /* most content is left-aligned*/
 $text-column-width: 40em; /* should hold ~66cpl */
-$selection-color: lighten($color-accent, 35%);
 
 
 @import "mixins";
@@ -129,7 +129,7 @@ blockquote {
 
 %keyword{
   color: white;
-  background-color: $color-accent;
+  background-color: lighten($color-accent, 20%);/*$color-accent;*/
 }
 
 $highlighter-color: $selection-color;

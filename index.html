@@ -11,7 +11,7 @@ show_home_button: false
         <span class="post-item__date">
           {{ post.date | date: "%B %Y"}}
         </span>
-        {{ post.excerpt }}
+        <p>{{ post.excerpt }}</p>
       </li>
     {% endfor %}
   </ul>

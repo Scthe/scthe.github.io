@@ -37,8 +37,6 @@ date: 2015-08-12 12:00:00
 >      https://github.com/mnielsen/neural-networks-and-deep-learning
 >      MIT licence
 
-> Other:
-> * AWS
 
 
 
@@ -72,9 +70,9 @@ Using neural network frameworks have numerous advantages: they can provide minim
 
 ## My project
 
-Throughout this post, I will be refering to my lastest project: **super-resolution using neural networks**.  Reposotorium is accesible [here](https://github.com/Scthe/cnn-Super-Resolution) and the original paper (Image Super-Resolution Using Deep Convolutional Networks) [here](http://arxiv.org/abs/1501.00092 "Orginal paper for my project").
+Throughout this post, I will be refering to my lastest project: **super-resolution using neural networks**.  Reposotorium is accesible [here](https://github.com/Scthe/cnn-Super-Resolution "Repositorium of my project ") and the original paper (Image Super-Resolution Using Deep Convolutional Networks) [here](http://arxiv.org/abs/1501.00092 "Image Super-Resolution Using Deep Convolutional Networks").
 
-[Super-resolution](https://en.wikipedia.org/wiki/Superresolution "Super-resolution definition") in itself is quite simple problem: make image bigger without losing much *quality*. It's a popular problem in computer vision, so there are quite a few methods to achieve this. I should point out that while there are infinitely many solutions, we -as humans- can instinctively determine if result is *better*. There are also special metrics f.e. [PSNR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) and [SSIM](https://en.wikipedia.org/wiki/Structural_similarity) used for more engineerical aproach.
+[Super-resolution](https://en.wikipedia.org/wiki/Superresolution "What is super-resolution?") in itself is quite simple problem: make image bigger without losing much *quality*. It's a popular problem in computer vision, so there are quite a few methods to achieve this. I should point out that while there are infinitely many solutions, we -as humans- can instinctively determine if result is *better*. There are also special metrics f.e. [PSNR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) and [SSIM](https://en.wikipedia.org/wiki/Structural_similarity) used for more engineerical aproach.
 
 > IMAGE [Image comparing all upscale methods]
 > IMAGE [Present results]
@@ -129,12 +127,12 @@ Everything that is needed to reproduce results. That includes hyperparameters, p
 
 ### Choosing training samples
 
-If there is standard/already provided training set for Your domain use it. Good example is [MNIST](http://yann.lecun.com/exdb/mnist/) for handwritten numbers. Generating samples by hand is actually quite complicated. When I started I just took small patches from series of images and hoped the program would be able to infer some general rules that would magically make my program extremely universal and flexible. This was not a case. Fortunately, at least I was able to see that the network works, since feature maps for first layer had familiar shapes of gaussian/edge kernels. I’d switched to images based on comics/vector graphic and I’ve received something recognisable much faster. **As shown below it was important to select one particular style of images and stick with it.** Also important is the number of used samples. If You have 200 samples at Your disposal and dedicate 20% of them for validation set the spread will probably be too huge to derive any useful information. For comparison MNIST contains over 60,000 images while [ImageNet](http://www.image-net.org/) over 14,000,000.
+If there is standard/already provided training set for Your domain use it. Good example is [MNIST](http://yann.lecun.com/exdb/mnist/ "MNIST sample set") for handwritten numbers. Generating samples by hand is actually quite complicated. When I started I just took small patches from series of images and hoped the program would be able to infer some general rules that would magically make my program extremely universal and flexible. This was not a case. Fortunately, at least I was able to see that the network works, since feature maps for first layer had familiar shapes of gaussian/edge kernels. I’d switched to images based on comics/vector graphic and I’ve received something recognisable much faster. **As shown below it was important to select one particular style of images and stick with it.** Also important is the number of used samples. If You have 200 samples at Your disposal and dedicate 20% of them for validation set the spread will probably be too huge to derive any useful information. For comparison MNIST contains over 60,000 images while [ImageNet](http://www.image-net.org/ "ImageNet sample set") over 14,000,000.
 
 > Add #samples for SRCNN
 > fix sentence in bold
 
-There is also excellent article written by Andrej Karpathy: [„What I learned from competing against a ConvNet on ImageNet”](http://karpathy.github.io/2014/09/02/what-i-learned-from-competing-against-a-convnet-on-imagenet/) that highlights some problems related to gathering samples (although article was written in slightly different context). One solution is to use services like [Amazon Mechanical Turk](https://www.mturk.com/mturk/welcome) that allows to commision tasks that require human input.
+There is also excellent article written by Andrej Karpathy: [„What I learned from competing against a ConvNet on ImageNet”](http://karpathy.github.io/2014/09/02/what-i-learned-from-competing-against-a-convnet-on-imagenet/ "Article by Andrej Karpathy about data classifying and machine learning in general") that highlights some problems related to gathering samples (although article was written in slightly different context). One solution is to use services like [Amazon Mechanical Turk](https://www.mturk.com/mturk/welcome "Amazon Mechanical Turk") that allows to commision tasks that require human input.
 
 > IMAGE MNIST example
 > IMAGE small.jpg|old background|new result
@@ -172,6 +170,7 @@ def forward(input,weights,bias,spatial_size,width,height):
 *2D convolution. Feature maps left as an exercise for reader*
 
 > this was supposed to be caption to code!
+> fix file link
 
 Since it is offline tool the performance does not matter. Both R and MATLAB have convolution build-in, but it may require a little bit of juggling to convert Your data to suitable format.
 
@@ -255,7 +254,7 @@ What if the network crashes when we train for 1000 epochs? The error says ‘CL_
 
 In this part we will take a look on how to make neural networks faster. Some of the tips are going to be GPU/OpenCL specific. The easiest way to improve performance is to study existing implementations, but -personally- I’ve found them quite hard to read. This chapter will be just about my personal observations since I'm not GPU architecture expert.
 
-Also [AWS](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using_cluster_computing.html) offers GPU instances that are quite popular.
+Also [AWS](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using_cluster_computing.html "GPU instances on AWS") offers GPU instances that are quite popular.
 
 
 
@@ -303,7 +302,7 @@ if (is_profiling()) {
 
 ### Profiling OpenCL – [Nvidia Visual Profiler](https://developer.nvidia.com/nvidia-visual-profiler "Nvidia Visual Profiler")
 
-James Price has written excellent article on [getting nvvp to display OpenCL profile data](http://uob-hpc.github.io/2015/05/27/nvvp-import-opencl/). All that is needed is to set COMPUTE_PROFILE environment variable. You can also provide config file.
+James Price has written excellent article on [getting nvvp to display OpenCL profile data](http://uob-hpc.github.io/2015/05/27/nvvp-import-opencl/ "Visualising OpenCL Timelines with NVVP"). All that is needed is to set COMPUTE_PROFILE environment variable. You can also provide config file.
 
 {% highlight c %}
 > set COMPUTE_PROFILE=1
@@ -334,7 +333,7 @@ Available information includes f.e.:
 
 > IMAGE - NVVP
 
-Use [CodeXL](http://developer.amd.com/tools-and-sdks/opencl-zone/codexl/) for AMD devices.
+Use [CodeXL](http://developer.amd.com/tools-and-sdks/opencl-zone/codexl/ "AMD CodeXL") for AMD devices.
 
 
 

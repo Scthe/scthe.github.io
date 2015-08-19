@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var header = document.createElement("h2"),
             link_container = document.createElement("ul");
         header.textContent = "Links";
+        link_container.className = "links-list";
 
         for (var i = 0; i < post_links.length; i++) {
             var l = post_links[i];

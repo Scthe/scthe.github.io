@@ -33,8 +33,8 @@ date: 2015-08-12 12:00:00
 >    * [ ] profiling: normal+kernel
 >    * [ ] NVVP IMAGE
 >   -> mnist_100_digits:
->      http://neuralnetworksanddeeplearning.com/index.html
->      https://github.com/mnielsen/neural-networks-and-deep-learning
+>      [org page](http://neuralnetworksanddeeplearning.com/index.html)
+>      [repo](https://github.com/mnielsen/neural-networks-and-deep-learning)
 >      MIT licence
 
 
@@ -42,15 +42,17 @@ date: 2015-08-12 12:00:00
 
 I'm not academic. Not everything in this article will be 100% scientifically correct. The target audience is hobbyists that want to understand (through implementation) neural networks. Maybe You’ve seen a cool app and want to create proof of concept of it’s core algorithm? Or maybe just want to see if a problem can be solved using machine learning? This article will help You in indirect way as I’m not going to explain what are neural networks. My goal is to provide You with some tips that IMO are valuable when attempting such project.
 
+> change title to: neural networks..
 
 
 
-## Why not use [Caffe](http://caffe.berkeleyvision.org/)/[Torch7](http://torch.ch/)/[Theano](http://www.deeplearning.net/software/theano/)/... ?
+
+## Why not use [Caffe](http://caffe.berkeleyvision.org/) / [Torch7](http://torch.ch/)  / [Theano](http://www.deeplearning.net/software/theano/) / ... ?
 
 Using neural network frameworks have numerous advantages: they can provide minimum viable product faster, offer shorter training time, are thoroughly tested, have good documentation and You can always ask for help/submit issue in case of problem. Why would one want to do it all by hand? Let’s see:
 
 * complete understanding of underlying mechanism – even with solid theoretical understanding, there are always problems that manifest only in practice
-* math – going from raw equations to working prototype is cool. How often does one have a chance to do that?
+* math – from raw equations to working prototype - how cool is that?
 * better tuning options – since all frameworks use highly-tuned algorithms there is small chance the our solution will be faster, but we can always try
 * interesting use case for  GPU
 * it’s fun!
@@ -129,6 +131,7 @@ Everything that is needed to reproduce results. That includes hyperparameters, p
 
 If there is standard/already provided training set for Your domain use it. Good example is [MNIST](http://yann.lecun.com/exdb/mnist/ "MNIST sample set") for handwritten numbers. Generating samples by hand is actually quite complicated. When I started I just took small patches from series of images and hoped the program would be able to infer some general rules that would magically make my program extremely universal and flexible. This was not a case. Fortunately, at least I was able to see that the network works, since feature maps for first layer had familiar shapes of gaussian/edge kernels. I’d switched to images based on comics/vector graphic and I’ve received something recognisable much faster. **As shown below it was important to select one particular style of images and stick with it.** Also important is the number of used samples. If You have 200 samples at Your disposal and dedicate 20% of them for validation set the spread will probably be too huge to derive any useful information. For comparison MNIST contains over 60,000 images while [ImageNet](http://www.image-net.org/ "ImageNet sample set") over 14,000,000.
 
+> 'and dedicate 20% of them for validation set the spread' - what spread ?
 > Add #samples for SRCNN
 > fix sentence in bold
 
@@ -254,7 +257,7 @@ What if the network crashes when we train for 1000 epochs? The error says ‘CL_
 
 In this part we will take a look on how to make neural networks faster. Some of the tips are going to be GPU/OpenCL specific. The easiest way to improve performance is to study existing implementations, but -personally- I’ve found them quite hard to read. This chapter will be just about my personal observations since I'm not GPU architecture expert.
 
-Also [AWS](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using_cluster_computing.html "GPU instances on AWS") offers GPU instances that are quite popular.
+Also [AWS](https://aws.amazon.com/ec2/instance-types/#gpu "GPU instances on AWS") offers GPU instances that are quite popular.
 
 
 
@@ -394,7 +397,7 @@ Memory access works in a different way on GPU then on CPU. That means that some 
 * OpenCL Programming Guide for the CUDA Architecture
 * Paulius Micikevicius - Analysis-Driven Optimization and also Fundamental Optimizations
 * Mark Harris - Optimizing Parallel Reduction in CUDA
-* http://stackoverflow.com/questions/3843032/why-arent-there-bank-conflicts-in-global-memory-for-cuda-opencl
+* [Why aren't there bank conflicts in global memory for cuda opencl](http://stackoverflow.com/questions/3843032/why-arent-there-bank-conflicts-in-global-memory-for-cuda-opencl)
 * http://uob-hpc.github.io/2015/05/27/nvvp-import-opencl/
 
 Of course the road from theory to application is quite long.

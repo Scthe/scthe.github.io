@@ -5,6 +5,14 @@
     @extend %word-wrap;
     margin-top: 0;
     margin-bottom: 1em;
+
+    & + h3{
+      margin-top: 2.5em;
+    }
+
+    & + h2{
+      margin-top: 2.5em;
+    }
   }
 
   strong {
@@ -15,7 +23,6 @@
   em {
     font-style: italic;
   }
-
 
   // lists
   ul, ol, dl {
@@ -70,11 +77,9 @@
 
   // links at the end of article
   .links-list{
-    @include below-lg{
-      a {
-        display: block;
-        @extend %ellipsis;
-      }
+    a {
+      display: block;
+      @extend %ellipsis;
     }
   }
 
@@ -86,6 +91,11 @@
     margin-right: auto;
     max-width: 100%;
     border-radius: 5px;
+
+    // br is somehow added, hide it
+    & + br{
+      display: none;
+    }
   }
 
   // table
@@ -95,6 +105,7 @@
     width: 100%;
     border: 1px solid #e5e5e5;
     border-collapse: collapse;
+    @extend %word-wrap;
 
     td,
     th {
@@ -110,6 +121,6 @@
   // code
   div.highlight{ // block
     margin-top: 0;
-    margin-bottom: 1em;
+    /*margin-bottom: 1em;*/
   }
 }

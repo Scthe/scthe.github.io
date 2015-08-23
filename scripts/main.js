@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // dynamically created references
+    /*
     var post_links = document.querySelectorAll(".post a"),
         post_element = document.getElementsByClassName('post');
     if (post_element.length > 0 && post_links.length > 0) {
@@ -32,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         post_element.appendChild(header);
         post_element.appendChild(link_container);
     }
+    */
 
     // anchors for post's headings
     anchors.options = {

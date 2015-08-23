@@ -6,27 +6,6 @@ date: 2015-08-19 12:00:00
 
 
 
-> 4. images
->    * [x] Image comparing all upscale methods
->    * [x] weights for layer 1
->    * [x] example outputs after using each script
->    * [x] MNIST example
->    * [ ] small.jpg | old background | new result
->    * [ ] life is strange
->    * [x] profiling: normal
->    * [x] profiling: kernel
->    * [x] NVVP IMAGE
->
->
-> change title to: neural networks..
->
-> * add h3 margin top
-> * run through some text correction program
-> * image zoom
-> * margin before h3/after paragraph
->
-
-
 
 Judging by number of new articles neural networks were very popular in recent months. And not only because Google, Netflix, Adobe, Baidu, Facebook and countless others has been using them. There are many hobbyists playing with machine learning too. After seeing amazing examples of what is possible I decided to create my very own neural network. This article presents my findings. I hope You will find it useful.
 
@@ -47,30 +26,6 @@ Using neural network frameworks have numerous advantages: they can provide minim
 
 
 
-> ### Dictionary
->
-> Some terms that I’m going to use throughout the article:
-> training sample
-> epoch
-> kernel - both image & opencl
-> NETFLIX: Most machine learning algorithms have parameters to tune, which are called often called hyperparameters to distinguish them from model parameters that are produced as a result of the learning algorithm. For example, in the case of a Neural Network, we can think about optimizing the number of hidden units, the learning rate, or the regularization weight.
-
-> layer
-> kernel*2
-> feature map/filter
-> training sample
-> hyperparameters
-> parameters
-> multiprocessor
-> work group/block
-> work item/thread
-> warp/wavefront
-> preprocessing & postprocessing methods
-> forward/backward
-> convolution
-
-
-
 ### My project
 
 Throughout this post, I will be referring to my latest project: **super-resolution using neural networks**. Repo is accessible [here](https://github.com/Scthe/cnn-Super-Resolution "Repositorium of my project") and the original paper (Image Super-Resolution Using Deep Convolutional Networks - SRCNN) [here](http://arxiv.org/abs/1501.00092 "Image Super-Resolution Using Deep Convolutional Networks").
@@ -81,7 +36,7 @@ Throughout this post, I will be referring to my latest project: **super-resoluti
 *From left to right: ground truth, scaling with bicubic interpolation, CNN results*
 
 
-My implementation was a simplified version of SRCNN. While number of layers and kernel sizes are still the same, due too performance constraints I've reduced number of feature maps for layers 1 & 2 by half. I also didn't have enough time to wait for \\( 10^8 \\) epochs for network to converge.
+My implementation was a simplified version of SRCNN. While number of layers and kernel sizes are still the same, due to performance constraints I've reduced number of feature maps for layers 1 & 2 by half. I also didn't have enough time to wait for \\( 10^8 \\) epochs for network to converge.
 
 
 
@@ -103,7 +58,7 @@ Biggest problems that I've encountered:
 * limited resources resulting in app crash
 * training takes a lot of time
 * getting optimal training samples
-* parallel & asynchronous code execution on GPU
+* parallel, asynchronous code execution on GPU
 * GPU driver errors
 
 Throughout the article I will give You some tips how to best approach all of them.
@@ -132,7 +87,7 @@ Batches (each kernel operates on multiple images):
 * hard to debug
 * makes it easy to split epoch into mini-batches, which lowers the memory usage (more on that later)
 
-When I was converting from single-sample to batch approach I got it wrong the first time. There were quite a lot of interface changes and I made too many changes at once. Second time, when I knew which changes needed to be made it was quite easy. If You find yourself in similar position I recommend first tuning the API, then switch the memory layout and only after that to execute kernels with all images at once. Turns out the last step can be done quite easily: You just need to add additional work dimension and in global_work_size set it to number of images and to 1 in local_work_size.
+When I was converting from single-sample to batch approach I got it wrong the first time. There were quite a lot of interface changes and I made too many changes at once. Second time, when I knew which changes needed to be made it was quite easy. If You find yourself in similar position I recommend first tuning the API, then to switch the memory layout and only after that to execute kernels with all images at once. Turns out the last step can be done quite easily: You just need to add additional work dimension and in global_work_size set it to number of images and to 1 in local_work_size.
 
 {% highlight c linenos %}
 uint sample_id = get_global_id(2);
@@ -142,23 +97,23 @@ uint sample_id = get_global_id(2);
 {% endhighlight %}
 *Fragment of my forward kernel. Macros used for unrelated reason*
 
-> That many internal interface changes will break most tests. If You want to go with 'move fast and break things' ideology You can save validation error values after each epoch to a file. As long as the values are roughly the same the program will still work correctly.
+> That many internal interface changes will break most tests. If You want to 'move fast and break things' You can save validation error values after each epoch to a file. As long as the values are roughly the same the program will still work correctly.
 
 
 
 
 ### What to log?
 
-Everything that is needed to reproduce results. This includes hyperparameters, parameters, preprocessing & postprocessing methods, seeds, training/validation set split etc. Good idea is to use Git for settings/result storage  but I’ve found that file based management suits me better. But, it is not necessary to log *everything*. For example why would You need detailed statistics about each epoch? Another case is when calculation of certain value shows up during profiling. The most important is reproducibility and crash log.
+Everything that is needed to reproduce results. This includes hyperparameters, parameters, pre and postprocessing methods, seeds, training/validation set split etc. Good idea is to use Git for settings/result storage  but I’ve found that file based management suits me better. It is not necessary to log *everything*. For example why would You need detailed statistics about each epoch? Another case is when calculation of certain value show up during profiling. As long as You can reproduce the execution and have the crash log it's often enough. On the other hand displaying learning progress once in a while is handy.
 
-> Since the data is heavily restricted to set of training samples and we are crunching numbers with amazing speed the failures do not happen often. On the other hand Nvidia's driver sometimes allow out of bounds access which manifests itself when You least expect it.
+> Since the data is heavily restricted to set of training samples and we are crunching numbers with amazing speed the failures do not happen often. On unrelated note Nvidia's driver sometimes allows out of bounds access which manifests itself when You least expect it.
 
 
 
 
 ### Choosing training samples
 
-If there is standard sample set for Your domain use it. Good example is [MNIST](http://yann.lecun.com/exdb/mnist/ "MNIST sample set") for handwritten numbers. Generating samples by hand is actually quite complicated. When I started I took small patches from random images and hoped it would infer some general rules that would make my program extremely universal and flexible. This was not a case. Fortunately, at least I was able to see that the network works (feature maps for first layer had familiar shapes of gaussian/edge kernels). I’d switched to images based on comics/vector graphic and received something recognisable much faster. Also important is the number of used samples and training/validation set split. With f.e. 200 samples at Your disposal and 80/20 split only 40 images will be used to measure model's progress. This will attribute to huge variance. To compare: MNIST consists of over 60,000 images while [ImageNet](http://www.image-net.org/ "ImageNet sample set") over 14,000,000.
+If there is standard sample set for Your domain use it. Good example is [MNIST](http://yann.lecun.com/exdb/mnist/ "MNIST sample set") for handwritten numbers. Generating samples by hand is actually quite complicated. When I started I took small patches from random images and hoped my program would infer some general rules that would make it extremely universal and flexible. This was not a case. Fortunately, at least I was able to see that the network works (feature maps for first layer had familiar shapes of gaussian/edge kernels). I’d switched to images based on comics/vector graphic and received something recognisable much faster. Also important is the number of used samples and training/validation set split. With f.e. 200 samples at Your disposal and 80/20 split only 40 images will be used to measure model's progress. This will attribute to huge variance. To compare: MNIST consists of over 60,000 images while [ImageNet](http://www.image-net.org/ "ImageNet sample set") over 14,000,000.
 
 > "The size of training sub-images is fsub = 33. Thus the 91-image dataset can be decomposed into 24,800 sub-images, which are extracted from original images with a stride of 14."
 > - Chao Dong, Chen Change Loy, Kaiming He, Xiaoou Tang: "Image Super-Resolution Using Deep Convolutional Networks"
@@ -204,7 +159,7 @@ Since it is an offline tool the performance does not matter. Both R and MATLAB h
 
 ### Documentation
 
-When looking through many open source projects I have a feeling that this step is just a personal preference. Many editors offer tools that can ease the task and it only takes a couple minutes, so why not? Anyway I highly recommend to write down which kernel uses which buffers. It's probably the best description of system one could have.
+When looking through many open source projects I have a feeling that this step is just a personal preference. Many editors offer tools that can ease the task and it only takes a couple minutes, so why not? Anyway, I highly recommend to write down which kernel uses which buffers. It's probably the best description of system one could have.
 
 | **Kernel**  | **Buffers** |
 | :------------ |:---------------|
@@ -240,7 +195,7 @@ List of scripts that I've used (feel free to reuse them):
 
 * [generate_training_samples.py](https://github.com/Scthe/cnn-Super-Resolution/blob/master/generate_training_samples.py) - generate ready to use training samples based on images from provided directory
 * [weights_visualize.py](https://github.com/Scthe/cnn-Super-Resolution/blob/master/weights_visualize.py) - present weights as images
-* [profile.py](https://github.com/Scthe/cnn-Super-Resolution/blob/master/profile.py) - measure execution time or time spend per OpenCL kernel
+* [profile.py](https://github.com/Scthe/cnn-Super-Resolution/blob/master/profile.py) - measure execution time or time spent per OpenCL kernel
 * [schedule_training.py](https://github.com/Scthe/cnn-Super-Resolution/blob/master/schedule_training.py) – user can specify number of epochs or duration in minutes
 
 ![Weights debug]({{ site.url }}/images/2015-08-19-neural-networks-implementation-tips/weights1.png)
@@ -253,7 +208,7 @@ It's also worth mentioning that You can hardcode some values into scripts and th
 I highly recommend to write separate scheduling script. Some basic functionality should include f.e. ability to specify for how long to train (both by number of epochs and by duration), stop/resume, logs and backup management. Logging itself can be implemented as redirecting from sysout to file (although this solution has a lot of disadvantages).
 
 ![Scheduling]({{ site.url }}/images/2015-08-19-neural-networks-implementation-tips/scheduling.jpg)
-*Scheduling script output example*
+*Scheduling script example*
 
 
 
@@ -289,7 +244,7 @@ One of the most important thing about profiling code is IMO to make it simple. H
 
 ### Profiling OpenCL – simple way
 
-The simplest way is to measure time spend per kernel. Fortunately OpenCL provides us with [clGetEventProfilingInfo](https://www.khronos.org/registry/cl/sdk/1.1/docs/man/xhtml/clGetEventProfilingInfo.html) that allows us to inspect time counters. Call [clGetDeviceInfo](https://www.khronos.org/registry/cl/sdk/1.1/docs/man/xhtml/clGetDeviceInfo.html) with CL_DEVICE_PROFILING_TIMER_RESOLUTION to get timer resolution.
+The simplest way is to measure time spent per kernel. Fortunately OpenCL provides us with [clGetEventProfilingInfo](https://www.khronos.org/registry/cl/sdk/1.1/docs/man/xhtml/clGetEventProfilingInfo.html) that allows us to inspect time counters. Call [clGetDeviceInfo](https://www.khronos.org/registry/cl/sdk/1.1/docs/man/xhtml/clGetDeviceInfo.html) with CL_DEVICE_PROFILING_TIMER_RESOLUTION to get timer resolution.
 
 **For clGetEventProfilingInfo to work You have to set CL_QUEUE_PROFILING_ENABLE flag during clCreateCommandQueue.**
 
@@ -311,7 +266,7 @@ if (is_profiling()) {
 
 
 ![Simple OpenCL profiling]({{ site.url }}/images/2015-08-19-neural-networks-implementation-tips/profile_kernels.jpg)
-*Time spend per kernel. Compile-time macros are also provided*
+*Time spent per kernel. Compile-time macros are also provided*
 
 
 
@@ -344,7 +299,7 @@ NVVP logs **every single kernel invocation**, so try to provide representative, 
 Available information includes f.e.:
 
 * occupancy
-* number or registers used per work item
+* number of registers used per work item
 * shared memory per work group
 * memory transfers size & bandwidth between host and GPU
 * detailed timeline that marks start and end of each event
@@ -360,7 +315,7 @@ Use [CodeXL](http://developer.amd.com/tools-and-sdks/opencl-zone/codexl/ "AMD Co
 
 ### Remove blocking operations
 
-The biggest change in performance in my case was due too removal of blocking operations like:
+The biggest change in performance in my case was due to removal of blocking operations like:
 
 * clFinish
 * clWaitForEvents
@@ -373,7 +328,7 @@ The biggest change in performance in my case was due too removal of blocking ope
 * clEnqueueMapBuffer
 * clEnqueueMapImage
 
-Read, write and map operations should be used in non-blocking mode. Still, data transfer from host to GPU may be quite expensive.  I was lucky to have all my data fit into the memory at once. If this is not possible, try to minimize the amount of data that is exchanged. You can pack it more effectively (f.e. half floats), but this is fairly low-level change. Another idea is to use memory pools. For example the first half of images goes through every pipeline step, writes gradients and -only after it is done- the second half is executed. This can effectively cut the memory requirements in half since majority of VRAM is allocated to hold sub-step results (layers outputs, deltas). Also changing the number of this 'mini-batches' provides additional control over the execution. If the GPU usage is too high increasing this factor can effectively throttle the program.
+Read, write and map operations should be used in non-blocking mode. Still, data transfer from host to GPU may be quite expensive.  I was lucky to have all my data fit into the memory at once. If this is not possible, try to minimize the amount of data that is exchanged. You can pack it more effectively (f.e. half floats), but this is fairly low-level change. Another idea is to use memory pools. For example: the first half of images goes through every pipeline step, writes gradients and -only after it is done- the second half is executed. This can effectively cut the memory requirements in half since majority of VRAM is allocated to hold sub-step results (layer's outputs, deltas). Also changing the number of this 'mini-batches' provides additional control over the execution. If the GPU usage is too high increasing this factor can effectively throttle the program.
 
 
 
@@ -422,7 +377,7 @@ There is an interesting publication ([J. Filipovič, M. Madzin, J. Fousek, L. Ma
 Another case is to merge calculations of deltas and derivatives of activation function.
 
 
-> From what I've observed simple kernels like that do not show up during profiling, but I'd say it is worth doing it anyway, since it decreases number of moving parts. For example calculating deltas for last layer consists of 2 memory reads, single write and handful of expressions. That takes only ~0.1% of overall calculation time.
+> From what I've observed simple kernels like that do not show up during profiling. I'd say fuse them anyway, since it decreases number of moving parts. For example calculating deltas for last layer (very simple kernel) consists of 2 memory reads, single write and handful of expressions. That takes only ~0.1% of overall calculation time.
 
 
 
@@ -436,7 +391,7 @@ Sometimes You can create more efficient kernel when working under some assumptio
 
 ### Swap loop order
 
-Memory access works in a different way on GPU then on CPU. That means that some preconceptions should be checked again. Some of the materials that I've found useful:
+Memory access works in a different way on GPU than on CPU. That means that some preconceptions should be checked again. Some of the materials that I've found useful:
 
 * AMD Accelerated Parallel Processing OpenCL Programming Guide (also other materials on [AMD APP SDK info page](http://developer.amd.com/tools-and-sdks/opencl-zone/amd-accelerated-parallel-processing-app-sdk/) )
 * OpenCL Programming Guide for the CUDA Architecture
@@ -452,10 +407,8 @@ Of course the road from theory to application is quite long.
 
 ## Summary
 
-Implementing neural network is quite long process, especially if there You are working alone. It is also interesting learing experience. It does not teach You everything there is about machine learning, but gives a solid understanding how these things work. Also, before I started my only OpenCL project was simple hash calculations. Now I'm quite confident in my skills in this area.
-Sure there are always things that can be implemented better and another miliseconds to shave. I'm hesitating if the learing procedure is implemented correctly. I've also seen a couple of interesting publications about FFT in convolutions. But right now I don't think I'm going to experiment any further - the goal of this project was already achieved.
-
-Hopefully on the next neural networks headline I would be able to say: 'Yes, that seems about right!'.
+Implementing neural network is quite long process. It is also an interesting learning experience. It does not teach You everything there is about machine learning, but gives a solid understanding how these things work.
+Sure there are always things that can be implemented better and another milliseconds to shave. I've also seen a couple of interesting publications about FFT in convolutions. But right now I don't think I'm going to experiment any further - the goal of this project was already achieved.
 
 ![Compile errors]({{ site.url }}/images/2015-08-19-neural-networks-implementation-tips/clBuildProgram_error.png)
 

@@ -1,7 +1,7 @@
 ---
-title: "Neural nets: implementation tips"
+title: "Neural networks: implementation tips"
 excerpt: "Some tips helpful for those that implement neural networks from scratch"
-date: 2015-08-19 12:00:00
+date: 2015-08-23 12:00:00
 ---
 
 
@@ -130,7 +130,7 @@ There is also an excellent article written by Andrej Karpathy: [„What I learne
 
 Tests are necessary to check if math is implemented correctly, but is not only reason why You should write them. Beside usual suspects (ease of refactoring, better code design with isolated features, documentation through usage example etc.) it is important to test the application under heightened load. For example each OpenCL kernel on Windows has to finish in about 2s. If it takes longer then that the OS will decide that GPU is unresponsive (["Display driver stopped responding and has recovered”](https://devtalk.nvidia.com/default/topic/459869/cuda-programming-and-performance/-quot-display-driver-stopped-responding-and-has-recovered-quot-wddm-timeout-detection-and-recovery-/)). I’ve used 2 separate test cases – one for correctness, one just uses a lot of data and checks if app crashes.
 
-> It is possible to increase the timer on Windows. Linux also has similar limitation in place. Another solution is to use 2 graphics cards – one as system GPU, other for calculations.
+> Linux also has similar limitation and on both systems it can be removed. Another solution is to use 2 graphics cards – one as system GPU, other for calculations.
 
 It is also profitable to think how we would design testing framework. Of course we could use standard frameworks, but creating our own is quite simple and may suit our requirements better. Our kernels are quite simple data transformations so making the test data-driven is a good choice. Take a look at [this file](https://github.com/Scthe/cnn-Super-Resolution/blob/master/test/data/test_cases.json) that defines all test cases for forward execution phase. By adding another entry I can easily create more tests, without even touching C++. Use scripts to generate test data f.e.:
 
@@ -397,7 +397,7 @@ Memory access works in a different way on GPU than on CPU. That means that some 
 * OpenCL Programming Guide for the CUDA Architecture
 * Paulius Micikevicius - Analysis-Driven Optimization and also Fundamental Optimizations
 * Mark Harris - Optimizing Parallel Reduction in CUDA
-* [Why aren't there bank conflicts in global memory for cuda opencl](http://stackoverflow.com/questions/3843032/why-arent-there-bank-conflicts-in-global-memory-for-cuda-opencl)
+* [Why aren't there bank conflicts in global memory for Cuda/OpenCL](http://stackoverflow.com/questions/3843032/why-arent-there-bank-conflicts-in-global-memory-for-cuda-opencl)
 
 Of course the road from theory to application is quite long.
 

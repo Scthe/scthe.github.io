@@ -1,7 +1,7 @@
 baseurl: ""
 github_account: "https://github.com/Scthe"
 title: "Scthe's blog"
-tagline: 'Scthe blog'
+description: "Mostly some programming stuff"
 
 markdown: kramdown
 highlighter: pygments

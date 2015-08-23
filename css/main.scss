@@ -142,6 +142,19 @@ $highlighter-color: $selection-color;
   }
 }
 
+%word-wrap {
+  word-break:     break-word;
+  -webkit-hyphens: auto;
+  -moz-hyphens:    auto;
+  hyphens:         auto;
+}
+
+%ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 
 //
 // elements

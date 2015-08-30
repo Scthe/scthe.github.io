@@ -7,7 +7,7 @@ date: 2015-08-23 12:00:00
 {% capture image_dir %}{{ site.url }}/images/draft{% endcapture %}
 
 
-This is an electronic version of my notes created during [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution) project (read more at: ["Neural networks: implementation tips"]({{ site.url }}/2015/08/23/neural-networks-implementation-tips.html)). I would be surprised if this document was useful for someone else. Anyway, feel free to read it. You don't even have to deal with my sloppy handwriting.
+This is an electronic version of my notes created during [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution) project (read more at: ["Neural networks: implementation tips"]({{ site.url }}/2015/08/23/neural-networks-implementation-tips.html)). Feel free to read it. You don't even have to deal with my sloppy handwriting.
 
 Also be warned that I'm not going to explain 'what' and 'how'. My only goal is to show why the equations have presented forms.
 
@@ -42,10 +42,10 @@ Now look again at the picture above and locale each variable. What is $${dy \ove
 * $$s_{l}$$ - number of nodes on layer *l*
 * $$f_a$$ - activation function
 * $$x^{(l)}$$ - value of node on layer l **before** application of activation function (see image below)
-* $$y^{(l)}$$ - value of node on layer l **after** application of activation function: $$y^l = f_a(x^l)$$ (see image below)
-* $$W^{(l)}$$ - weights between nodes on layers *l* and *l+1*
-* $$b^{(l)}$$ - biases added to $$W^l y^l$$ (see forward propagation)
-* $$\eta$$ - hyperparameter - learning rate
+* $$y^{(l)}$$ - value of node on layer l **after** application of activation function: $$y^{(l)} = f_a(x^{(l)})$$ (see image below)
+* $$W^{(l)}_{ji}$$ - weights between i-th node on layer *l* and j-th node on layer *l+1*. Take a notice of order of *ji* - it's reversed to what You would expected. It is popular notation in all neural networks descriptions.
+* $$b^{(l)}$$ - biases used during forward propagation
+* $$\eta$$ - learning rate (hyperparameter)
 * $$\delta^{(l)}_j$$ - error term of j-th node of l-th layer
 * cost function *J* - how good the network's output maps to ground truth
 
@@ -79,9 +79,7 @@ In layman's terms we measure difference between what we expected and what the al
 
 ## Training algorithm
 
-> Indices on weights: $$W_{ji}$$ is weight associated with connection between i-th node on layer *l* and j-th node on layer *l+1*. It is popular notation in all neural networks documents.
-
-Our goal is to minimize $$J(W,b)$$ and to do that we will use [gradient descent](https://en.wikipedia.org/wiki/Gradient_descent)(GD) algorithm. Requirements of GD: function F is both defined and differentiable at least in neighbourhood of some point *p*. If we have a gradient at *p* we know in which 'direction' we can move so that the function increases it's value. If we move in negative direction the opposite should be true: $$F(p) >= F(GD(p))$$. For this to work we write GD as:
+Our goal is to minimize $$J(W,b)$$ and to do that we will use [gradient descent](https://en.wikipedia.org/wiki/Gradient_descent)(GD) algorithm. Requirements of GD: function F is both defined and differentiable at least in neighbourhood of some point *p*. If we have a gradient at *p* we know in which 'direction' we can move so that the function increases it's value. If we move in negative direction the opposite should be true: $$F(p) \geq F(p_{n+1})$$. For this to work we write GD as:
 
 \\[ p_{n+1} = p_n - \eta \nabla F(p_n) \\]
 
@@ -106,7 +104,7 @@ It's nothing more then applied gradient descent algorithm. The thing is that we 
 
 ### Last layer deltas
 
-For **each** node we can calculate how much *"responsible"* this node was for the error of our hypothesis. These are so called *"deltas"* / *"error terms"*. We will use $$\delta^{(l)}_j$$ to describe error term of j-th node of l-th layer. Let's think about deltas for **last** layer. If we are using squared error as the cost function we have:
+For **each** node we can calculate how much *"responsible"* this node was for the error of our hypothesis. These are so called *deltas* / *error terms*. We will use $$\delta^{(l)}_j$$ to describe error term of j-th node of l-th layer. Let's think about deltas for **last** layer. If we are using squared error as the cost function we have:
 
 $$ \delta^{(L)}_j
 = \frac{\partial}{\partial x^{(L)}_j} J(W,b;Y,X) =\\
@@ -243,9 +241,15 @@ Another thing we are not going to talk about is pooling.
 
 * $$w^{(l)}_{img}$$ and $$h^{(l)}_{img}$$ - size of first 2 dimensions of the layer.
 * $$n^l$$ - feature maps/filters for layer *n*. Creates layer's third dimension - this means each layer has $$w^{(l)}_{img} \cdot h^{(l)}_{img} \cdot n^l$$ units.
-* $$f^{(l)}$$ - spatial size of the kernel. Each kernel has dimensions $$f^{(l)} \cdot f^{(l)} \cdot n^{(l)}$$.
+* $$f^{(l)}$$ - spatial size of the kernel.
+* $$W^{(l)}_{abnk}$$ - this is how we are going to index weights now. Each kernel has dimensions $$f^{(l)} \cdot f^{(l)} \cdot n^{(l)}$$. There are $$n^{(l+1)}$$ kernels between each layers.
 
-> $$f_a$$ is activation function, $$f^l$$ is size of kernel.
+$$ a \in [0, f^{(l)} ), \\
+   b \in [0, f^{(l)} ), \\
+   n \in [0, n^{l+1} ), \\
+   k \in [0, n^{l} ) $$
+
+> $$f_a$$ is activation function, $$f^{(l)}$$ is spatial size of kernel.
 
 
 

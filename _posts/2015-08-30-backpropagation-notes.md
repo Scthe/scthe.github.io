@@ -1,10 +1,10 @@
 ---
 title: "Backpropagation notes"
 excerpt: "Electronic version of notes that I took during super-resolution CNN project"
-date: 2015-08-23 12:00:00
+date: 2015-08-30 12:00:00
 ---
 
-{% capture image_dir %}{{ site.url }}/images/draft{% endcapture %}
+{% capture image_dir %}{{ site.url }}/images/2015-08-30-backpropagation-notes{% endcapture %}
 
 
 This is an electronic version of my notes created during [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution) project (read more at: ["Neural networks: implementation tips"]({{ site.url }}/2015/08/23/neural-networks-implementation-tips.html)). Feel free to read it. You don't even have to deal with my sloppy handwriting.

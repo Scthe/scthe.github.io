@@ -1,5 +1,8 @@
+$post-item-elements-margin: 1.0rem;
+$post-items-spacing: 3.5rem;
+
 .post-item{
-  margin-bottom: 3em;
+  margin-bottom: $post-items-spacing;
 
   &:last-child{
     margin-bottom: 0;
@@ -7,10 +10,20 @@
 }
 
 .post-item__title{
-  margin-bottom: 0.3em;
+  margin-bottom: $post-item-elements-margin;
+  text-align: center;
 }
 
 .post-item__date{
-  @extend %keyword;
-  padding: 1px 4px;
+  margin-bottom: $post-item-elements-margin;
+  text-align: center;
+}
+
+.post-item__excerpt{
+    margin-bottom: $post-item-elements-margin;
+}
+
+.post-item__read-more{
+    text-align: center;
+    text-transform: uppercase;
 }

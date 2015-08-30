@@ -5,10 +5,8 @@
         <h1 class="side-panel__title">
             {{ page.title }}
         </h1>
-
         <p class="side-panel__tagline">
-          <span>Published</span>
-          &nbsp;{{ page.date | date: "%B %Y"}}
+          {{ page.date | date_to_string}}
         </p>
     {% else %}
         <h1 class="side-panel__title">

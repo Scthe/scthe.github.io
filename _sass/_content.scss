@@ -1,5 +1,5 @@
-.content{
-  @extend %side-panel-content-common;
+.content {
+  white-space: normal;
   overflow-x: hidden;
 
   @include below-lg{
@@ -10,12 +10,9 @@
     margin-left: $side-panel-width;
   }
 }
+
 .content__inner{
-
-  padding: 35px $content-left-padding 35px;
-
-  @include below-md{
-  }
+  padding: 35px 20px 35px;
 
   @include md-to-lg{
     margin: 0px auto;

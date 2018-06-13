@@ -1,0 +1,24 @@
+.post {
+
+  ul, ol, dl {
+    @include margin-top-only($post-list-margin-top);
+  }
+
+  li {
+    margin-left: $post-list-left-inset;
+    margin-top: $post-list-item-margin-top;
+
+    &:first-child {
+      margin-top: 0px; // already from list element
+    }
+  }
+
+  ul > li{
+    list-style-type: disc;
+  }
+
+  ol > li{
+    list-style-type: decimal;
+  }
+
+}

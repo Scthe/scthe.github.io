@@ -1,0 +1,31 @@
+%activable{
+  cursor: pointer;
+}
+
+%keyword{
+  color: white;
+  background-color: lighten($color-accent, 20%);/*$color-accent;*/
+}
+
+%word-wrap {
+  word-break:     break-word;
+  -webkit-hyphens: auto;
+  -moz-hyphens:    auto;
+  hyphens:         auto;
+}
+
+%ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+$highlighter-color: $selection-color;
+%highlighter{
+  border-bottom: 3px solid $highlighter-color;
+  box-shadow: inset 0 -5px 0 $highlighter-color;
+
+  &:hover{
+    background: $highlighter-color;
+  }
+}

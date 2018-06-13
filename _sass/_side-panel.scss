@@ -1,5 +1,5 @@
 .side-panel{
-  @extend %side-panel-content-common;
+  white-space: normal;
   position: relative;
   background-color: $side-panel-background;
   overflow: hidden;
@@ -49,7 +49,7 @@
   position: absolute;
   display: block;
   top: 10px;
-  left: $content-left-padding;
+  left: 20px;
   width: 21px;
   height: 18px;
 
@@ -67,7 +67,7 @@
 
   @include above-lg{
     // on lg we switch to side panel layout, which gives us all vertical space we would ever need
-    top: $content-left-padding;
+    top: 20px;
   }
 }
 

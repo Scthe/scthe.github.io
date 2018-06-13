@@ -1,0 +1,36 @@
+.post {
+
+  // links in text (not anchor for paragraph)
+  a:not(.anchorjs-link) {
+    @extend %highlighter;
+
+    color: inherit;
+    padding: 0 3px;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  // anchors for each paragraph added from js
+  .content__anchor {
+    background-color: transparent !important;
+    text-decoration: none !important;
+    color: #e2e2e2 !important;
+
+    &:hover {
+      color: #c3c3c3 !important;
+      cursor: pointer;
+    }
+  }
+
+  // links at the end of article
+  .links-list {
+    a {
+      display: block;
+      @extend %ellipsis;
+    }
+  }
+
+}

@@ -26,6 +26,10 @@ $post-code-caption-margin-top:  $post-figure-caption-margin-top;
       @extend %figure-caption;
       margin-top: $post-image-caption-margin-top;
     }
+
+    &:hover {
+      cursor: zoom-in;
+    }
   }
 
   // code

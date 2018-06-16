@@ -11,7 +11,7 @@ $font-size-h4: 1rem;
 $font-size-h5: 1rem;
 $font-size-h6: 1rem;
 $font-size-blockquote: 1.25rem;
-$font-size-image-caption: 0.9rem;
+$font-size-image-caption: 0.85rem;
 
 // text: line-height
 $line-height-base: 1.8;
@@ -35,6 +35,7 @@ $post-list-margin-top: 20px;
 $post-list-item-margin-top: 9px;
 
 // basic colors
+$color-background-base: #fff;
 $color-base: #222;
 $color-accent: #517ca2; /*#23aece; /* #ce2323 */
 $color-blockquote: #666;
@@ -70,6 +71,7 @@ html,
 body {
   height: 100%;
   font-size: $font-size-base;
+  background-color: $color-background-base;
 
   @include above-lg{
     font-size: $font-size-base-above-lg;
@@ -136,6 +138,7 @@ p {
 @import "content";
 @import "pagination";
 @import "posts-list";
+@import "modal";
 
 @import "post/figure";
 @import "post/links";

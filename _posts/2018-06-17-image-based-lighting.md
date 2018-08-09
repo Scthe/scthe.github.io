@@ -11,6 +11,7 @@ date: 2018-06-17 12:00:00
 
 {::comment}
 
+TODO https://github.com/derkreature/IBLBaker for pseudo-algo
 
 mathjax:
   newline: \\
@@ -50,6 +51,8 @@ We switch from summation to integration - it can be intuitively thought as addin
 ## Using images to store light conditions
 
 Storing image that describes lighting is not a new idea. Cubemaps were in OpenGL core since version 1.3. It was one of the techniques that Crytek used in Crysis 2 for global illumination and real-time reflection[5]. With the advent of PBR we yearn for more realism, to make rendering system as close as possible to physically-based. No wonder that once again we use same technique. It's based on a 4 key ideas:
+
+> TODO mention google maps
 
 1. An image can be wrapped completely (as a sphere) **around** the scene. Similar effect can be seen on following videos: [Fort Minor - Welcome](https://www.youtube.com/watch?v=REAwGmv0Fuk) (if You stop the video, You will have total control over the camera), [360° Video, Manhattan, New York, USA, 4K aerial video](https://www.youtube.com/watch?v=YM6GTu_RcWM). If you are unfamiliar with videos like this, just use Your mouse to look around the scene.
 2. Every pixel of a image is a light source (or, in other words, every pixel of an image is a measurement of light incoming from that position).
@@ -133,6 +136,10 @@ The result is then read during run time:
 
 All that was possible only because $$ k_d \frac {c} {\pi} $$ is a constant, not depending on position of the observer (which we does not know during precomputation).
 
+![Example irradiance]({{image_dir}}/irradiance.jpg)
+*Example irradiance cubemap (on the right) compared to radiance cubemap(left). Image from [learnopengl.com](https://learnopengl.com/PBR/IBL/Specular-IBL) under CC BY 4.0*
+
+{::comment} TODO resize image {:/comment}
 
 
 
@@ -322,6 +329,13 @@ indirectLighting = indirectDiffuse + indirectSpecular
 {:/comment}
 
 
+
+
+> TODO add 'Working with HDR':
+> 1. png will not cut it (with image)
+> 1. explain RGBE
+> 1. banding problems == convert rgbe=>float (with image)
+> 1. remind to check cubemap rotation in GIMP 2.10
 
 
 

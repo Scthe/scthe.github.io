@@ -87,7 +87,7 @@ Batches (each kernel operates on multiple images):
 * hard to debug
 * makes it easy to split epoch into mini-batches, which lowers the memory usage (more on that later)
 
-When I was converting from single-sample to batch approach I got it wrong the first time. There were quite a lot of interface changes and I made too many changes at once. Second time, when I knew which changes needed to be made it was quite easy. If You find yourself in similar position I recommend first tuning the API, then to switch the memory layout and only after that to execute kernels with all images at once. Turns out the last step can be done quite easily: You just need to add additional work dimension and in global_work_size set it to number of images and to 1 in local_work_size.
+When I was converting from single-sample to batch approach I got it wrong the first time. There were quite a lot of interface changes and I made too many changes at once. Second time, when I knew which changes needed to be made it was quite easy. If You find yourself in similar position I recommend first tuning the API, then to switch the memory layout and only after that to execute kernels with all images at once. Turns out the last step can be done quite easily: You just need to add additional work dimension and in global_work_size set it to number of images and to 1 in local_work_size. Other way is to add loop inside the kernels. This is probably even faster, since for multiple images You only load weights once.
 
 {% highlight c linenos %}
 uint sample_id = get_global_id(2);
@@ -398,6 +398,7 @@ Memory access works in a different way on GPU than on CPU. That means that some 
 * Paulius Micikevicius - Analysis-Driven Optimization and also Fundamental Optimizations
 * Mark Harris - Optimizing Parallel Reduction in CUDA
 * [Why aren't there bank conflicts in global memory for Cuda/OpenCL](http://stackoverflow.com/questions/3843032/why-arent-there-bank-conflicts-in-global-memory-for-cuda-opencl)
+* https://www.youtube.com/watch?v=8Uxe8umUDYA
 
 Of course the road from theory to application is quite long.
 

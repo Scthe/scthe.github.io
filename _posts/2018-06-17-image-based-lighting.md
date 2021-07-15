@@ -12,6 +12,8 @@ date: 2018-06-17 12:00:00
 {::comment}
 
 TODO https://github.com/derkreature/IBLBaker for pseudo-algo
+TODO brdf is always function of direction, this article provides args. randomly
+
 
 mathjax:
   newline: \\
@@ -36,7 +38,9 @@ where
   * L - radiance from direction $$l_i$$,
   * n - surface normal,
 
-It's nothing more then iterating over all lights, counting **radiance** from each one. In real world, the radiance does not come just directly from lights, as light bounces around from all objects. This makes object be *aware* of their environment and makes them *sit* better in their surrounding. The phenomenon is called Global Illumination. Overall, this equation can be generalized to:
+{:/TODO above does not make sense from symbols standpoint}
+
+It's nothing more then iterating over all lights, counting **radiance** from each one. In real world, the radiance does not come just directly from lights, as light bounces around from all objects. This makes object be *aware* of their environment and makes them *sit* better in their surrounding. The phenomenon is called global illumination. Overall, this equation can be generalized to:
 
 $$
   L_0(p,\omega_0)
@@ -50,20 +54,20 @@ We switch from summation to integration - it can be intuitively thought as addin
 
 ## Using images to store light conditions
 
-Storing image that describes lighting is not a new idea. Cubemaps were in OpenGL core since version 1.3. It was one of the techniques that Crytek used in Crysis 2 for global illumination and real-time reflection[5]. With the advent of PBR we yearn for more realism, to make rendering system as close as possible to physically-based. No wonder that once again we use same technique. It's based on a 4 key ideas:
+Storing image that describes lighting is not a new idea. Cubemaps were in OpenGL core since version 1.3. It was one of the techniques that Crytek used in Crysis 2 for global illumination and real-time reflection[5]. With the advent of PBR we yearn for more realism, to make rendering system as close as possible to what can be observed everyday. No wonder that once again we use same technique. It's based on a 4 key ideas:
 
 > TODO mention google maps
 
 1. An image can be wrapped completely (as a sphere) **around** the scene. Similar effect can be seen on following videos: [Fort Minor - Welcome](https://www.youtube.com/watch?v=REAwGmv0Fuk) (if You stop the video, You will have total control over the camera), [360° Video, Manhattan, New York, USA, 4K aerial video](https://www.youtube.com/watch?v=YM6GTu_RcWM). If you are unfamiliar with videos like this, just use Your mouse to look around the scene.
 2. Every pixel of a image is a light source (or, in other words, every pixel of an image is a measurement of light incoming from that position).
 3. The image which provides light is in HDR, since the nature does not have strict limit on number of bytes
-4. We can have multiple such images for every virtual room and blend between results. Usually it is done by inserting X virtual probes for every $$m^2$$.
+4. We can have multiple such images for every virtual room and blend between results. Usually it is done by inserting many virtual probes for every $$m^2$$.
 
 
 {::comment} TODO add sample cubemap {:/comment}
 
 
-> We actually do not have to use cubemap to store light information about environment about us. There are many different formats, with different perspective projections. The assumption is, that most people know what cubemap is.
+> We actually do not have to use cubemap to store light information about environment about us. There are many different formats, with different perspective projections.
 
 After providing physically based BRDF from last article into previous equation, we receive:
 
@@ -107,37 +111,39 @@ $$ \int\limits_{\Omega}
   d\omega_i
 $$
 
-as the rest of the equation is constant and can be provided during runtime. We will store the result in separate cubemap. Since radiance for every direction l is known (just read it from HDR lighting image), all we need to do is for each possible normal vector n calculate irradiance from hemisphere around n. Due to limitations of number of texels on a cubemap, there are not that many normals to calculate for. During precomputing step we run pixel shader for each texel of resulting cubemap, with leads to quite elegant implementation. Of course, we are going to use [Monte Carlo simulation](https://en.wikipedia.org/wiki/Monte_Carlo_method).
+{:/TODO left side?}
+
+as the rest of the equation is constant and can be provided during runtime. We will store the result in separate cubemap. Since radiance for every direction l is known (just read it from the HDR image), all we need to do is sum it in hemisphere for each possible normal vector n (bascically calculate irradiance). Due to limitations of number of texels on the cubemap, there are not that many normals to calculate for. During precomputing step we run pixel shader for each texel of resulting cubemap, with leads to quite elegant implementation. Overall sampling procedure is based on [Monte Carlo simulation](https://en.wikipedia.org/wiki/Monte_Carlo_method).
 
 {% highlight python linenos %}
   for texel in irradianceCubemap:
-    # in pixel shader:
+    # pixel shader shader executed for each texel
     normal = getNormalFromCubemapCoords(texel)
-    irradiance = [0, 0, 0] # measure for 3 channel;
+    irradiance = [0, 0, 0] # measure for 3 channels
 
-    # Monte Carlo simulation here:
+    # Monte Carlo sampling
     for i in 0..numSamples:
       sampleVector = normal + getSampleOffset(i)
       irradiance += load(radianceCubemap, sampleVector) * dot(normal, sampleVector)
 
-    # end:
+    # store result
     store(irradianceCubemap, texel, irradiance / numSamples)
 {% endhighlight %}
 *Generating irradiance map*
 
-> You may have noticed that we are effectively running convolution. One of the most important decisions is implementation of getSampleOffset. It could range from random function, pseudorandom like Halton sequence or (preferably) just iterating using offsets.
+> You may have noticed that we are effectively running convolution. One of the most important decisions is implementation of getSampleOffset. It could range from random function, pseudorandom like Halton sequence or just iterating using constant deltas.
 
 The result is then read during run time:
 
 {% highlight python linenos %}
-  k_d = albedo / Math.PI * texture(irradiance, fragmentNormal)
+  diffuseColor = albedo / Math.PI * texture(irradiance, fragmentNormal)
 {% endhighlight %}
 *Reading precomputed irradiance for normal in pixel shader*
 
-All that was possible only because $$ k_d \frac {c} {\pi} $$ is a constant, not depending on position of the observer (which we does not know during precomputation).
+All that was possible because $$ k_d \frac {c} {\pi} $$ is a constant, not depending on position of the observer (which we does not know during precomputation).
 
 ![Example irradiance]({{image_dir}}/irradiance.jpg)
-*Example irradiance cubemap (on the right) compared to radiance cubemap(left). Image from [learnopengl.com](https://learnopengl.com/PBR/IBL/Specular-IBL) under CC BY 4.0*
+*Example radiance cubemap (left) and corresponding irradiance cubemap (right). Image from [learnopengl.com](https://learnopengl.com/PBR/IBL/Specular-IBL) under CC BY 4.0*
 
 {::comment} TODO resize image {:/comment}
 
@@ -164,7 +170,7 @@ $$ L_s(p,\omega_0)
     d\omega_i
 $$
 
-Again, we are going to use Monte Carlo simulation, but this time using [importance sampling](https://en.wikipedia.org/wiki/Importance_sampling). Importance sampling is used to speed up the calculations in real-time and can be skipped if we always do the step offline. At the end of the article I've added bonus section explaining it's application [here](#bonus-importance-sampling). Equations and selected $$p(l_k,v)$$ as presented in [2]:
+We are also going to use Monte Carlo simulation, but this time with [importance sampling](https://en.wikipedia.org/wiki/Importance_sampling). Importance sampling is a technique used to decrease time that it takes for the results to converge and can be skipped if we always do the step offline. At the end of the article You can find [some additional explanation](#bonus-importance-sampling). Equations and selected $$p(l_k,v)$$ as presented in [2]:
 
 $$
   L_s(v) =
@@ -180,7 +186,7 @@ $$
   p(l_k,v) = \frac {D(h)(n \cdot h)} {4(v \cdot h)}
 $$
 
-One thing that should be noted is that p does give more importance to vectors closer to the normal vector. Since the next steps can be complicated, I've allowed myself to copy them from [2]. You may notice slight difference in regards to the notation, but - for a most part - it should be easy to follow.
+One thing that should be noted is that p does give more importance to vectors closer to the normal vector. Since the next steps can be complicated, I've allowed myself to copy them from [2]. You may notice slight difference in regards to the notation, but - for the most part - it should be easy to follow.
 
 
 ![SplitSum derivation]({{image_dir}}/dice--split-sum-aprox.jpg)
@@ -189,9 +195,12 @@ One thing that should be noted is that p does give more importance to vectors cl
 
 The only step that should require explanation is the last one. Firstly:
 
-> "One can notice an extra $$ n \cdot l$$ in the LD term as well as a different weighting $$\frac {1} {\sum_{i}^N} n \cdot l$. These empirical terms have been introduce by Karis to allows to improve the reconstructed lighting integral which suffers from coarse hypothesis of separability of this integral. There is no mathematical derivation for these terms, goal was to have an exact match with a constant L(l)." Quoted Karis's work refers to [1].
+{::comment} TODO wtf? {:/comment}
 
-Secondly, we may notice the usage of so called split sum approximation:
+> "One can notice an extra $$ n \cdot l$$ in the LD term as well as a different weighting $$\frac {1} {\sum_{i}^N} n \cdot l$. These empirical terms have been introduce by Karis to allows to improve the reconstructed lighting integral which suffers from coarse hypothesis of separability of this integral. There is no mathematical derivation for these terms, goal was to have an exact match with a constant L(l)."
+*Quoted Karis's work refers to [1].*
+
+Secondly, we may notice the usage of so called 'split sum approximation':
 
 $$ \sum a_i b_i \approx \frac {1}{N} (\sum a_i) (\sum b_i) $$
 

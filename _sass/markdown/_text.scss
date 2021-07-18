@@ -1,0 +1,44 @@
+$blockquote-left-border: #ddd;
+$color-blockquote: #666;
+
+.markdown {
+  // paragraph text
+  & > p {
+    @extend %word-wrap;
+    @extend %post-margins;
+    @include margin-v($post-heading-margin-top, 0);
+  }
+
+  // h2: major header ##
+  // h3: minor header ###
+  h2,
+  h3,
+  h4 {
+    @extend %post-margins;
+    @include margin-v($post-heading-margin-top, 0);
+  }
+
+  // bold: **text**
+  strong {
+    color: #303030;
+    font-weight: $font-weight-bold;
+  }
+
+  // italic: *text*
+  em {
+    font-style: italic;
+  }
+
+  // blockquote: '>'
+  blockquote {
+    @extend %post-margins;
+    @include margin-v($post-heading-margin-top, 0);
+    font-style: italic;
+    color: $color-blockquote;
+    border-left: 5px solid $blockquote-left-border;
+
+    & > * {
+      margin-left: 10px;
+    }
+  }
+}

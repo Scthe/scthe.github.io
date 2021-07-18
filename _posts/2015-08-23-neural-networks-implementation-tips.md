@@ -4,7 +4,7 @@ excerpt: "Some tips helpful for those that implement neural networks from scratc
 date: 2015-08-23 12:00:00
 ---
 
-
+{% capture image_dir %}/assets/2015-08-19-neural-networks-implementation-tips{% endcapture %}
 
 
 Judging by number of new articles neural networks were very popular in recent months. And not only because Google, Netflix, Adobe, Baidu, Facebook and countless others has been using them. There are many hobbyists playing with machine learning too. After seeing amazing examples of what is possible I decided to create my very own neural network. This article presents my findings. I hope You will find it useful.
@@ -32,8 +32,7 @@ Throughout this post, I will be referring to my latest project: **super-resoluti
 
 [Super-resolution](https://en.wikipedia.org/wiki/Superresolution "What is super-resolution?") in itself is quite simple problem: how to make image bigger without losing much *quality*. It's a popular question in computer vision, so there are quite a few methods to achieve such effect. I should point out that while there are infinitely many solutions, we -as humans- can instinctively determine if result is *better*. There are also special metrics (f.e. [PSNR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) and [SSIM](https://en.wikipedia.org/wiki/Structural_similarity)) used for more engineerical approach.
 
-![CNN results]({{ site.url }}/images/2015-08-19-neural-networks-implementation-tips/result_cmp.jpg)
-*From left to right: ground truth, scaling with bicubic interpolation, CNN results*
+![From left to right: ground truth, scaling with bicubic interpolation, CNN results]({{image_dir}}/result_cmp.jpg){: standalone }
 
 
 My implementation was a simplified version of SRCNN. While number of layers and kernel sizes are still the same, due to performance constraints I've reduced number of feature maps for layers 1 & 2 by half. I also didn't have enough time to wait for \\( 10^8 \\) epochs for network to converge.
@@ -95,7 +94,9 @@ uint sample_id = get_global_id(2);
 #define IMAGE_OFFSET_IN  sample_id* PREVIOUS_FILTER_COUNT* input_w* input_h
 #define IMAGE_OFFSET_OUT sample_id* CURRENT_FILTER_COUNT* out_size.x* out_size.y
 {% endhighlight %}
-*Fragment of my forward kernel. Macros used for unrelated reason*
+<figcaption>
+Fragment of my forward kernel. Macros used for unrelated reason
+</figcaption>
 
 > That many internal interface changes will break most tests. If You want to 'move fast and break things' You can save validation error values after each epoch to a file. As long as the values are roughly the same the program will still work correctly.
 
@@ -120,10 +121,12 @@ If there is standard sample set for Your domain use it. Good example is [MNIST](
 
 There is also an excellent article written by Andrej Karpathy: [„What I learned from competing against a ConvNet on ImageNet”](http://karpathy.github.io/2014/09/02/what-i-learned-from-competing-against-a-convnet-on-imagenet/ "Article by Andrej Karpathy about data classifying and machine learning in general") that highlights some problems related to gathering samples. One solution is to use services like [Amazon Mechanical Turk](https://www.mturk.com/mturk/welcome "Amazon Mechanical Turk") that allows to commision tasks that require human input.
 
-![MNIST example]({{ site.url }}/images/2015-08-19-neural-networks-implementation-tips/mnist_100_digits.png)
-*MNIST samples. Image taken from Michael Nielsen's "Neural Networks and Deep Learning". Distributed under MIT Licence found [here](https://github.com/mnielsen/neural-networks-and-deep-learning)*
-
-
+<figure>
+  <img src="{{image_dir}}/mnist_100_digits.png" alt=""/>
+  <figcaption>
+  MNIST samples. Image taken from Michael Nielsen's "Neural Networks and Deep Learning". Distributed under MIT Licence found [here](https://github.com/mnielsen/neural-networks-and-deep-learning).
+  </figcaption>
+</figure>
 
 
 ### Tests
@@ -150,7 +153,9 @@ def forward(input,weights,bias,spatial_size,width,height):
       output[y][x] += activation_func(tmp + bias)
   return  output
 {% endhighlight %}
-*2D convolution. Feature maps left as an exercise for reader*
+<figcaption>
+2D convolution. Feature maps left as an exercise for reader
+</figcaption>
 
 Since it is an offline tool the performance does not matter. Both R and MATLAB have convolution build-in, but it may require a little bit of juggling to convert Your data to suitable format.
 
@@ -160,6 +165,8 @@ Since it is an offline tool the performance does not matter. Both R and MATLAB h
 ### Documentation
 
 When looking through many open source projects I have a feeling that this step is just a personal preference. Many editors offer tools that can ease the task and it only takes a couple minutes, so why not? Anyway, I highly recommend to write down which kernel uses which buffers. It's probably the best description of system one could have.
+
+<figure class="table_wrapper">
 
 | **Kernel**  | **Buffers** |
 | :------------ |:---------------|
@@ -174,7 +181,10 @@ When looking through many open source projects I have a feeling that this step i
 | sum [BLOCKING] | in: any buffer <br/>out: float |
 | subtract from all | inout: any buffer |
 
-*My app*
+<figcaption>
+My app
+</figcaption>
+</figure>
 
 
 
@@ -198,8 +208,8 @@ List of scripts that I've used (feel free to reuse them):
 * [profile.py](https://github.com/Scthe/cnn-Super-Resolution/blob/master/profile.py) - measure execution time or time spent per OpenCL kernel
 * [schedule_training.py](https://github.com/Scthe/cnn-Super-Resolution/blob/master/schedule_training.py) – user can specify number of epochs or duration in minutes
 
-![Weights debug]({{ site.url }}/images/2015-08-19-neural-networks-implementation-tips/weights1.png)
-*Drawing of weights for first layer. There are some gradients visible, but nothing interesting in particular (at least for now)*
+
+![Drawing of weights for first layer. There are some gradients visible, but nothing interesting in particular (at least for now).]({{image_dir}}/weights1.png){: standalone }
 
 It's also worth mentioning that You can hardcode some values into scripts and then change them without recompiling. It makes managing the configuration through separate folders very easy as You can just copy the scripts and switch the values.
 
@@ -207,8 +217,7 @@ It's also worth mentioning that You can hardcode some values into scripts and th
 
 I highly recommend to write separate scheduling script. Some basic functionality should include f.e. ability to specify for how long to train (both by number of epochs and by duration), stop/resume, logs and backup management. Logging itself can be implemented as redirecting from sysout to file (although this solution has a lot of disadvantages).
 
-![Scheduling]({{ site.url }}/images/2015-08-19-neural-networks-implementation-tips/scheduling.jpg)
-*Scheduling script example*
+![Scheduling script example]({{image_dir}}/scheduling.jpg){: standalone }
 
 
 
@@ -236,8 +245,7 @@ Also, [AWS](https://aws.amazon.com/ec2/instance-types/#gpu "GPU instances on AWS
 
 One of the most important thing about profiling code is IMO to make it simple. Having to configure and run external program is often too much hassle. Sure, to closely investigate a bottleneck some additional information may be required, but a lot can be shown just from comparing 2 timer values. Writing separate profiling script makes it also easy to generate reports.
 
-![Basic profiling]({{ site.url }}/images/2015-08-19-neural-networks-implementation-tips/profile_normal.jpg)
-*Quick and easy profiling*
+![Quick and easy profiling]({{image_dir}}/profile_normal.jpg){: standalone }
 
 
 
@@ -262,11 +270,12 @@ if (is_profiling()) {
   execution_time[kernel_id] += end - start;
 }
 {% endhighlight %}
-*After each kernel wait for it to finish and then retrieve the timestamps*
+<figcaption>
+After each kernel wait for it to finish and then retrieve the timestamps
+</figcaption>
 
 
-![Simple OpenCL profiling]({{ site.url }}/images/2015-08-19-neural-networks-implementation-tips/profile_kernels.jpg)
-*Time spent per kernel. Compile-time macros are also provided*
+![Time spent per kernel. Compile-time macros are also provided]({{image_dir}}/profile_kernels.jpg){: standalone }
 
 
 
@@ -292,7 +301,10 @@ James Price has written an excellent article on [getting nvvp to display OpenCL 
   memtransfersize
 > bin\cnn.exe train dry -c data\config.json --epochs 100 -i data\train_samples36
 {% endhighlight %}
-*You can create script from this*
+<figcaption>
+You can create script from this
+</figcaption>
+
 
 NVVP logs **every single kernel invocation**, so try to provide representative, yet short name for every kernel function.
 
@@ -304,9 +316,7 @@ Available information includes f.e.:
 * memory transfers size & bandwidth between host and GPU
 * detailed timeline that marks start and end of each event
 
-![NVVP in action]({{ site.url }}/images/2015-08-19-neural-networks-implementation-tips/nvvp.jpg)
-*Nvidia Visual Profiler timeline view. On the left side we can see images being loaded to VRAM. Single epoch has been marked - it took 1.156s*
-
+![Nvidia Visual Profiler timeline view. On the left side we can see images being loaded to VRAM. Single epoch has been marked - it took 1.156s.]({{image_dir}}/nvvp.jpg){: standalone }
 
 Use [CodeXL](http://developer.amd.com/tools-and-sdks/opencl-zone/codexl/ "AMD CodeXL") for AMD devices.
 
@@ -343,18 +353,19 @@ And by hardcode I mean [provide them at compile time](https://www.khronos.org/re
 * better compiler optimizations (f.e. comparisons with constants)
 
 {% highlight c linenos %}
-clBuildProgram(__cl_program, 1, __device_id, "-D NUM_1=5 -D NUM_2=6", nullptr, nullptr);
-{% endhighlight %}
-*Compile with macros*
-
-{% highlight c linenos %}
+// kernel with NUM_1, NUM_2 compile time constants
 __kernel void main(...){
   float arr[NUM_1]; // this is legal
   if(NUM_1 > NUM_2) // essentially: 5 > 6
   ...
 }
+
+// compile with:
+clBuildProgram(__cl_program, 1, __device_id, "-D NUM_1=5 -D NUM_2=6", nullptr, nullptr);
 {% endhighlight %}
-*Example kernel that uses provided macros*
+<figcaption>
+*Providing additional constants during compile time*
+</figcaption>
 
 
 
@@ -372,7 +383,9 @@ There is an interesting publication ([J. Filipovič, M. Madzin, J. Fousek, L. Ma
   output_buffer[idx] = output_val;
 #endif
 {% endhighlight %}
-*Inlined activation function*
+<figcaption>
+Inlined activation function
+</figcaption>
 
 Another case is to merge calculations of deltas and derivatives of activation function.
 
@@ -393,12 +406,12 @@ Sometimes You can create more efficient kernel when working under some assumptio
 
 Memory access works in a different way on GPU than on CPU. That means that some preconceptions should be checked again. Some of the materials that I've found useful:
 
-* AMD Accelerated Parallel Processing OpenCL Programming Guide (also other materials on [AMD APP SDK info page](http://developer.amd.com/tools-and-sdks/opencl-zone/amd-accelerated-parallel-processing-app-sdk/) )
-* OpenCL Programming Guide for the CUDA Architecture
-* Paulius Micikevicius - Analysis-Driven Optimization and also Fundamental Optimizations
-* Mark Harris - Optimizing Parallel Reduction in CUDA
+* [AMD Accelerated Parallel Processing OpenCL Programming Guide](http://developer.amd.com/wordpress/media/2013/07/AMD_Accelerated_Parallel_Processing_OpenCL_Programming_Guide-rev-2.7.pdf) (also other materials on [AMD APP SDK info page](http://developer.amd.com/tools-and-sdks/opencl-zone/amd-accelerated-parallel-processing-app-sdk/) )
+* [OpenCL Programming Guide for the CUDA Architecture](http://developer.download.nvidia.com/compute/DevZone/docs/html/OpenCL/doc/OpenCL_Programming_Guide.pdf)
+* Paulius Micikevicius - [Analysis-Driven Optimization](https://www.nvidia.com/content/GTC-2010/pdfs/2012_GTC2010.pdf) and [Fundamental Optimizations](https://www.nvidia.com/content/PDF/sc_2010/CUDA_Tutorial/SC10_Fundamental_Optimizations.pdf)
+* [Mark Harris - Optimizing Parallel Reduction in CUDA](https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf)
 * [Why aren't there bank conflicts in global memory for Cuda/OpenCL](http://stackoverflow.com/questions/3843032/why-arent-there-bank-conflicts-in-global-memory-for-cuda-opencl)
-* https://www.youtube.com/watch?v=8Uxe8umUDYA
+* [CS224D Guest Lecture: Elliot English](https://www.youtube.com/watch?v=8Uxe8umUDYA)
 
 Of course the road from theory to application is quite long.
 
@@ -411,6 +424,6 @@ Of course the road from theory to application is quite long.
 Implementing neural network is quite long process. It is also an interesting learning experience. It does not teach You everything there is about machine learning, but gives a solid understanding how these things work.
 Sure there are always things that can be implemented better and another milliseconds to shave. I've also seen a couple of interesting publications about FFT in convolutions. But right now I don't think I'm going to experiment any further - the goal of this project was already achieved.
 
-![Compile errors]({{ site.url }}/images/2015-08-19-neural-networks-implementation-tips/clBuildProgram_error.png)
+![Compile errors]({{image_dir}}/clBuildProgram_error.png)
 
 

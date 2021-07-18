@@ -1,9 +1,16 @@
 ---
 layout: default
-show_home_button: true
-display_post: true
 ---
 
-<article class="post">
-    {{ content }}
-</article>
+<section class="post-meta">
+  <h1 class="content-title">{{ page.title }}</h1>
+  <span class="content-subtitle">
+    {{ page.date | date_to_string}}
+  </span>
+
+  <!-- TODO tags -->
+</section>
+
+<div class="markdown">
+  {{ content }}
+</div>

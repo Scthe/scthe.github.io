@@ -1,7 +1,9 @@
-.post {
-
-  ul, ol, dl {
-    @include margin-top-only($post-list-margin-top);
+.markdown {
+  ul,
+  ol,
+  dl {
+    @extend %post-margins;
+    @include margin-v($post-list-margin-top, 0);
   }
 
   li {
@@ -13,12 +15,11 @@
     }
   }
 
-  ul > li{
+  ul > li {
     list-style-type: disc;
   }
 
-  ol > li{
+  ol > li {
     list-style-type: decimal;
   }
-
 }

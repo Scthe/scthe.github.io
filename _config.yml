@@ -4,23 +4,21 @@ title: "Scthe's blog"
 description: "Mostly some programming stuff"
 
 markdown: kramdown
-highlighter: pygments
+highlighter: rouge
 
 kramdown:
   input: GFM
-  syntax_highlighter: pygments
-
+  syntax_highlighter: rouge
+  parse_block_html: true
 
 defaults:
-  -
-    scope:
+  - scope:
       path: ""
       type: "posts"
     values:
       layout: "post"
       author: "Scthe"
-  -
-    scope:
+  - scope:
       path: ""
       type: "drafts"
     values:
@@ -32,3 +30,4 @@ exclude:
   - "CNAME"
   - "Gemfile"
   - "Gemfile.lock"
+  - "references"

@@ -2,9 +2,10 @@
 title: "Image based lighting notes"
 excerpt: "Image based lighting - equations + explanation"
 date: 2018-06-17 12:00:00
+tags: Rendering PBR
 ---
 
-{% capture image_dir %}{{ site.url }}/images/2018-06-17-image-based-lighting{% endcapture %}
+{% capture image_dir %}/assets/2018-06-17-image-based-lighting{% endcapture %}
 
 
 
@@ -129,7 +130,9 @@ as the rest of the equation is constant and can be provided during runtime. We w
     # store result
     store(irradianceCubemap, texel, irradiance / numSamples)
 {% endhighlight %}
-*Generating irradiance map*
+<figcaption>
+Generating irradiance map
+</figcaption>
 
 > You may have noticed that we are effectively running convolution. One of the most important decisions is implementation of getSampleOffset. It could range from random function, pseudorandom like Halton sequence or just iterating using constant deltas.
 
@@ -138,12 +141,18 @@ The result is then read during run time:
 {% highlight python linenos %}
   diffuseColor = albedo / Math.PI * texture(irradiance, fragmentNormal)
 {% endhighlight %}
-*Reading precomputed irradiance for normal in pixel shader*
+<figcaption>
+Reading precomputed irradiance for normal in pixel shader
+</figcaption>
 
 All that was possible because $$ k_d \frac {c} {\pi} $$ is a constant, not depending on position of the observer (which we does not know during precomputation).
 
-![Example irradiance]({{image_dir}}/irradiance.jpg)
-*Example radiance cubemap (left) and corresponding irradiance cubemap (right). Image from [learnopengl.com](https://learnopengl.com/PBR/IBL/Specular-IBL) under CC BY 4.0*
+<figure>
+  <img src="{{image_dir}}/irradiance.jpg" alt=""/>
+  <figcaption>
+  Example radiance cubemap (left) and corresponding irradiance cubemap (right). Image from [learnopengl.com](https://learnopengl.com/PBR/IBL/Specular-IBL) under CC BY 4.0
+  </figcaption>
+</figure>
 
 {::comment} TODO resize image {:/comment}
 
@@ -189,8 +198,7 @@ $$
 One thing that should be noted is that p does give more importance to vectors closer to the normal vector. Since the next steps can be complicated, I've allowed myself to copy them from [2]. You may notice slight difference in regards to the notation, but - for the most part - it should be easy to follow.
 
 
-![SplitSum derivation]({{image_dir}}/dice--split-sum-aprox.jpg)
-*Derivation of split-sum approximation, per [2]*
+![Derivation of split-sum approximation, per [2]]({{image_dir}}/dice--split-sum-aprox.jpg){: standalone }
 
 
 The only step that should require explanation is the last one. Firstly:
@@ -223,8 +231,7 @@ $$ E[a_i b_i] = E[a_i] E[b_i]$$
 See [3] for more details. Back to our $$ L_s(v)$$, we are going to tackle both expressions separately (and in result receive another 2 precomputed textures). But before that, let's make another approximation. When discussing difference between [diffuse and specular](# Framework for physically-plausible BRDF), we noted that diffuse component does not depend on viewing angle, while specular does. This makes calculation of $$L_i(l_k)$$ and F, G quite problematic. Indeed, [1] suggests just assuming v=n. This means that if we look at the surface lit by IBL, we would not get the strong reflection we would expect at grazing angles.
 
 
-![UE4 IBL approximation]({{image_dir}}/ue4 - aprox.jpg)
-*Comparison of IBL specular approximation. Original source: [1], see for better resolution*
+![Comparison of IBL specular approximation. Original source: [1], see for better resolution]({{image_dir}}/ue4 - aprox.jpg){: standalone }
 
 
 
@@ -285,8 +292,12 @@ Having moved $$ f_0 $$ before sum sign, we notice that:
 With 2 parameters (roughness, $$(l \cdot n)$$) and 2 outputs (a, b) we can create look-up texture (LUT). According to [2] precision can be a problem, and R16G16 is recommended.
 
 
-![environment brdf lut]({{image_dir}}/env_brdf_texture.png)
-*Red channel is value of a, green channel is value of b. $$ L_{s_{DFG}} = lut.r * f_0 + lut.g $$*
+<figure>
+  <img src="{{image_dir}}/env_brdf_texture.png" alt=""/>
+  <figcaption>
+Red channel is value of a, green channel is value of b. $$ L_{s_{DFG}} = lut.r * f_0 + lut.g $$
+  </figcaption>
+</figure>
 
 
 What's best, since we assumed $$ L_i({l_k}) = 1$$, this LUT **does not depend on the light nor the point**. In other words, You only need one in entire application.
@@ -307,8 +318,12 @@ $$
 
 You may have noticed that if L describes incoming light, this equation is actually very similar to irradiance map that we calculated for diffuse, but it is now known as **pre-filtered environment map**. This time we take roughness into considerations: low roughness means sharp, detailed reflections, while high roughness means blurry reflections. As a result, we will create special cubemaps for each roughness (or as many as You would like). It's common to store them in mipmaps, where mipmaps of smaller size contain progressively more blurred values. Once again, we can use importance sampling wrt. GGX distribution to speed up the processing.
 
-![Example pre-filtered env map]({{image_dir}}/ibl_prefilter_map.png)
-*Example pre-filtered environment map. Image from [learnopengl.com](https://learnopengl.com/PBR/IBL/Specular-IBL) under CC BY 4.0*
+<figure>
+  <img src="{{image_dir}}/ibl_prefilter_map.png" alt=""/>
+  <figcaption>
+  Example pre-filtered environment map. Image from [learnopengl.com](https://learnopengl.com/PBR/IBL/Specular-IBL) under CC BY 4.0
+  </figcaption>
+</figure>
 
 You need to create separate pre-filtered environment map for each probe in the scene.
 

@@ -1,131 +1,55 @@
-function exists (a) {
-  var args = Array.prototype.slice.call(arguments),
-    ok = args.length > 0;
-
-  forEach(args, function (_, item) {
-    ok = ok && e(item);
-  });
-
-  return ok;
-
-  function e (item) {
-    return item !== undefined && item !== null;
-  }
-}
-
-function forEach (arr, cb) {
-  for (var i = 0; i < arr.length; i++) {
-    cb(i, arr[i]);
-  }
-}
-
-function addListener (evType, el, cb) {
-  if (!exists(el)) {
-    return;
-  }
-
-  el['on' + evType] = cb;
-}
+///////////////////
+// HEADER ANCHORS
 
 /** anchors for post's headings */
-function addAnchorsForAllHeadings (headingSelectors) {
+function addAnchorsForAllHeadings(headingSelectors) {
   anchors.options = {
-      placement: 'right',
-      visible: 'always',
-      icon: '§',
-      class: 'content__anchor'
+    placement: "right",
+    visible: "always",
+    icon: "§",
+    class: "content__anchor",
   };
 
-  forEach(headingSelectors, function (_, selector) {
+  headingSelectors.forEach((selector) => {
     anchors.add(selector);
   });
 }
 
-function createModalController (classes) {
-  var modalEl = document.getElementsByClassName(classes.modal)[0],
-      modalContentEl = document.getElementsByClassName(classes.content)[0],
-      closeBtnEl = document.getElementsByClassName(classes.closeBtn)[0],
-      overlayEl = document.getElementsByClassName(classes.overlay)[0];
+///////////////////
+// THEME
 
-  if (!exists(modalEl, modalContentEl, closeBtnEl, overlayEl)) {
-    console.error('Could not find modal element, modals will not work');
-    return;
-  }
+const themeToggle = document.querySelector("#theme-toggle");
 
-  addListener('click', closeBtnEl, hide);
-  addListener('click', overlayEl, hide);
+themeToggle.addEventListener("click", () => {
+  document.body.classList.contains("light-theme")
+    ? enableDarkMode()
+    : enableLightMode();
+});
 
-  return {
-    show: show,
-    hide: hide,
-    replaceContent: replaceContent
-  };
+function enableDarkMode() {
+  document.body.classList.remove("light-theme");
+  document.body.classList.add("dark-theme");
+  themeToggle.setAttribute("aria-label", "Switch to light theme");
+}
 
-  function show () {
-    modalEl.style.display = "block";
-  }
+function enableLightMode() {
+  document.body.classList.remove("dark-theme");
+  document.body.classList.add("light-theme");
+  themeToggle.setAttribute("aria-label", "Switch to dark theme");
+}
 
-  function hide () {
-    modalEl.style.display = "none";
-  }
-
-  function replaceContent (newEl) {
-    if (!exists(newEl)) {
-      console.error('Could not replace modal content with: ', newEl);
-      return;
-    }
-
-    modalContentEl.innerHTML = '';
-    modalContentEl.appendChild(newEl);
+function setThemePreference() {
+  // TODO store in localstorage
+  if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    enableDarkMode();
+  } else {
+    enableLightMode();
   }
 }
 
-function addImageDialogHandlers (modalController, postImagesSelector) {
-  var ATTRS_TO_COPY = ['alt', 'src', 'class'];
-  var MODAL_IMAGE_CLASSNAME = 'modal__content__image';
-
-  var postImageEls = document.querySelectorAll(postImagesSelector);
-  forEach(postImageEls, function (_, imgEl) {
-    addListener('click', imgEl, createImageModalCallback(imgEl));
-  });
-
-  function createImageModalCallback (imgEl) {
-    var modalContentImg = copyImgEl(imgEl);
-
-    return function () {
-      modalController.replaceContent(modalContentImg);
-      modalController.show();
-    }
-  }
-
-  function copyImgEl (srcEl) {
-    var modalContentImg = document.createElement('img');
-
-    forEach(ATTRS_TO_COPY, function (_, attrName) {
-      var attrVal = srcEl.getAttribute(attrName) || srcEl[attrName];
-      modalContentImg.setAttribute(attrName, attrVal);
-    });
-
-    modalContentImg.className += ' ' + MODAL_IMAGE_CLASSNAME;
-
-    return modalContentImg;
-  }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  addAnchorsForAllHeadings([
-    '.post h2',
-    '.post h3'
-  ]);
-
-  var modalController = createModalController({
-    modal: 'modal__portal',
-    content: 'modal__content',
-    closeBtn: 'modal__close-btn',
-    overlay: 'modal__overlay'
-  });
-
-  if (modalController) {
-    addImageDialogHandlers(modalController, '.post img');
-  }
+///////////////////
+///////////////////
+document.addEventListener("DOMContentLoaded", function () {
+  addAnchorsForAllHeadings([".markdown h2", ".markdown h3"]);
+  setThemePreference();
 });

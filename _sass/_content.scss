@@ -20,9 +20,9 @@
 }
 
 .content__inner {
-  background-color: $background-content;
+  background-color: var(--background-content);
   border-radius: 24px;
-  box-shadow: 0 4px 8px 4px $shadow-content;
+  box-shadow: 0 4px 8px 4px var(--shadow-content);
   padding: $content-padding-vert 0;
 }
 
@@ -35,7 +35,7 @@
 
 .content-subtitle {
   font-size: 1em;
-  color: $color-subtitle;
+  color: var(--color-subtitle);
   text-align: center;
   text-transform: uppercase;
   display: block;
@@ -54,7 +54,13 @@
   }
   .medium-zoom-image--opened {
     z-index: $z-index-image-popup + 10;
-    filter: brightness(0.8) contrast(1.2);
-    background-color: darken($background-content, 20%);
+    background-color: var(--background-content);
+  }
+}
+
+@include dark-mode {
+  .medium-zoom-image--opened {
+    filter: $dark-mode-image-filter;
+    background-color: var(--background-image-dark);
   }
 }

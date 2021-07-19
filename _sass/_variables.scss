@@ -31,14 +31,7 @@ $post-list-item-margin-top: 0.7em;
 $post-list-left-inset: 0;
 
 // basic colors
-// $background-body: #dadada;
-$background-content: #fafafa;
-$shadow-content: #385f663e;
-$color-base: #19282b;
-$color-subtitle: #656565;
-$color-strong: #303030;
 $color-accent: #009cb5;
-$color-selection: #{$color-accent}80;
 $link-highlight: #{$color-accent}80;
 $color-hero-1: #add5f5;
 $color-hero-2: #47a6d8;
@@ -58,3 +51,5 @@ $content-margin-top: 140px;
 $content-margin-bottom: 100px;
 $content-desktop-offset-from-center: 80px;
 $content-padding-vert: 2.5rem;
+$dark-mode-image-filter: brightness(0.8) contrast(1.2);
+$post_items-spacing: 4.5rem;

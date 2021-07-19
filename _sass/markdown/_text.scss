@@ -1,5 +1,4 @@
 $blockquote-left-border: #ddd;
-$color-blockquote: #666;
 
 .markdown {
   // paragraph text
@@ -21,7 +20,7 @@ $color-blockquote: #666;
 
   // bold: **text**
   strong {
-    color: $color-strong;
+    color: var(--color-strong);
     font-weight: $font-weight-bold;
   }
 
@@ -35,7 +34,7 @@ $color-blockquote: #666;
     @extend %post-margins;
     @include margin-v($post-element-margin-top, 0);
     font-style: italic;
-    color: $color-blockquote;
+    color: var(--color-subtitle);
     border-left: 5px solid $blockquote-left-border;
     letter-spacing: 0.5px; // hmm.....
 
@@ -57,5 +56,12 @@ $color-blockquote: #666;
     font-size: $line-height-base * 3;
     line-height: $line-height-base * 3;
     padding: 4px 10px 0 3px;
+  }
+}
+
+@include dark-mode {
+  .markdown p > code,
+  .markdown p > blockquote > code {
+    color: var(--color-base);
   }
 }

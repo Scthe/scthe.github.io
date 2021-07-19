@@ -7,10 +7,28 @@
 //
 html,
 body {
+  --background-content: #fafafa;
+  --shadow-content: #385f663e;
+  --color-base: #19282b;
+  --color-subtitle: #656565;
+  --color-strong: #303030;
+  --color-selection: #{$color-accent}80;
+
   background-color: #dadada;
 }
 
 body.dark-theme {
+  --background-content: #353535;
+  --shadow-content: transparent; // dark shadow on dark background? Don't bother..
+  --color-base: #f8fafb;
+  --color-subtitle: #b3b3b3;
+  --color-strong: #a6a6a6;
+  // TODO anchor links
+
+  // some images have black lines on transparent backgrounds,
+  // we need something with good contrast, but still dark
+  --background-image-dark: #{darken(#fafafa, 15%)};
+
   background-color: #1f1f1f;
 }
 
@@ -21,7 +39,7 @@ body.dark-theme {
 }
 
 body {
-  color: $color-base;
+  color: var(--color-base);
   line-height: $line-height-base;
   font-family: $font-base;
   font-weight: $font-weight-normal;
@@ -70,14 +88,14 @@ p {
 
 a {
   @extend %link-reset;
-  color: $color-base;
+  color: var(--color-base);
 }
 
 ::-moz-selection {
-  background: $color-selection;
+  background: var(--color-selection);
 }
 ::selection {
-  background: $color-selection;
+  background: var(--color-selection);
 }
 
 //

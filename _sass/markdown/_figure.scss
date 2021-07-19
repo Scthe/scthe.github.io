@@ -25,12 +25,12 @@
   display: block;
   margin: 0 auto 0;
   max-width: 100%;
-  background-color: $background-content;
+  background-color: var(--background-content);
 }
 @include dark-mode {
   .markdown img {
-    filter: brightness(0.8) contrast(1.2);
-    background-color: darken($background-content, 20%);
+    filter: $dark-mode-image-filter;
+    background-color: var(--background-image-dark);
   }
 }
 

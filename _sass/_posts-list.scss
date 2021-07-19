@@ -1,5 +1,3 @@
-$post_items-spacing: 3.5rem;
-
 .posts_list-meta {
   @extend %post-margins;
 }
@@ -45,7 +43,7 @@ $post_items-spacing: 3.5rem;
 }
 
 .post_item-date {
-  color: $color-subtitle;
+  color: var(--color-subtitle);
   text-transform: uppercase;
   font-size: inherit;
   line-height: inherit;

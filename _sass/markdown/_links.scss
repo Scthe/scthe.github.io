@@ -9,15 +9,24 @@
 
 // anchors for each paragraph added from js
 $color-anchor-js: #cccccc;
-$color-anchor-js-hover: #a7a7a7;
+$color-anchor-js-dark: #a2a2a2;
 
 .markdown .anchorjs-link {
-  background-color: transparent !important;
-  text-decoration: none !important;
-  color: $color-anchor-js !important;
+  background-color: transparent;
+  text-decoration: none;
   cursor: pointer;
 
+  color: $color-anchor-js;
   &:hover {
-    color: $color-anchor-js-hover !important;
+    color: $color-anchor-js-dark;
+  }
+}
+
+@include dark-mode {
+  .markdown .anchorjs-link {
+    color: $color-anchor-js-dark;
+    &:hover {
+      color: $color-anchor-js;
+    }
   }
 }

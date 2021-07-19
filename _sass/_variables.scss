@@ -1,4 +1,5 @@
 // text: font sizes
+$font-size-base: 16px;
 $font-size-h1: 3rem;
 $font-size-h2: 2rem;
 $font-size-h3: 1.2rem;
@@ -9,38 +10,51 @@ $font-size-blockquote: 1.25rem;
 $font-size-image-caption: 0.85rem;
 
 // text: line-height
-$line-height-base: 1.8;
-$line-height-heading: 1.3;
+$line-height-base: 2rem;
+$line-height-heading: 1.3rem;
 
 // text: font-weight
 $font-weight-bold: 700;
-$font-weight-normal: 400;
+$font-weight-normal: 300;
 
 // text: fonts
-$font-base: "Bitter", serif;
+$font-base: "Merriweather Sans", sans-serif;
 $font-heading: "Open Sans", sans-serif;
 $font-code: "Ubuntu Mono", monospace;
 
 // text: margins
-$post-padding-h: 50px;
-$post-heading-margin-top: 2.5em;
-$post-paragraph-margin-top: 30px;
-$post-figure-margin-top: 50px;
-$post-figure-caption-margin-top: 10px;
-$post-list-margin-top: 20px;
-$post-list-item-margin-top: 9px;
+$post-padding-h: 50px; // on desktop
+$post-element-margin-top: 2.5em;
+$post-figure-caption-margin-top: 0.8em;
+$post-list-margin-top: 1.25em;
+$post-list-item-margin-top: 0.7em;
 $post-list-left-inset: 0;
 
 // basic colors
-$color-background-base: #dadada;
+// $background-body: #dadada;
+$background-content: #fafafa;
+$shadow-content: #385f663e;
 $color-base: #19282b;
-$color-accent: #517ca2;
-$selection-color: lighten($color-accent, 40%);
-$link-highlight: #009cb580;
+$color-subtitle: #656565;
+$color-strong: #303030;
+$color-accent: #009cb5;
+$color-selection: #{$color-accent}80;
+$link-highlight: #{$color-accent}80;
+$color-hero-1: #add5f5;
+$color-hero-2: #47a6d8;
 
 // media queries
 $sm-screen-width: 25rem; /* 400px */
 $md-screen-width: 47.5rem; /* 760px */
 $lg-screen-width: 60rem; /* 900px */
 
-// $text-column-width: 40em; /* should hold ~66 characters-per-line*/
+// z-index
+$z-index-top-nav: 50;
+$z-index-image-popup: 60;
+
+// misc
+$hero-height: 400px;
+$content-margin-top: 140px;
+$content-margin-bottom: 100px;
+$content-desktop-offset-from-center: 80px;
+$content-padding-vert: 2.5rem;

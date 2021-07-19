@@ -10,7 +10,7 @@
 }
 
 .markdown figure {
-  @include margin-v($post-heading-margin-top, 0);
+  @include margin-v($post-element-margin-top, 0);
   margin-left: 0;
   margin-right: 0;
 
@@ -25,12 +25,18 @@
   display: block;
   margin: 0 auto 0;
   max-width: 100%;
-  box-shadow: 0 0 4 0 #487880;
+  background-color: $background-content;
+}
+@include dark-mode {
+  .markdown img {
+    filter: brightness(0.8) contrast(1.2);
+    background-color: darken($background-content, 20%);
+  }
 }
 
 // code
 .markdown .highlight {
-  margin: $post-figure-margin-top 0 0;
+  margin: $post-element-margin-top 0 0;
 
   & > pre {
     margin-top: 0;

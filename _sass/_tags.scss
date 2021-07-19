@@ -1,0 +1,37 @@
+// Use https://css.land/lch/ based on $link-highlight color
+$tags: (
+  "rendering": rgb(2.76%, 62.14%, 60.66%),
+  "pbr": rgb(32.98%, 61.1%, 41.97%),
+  "artificial_intelligence": rgb(61.01%, 55.07%, 29.15%),
+  "gpu": rgb(57.37%, 52.1%, 78.42%),
+  "project": rgb(78.53%, 44.86%, 55.97%),
+  "jekyll": transparent,
+  "test": transparent,
+);
+
+@each $tagName, $tagColor in $tags {
+  [data-tag="#{$tagName}"] {
+    @include highlighter(#{$tagColor}80);
+  }
+}
+
+.tags_list {
+  margin-left: 8px;
+  padding: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.tag_item {
+  display: inline-block;
+}
+
+.tag_item-name {
+  cursor: pointer;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.tag_item:last-child .tag_item-comma {
+  display: none;
+}

@@ -1,7 +1,8 @@
 ---
 title: "Neural networks: implementation tips"
-excerpt: "Some tips helpful for those that implement neural networks from scratch"
+excerpt: "Tips for implementing neural networks from scratch. From identifying use cases and data generation to implementation, testing, debugging and profiling. Separate section dedicated to GPUs and unique problems for massively parallel devices."
 date: 2015-08-23 12:00:00
+tags: ['Artificial intelligence', 'GPU', 'Project']
 ---
 
 {% capture image_dir %}/assets/2015-08-19-neural-networks-implementation-tips{% endcapture %}
@@ -86,7 +87,7 @@ Batches (each kernel operates on multiple images):
 * hard to debug
 * makes it easy to split epoch into mini-batches, which lowers the memory usage (more on that later)
 
-When I was converting from single-sample to batch approach I got it wrong the first time. There were quite a lot of interface changes and I made too many changes at once. Second time, when I knew which changes needed to be made it was quite easy. If You find yourself in similar position I recommend first tuning the API, then to switch the memory layout and only after that to execute kernels with all images at once. Turns out the last step can be done quite easily: You just need to add additional work dimension and in global_work_size set it to number of images and to 1 in local_work_size. Other way is to add loop inside the kernels. This is probably even faster, since for multiple images You only load weights once.
+When I was converting from single-sample to batch approach I got it wrong the first time. There were quite a lot of interface changes and I made too many changes at once. Second time, when I knew which changes needed to be made it was quite easy. If You find yourself in similar position I recommend first tuning the API, then to switch the memory layout and only after that to execute kernels with all images at once. Turns out the last step can be done quite easily: You just need to add additional work dimension and in `global_work_size` set it to number of images and to 1 in `local_work_size`. Other way is to add loop inside the kernels. This is probably even faster, since for multiple images You only load weights once.
 
 {% highlight c linenos %}
 uint sample_id = get_global_id(2);
@@ -213,7 +214,7 @@ List of scripts that I've used (feel free to reuse them):
 
 It's also worth mentioning that You can hardcode some values into scripts and then change them without recompiling. It makes managing the configuration through separate folders very easy as You can just copy the scripts and switch the values.
 
-> Did You know that copying file in python is one-liner (*shutil.copy2(src_file_path, dest_file_path)*)? Use it as simple backup system.
+> Did You know that copying file in python is one-liner (`shutil.copy2(src_file_path, dest_file_path)`)? Use it as simple backup system.
 
 I highly recommend to write separate scheduling script. Some basic functionality should include f.e. ability to specify for how long to train (both by number of epochs and by duration), stop/resume, logs and backup management. Logging itself can be implemented as redirecting from sysout to file (although this solution has a lot of disadvantages).
 

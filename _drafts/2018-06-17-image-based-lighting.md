@@ -2,7 +2,7 @@
 title: "Image based lighting notes"
 excerpt: "Image based lighting - equations + explanation"
 date: 2018-06-17 12:00:00
-tags: Rendering PBR
+tags: ['Rendering', 'PBR']
 ---
 
 {% capture image_dir %}/assets/2018-06-17-image-based-lighting{% endcapture %}

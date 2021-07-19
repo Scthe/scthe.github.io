@@ -8,7 +8,13 @@ layout: default
     {{ page.date | date_to_string}}
   </span>
 
-  <!-- TODO tags -->
+  {% comment %}
+  <div class="content-post-tags">
+    <span>In:</span>
+    {% assign tags2 = page.tags %}
+    {% include tags_list.html %}
+  </div>
+  {% endcomment %}
 </section>
 
 <div class="markdown">

@@ -1,22 +1,20 @@
 ---
 title: "Backpropagation notes"
-excerpt: "Electronic version of notes that I took during super-resolution CNN project"
+excerpt: "My notes containing neural network backpropagation equations. From chain rule to cost function, gradient descent and deltas. Complete with Convolutional Neural Networks as used for images."
 date: 2015-08-30 12:00:00
+tags: ['Artificial intelligence']
 ---
 
 {% capture image_dir %}/assets/2015-08-30-backpropagation-notes{% endcapture %}
 
 
-This is an electronic version of my notes created during [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution) project (read more at: ["Neural networks: implementation tips"](/2015/08/23/neural-networks-implementation-tips.html)). Feel free to read it. You don't even have to deal with my sloppy handwriting.
-
-Also be warned that I'm not going to explain 'what' and 'how'. My only goal is to show why the equations have presented forms.
-
+This is an electronic version of my notes created during [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution) project. You can read more at: ["Neural networks: implementation tips"](/2015/08/23/neural-networks-implementation-tips.html).
 
 
 
 ## Chain rule
 
-> You may not want to skip this part. Whole article is just application of this rule and following graphic representation helps a lot.
+> Do not skip this part. Whole article is just application of this rule and following graphic representation helps a lot.
 
 ![Chain rule as applied to functions]({{image_dir}}/chain-rule2.png){: standalone }
 

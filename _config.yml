@@ -11,6 +11,9 @@ kramdown:
   syntax_highlighter: rouge
   parse_block_html: true
 
+sass:
+  style: compressed
+
 defaults:
   - scope:
       path: ""
@@ -31,3 +34,4 @@ exclude:
   - "Gemfile"
   - "Gemfile.lock"
   - "references"
+  - "node_modules"

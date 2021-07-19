@@ -4,8 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <!-- TODO -->
-  <meta name="theme-color" content="#CB1482" />
+  <meta name="theme-color" content="#fafafa" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
 
@@ -21,8 +20,9 @@
   <meta name="description" content="{{ site.description }}">
   {% endif %}
 
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
   <!-- Open Graph -->
   <meta property="og:locale" content="en_US">
@@ -35,15 +35,26 @@
   <meta property="og:site_name" content="{{ site.title }}">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="{{ site.baseurl }}/css/main.css">
-
-  <!-- Fonts -->
-  <link
-    href='//fonts.googleapis.com/css?family=Bitter:400,700,400italic|Open+Sans:400italic,600italic,400,600|Ubuntu+Mono:400,700,400italic'
-    rel='stylesheet' type='text/css'>
+  <!-- beautify ignore:start -->
+  {% capture styles %}
+  {% include main.scss %}
+  {% endcapture %}
+  <style>
+    {{ styles | scssify }}
+  </style>
+  <!-- beautify ignore:end -->
 </head>
 
 <body>
+  <!-- DARK MODE -->
+  <script>
+    let isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const storageThemeColor = localStorage.getItem("app-theme");
+    if (storageThemeColor === "dark-theme") {
+      isLight = false;
+    }
+    document.body.classList.add(isLight ? "light-theme" : "dark-theme");
+  </script>
 
   <div class="hero-wrapper">
     <div class="hero-image"></div>
@@ -58,10 +69,12 @@
   </main>
 
   <!-- Scripts -->
+  <script src="{{ site.baseurl }}/assets/scripts/anchor-js/anchor.min.js"></script>
+  <script src="{{ site.baseurl }}/assets/scripts/medium-zoom/medium-zoom.min.js"></script>
+  <script src="{{ site.baseurl }}/assets/scripts/main.js"></script>
+  <!-- Use CDN as mathjax has many runtime dependencies. Don't even bother.. -->
   <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
   </script>
-  <script src="{{ site.baseurl }}/scripts/anchor.4.3.1.js"></script>
-  <script src="{{ site.baseurl }}/scripts/main.js"></script>
 
   {% if jekyll.environment == "production" %}
   <script>
@@ -77,5 +90,9 @@
   </script>
   {% endif %}
 </body>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,400;0,700;1,400&display=swap"
+  rel="stylesheet">
 
 </html>

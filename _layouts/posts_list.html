@@ -2,26 +2,32 @@
 layout: default
 ---
 
+<section class="post-meta posts_list-meta">
+  <h1 class="content-title">All articles</h1>
+</section>
+
 <div class="posts_list">
-  <ul class="posts_list--inner">
+  <ul class="posts_list-inner">
 
     {% for post in site.posts %}
     <li class="post_item">
       <h2 class="post_item-title">
-        {{ post.title }}
+        <a href="{{ site.baseurl }}{{ post.url }}">
+          {{ post.title }}
+        </a>
       </h2>
 
       <div class="post_item-meta_row">
-        <h4 class="post_item-date">
+        <h3 class="post_item-date">
           {{ post.date | date_to_string}}
-        </h4>
+        </h3>
 
-        &cdot; In:
-        <ul class="post_item-tags">
-          {% for tag in post.tags %}
-          <li class="post_item-tag">{{ tag }}</li>
-          {% endfor %}
-        </ul>
+        {% comment %}
+        <span class="post_item-dot">&middot;</span> In:
+
+        {% assign tags2 = post.tags %}
+        {% include tags_list.html %}
+        {% endcomment %}
       </div>
 
       <p class="post_item-excerpt">

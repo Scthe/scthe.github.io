@@ -1,16 +1,17 @@
----
----
-
-@import "utils/reset";
-@import "variables";
+@import "../_sass/utils/reset";
+@import "../_sass/variables";
+@import "../_sass/fonts";
 
 //
 // default styles for text
 //
 html,
 body {
-  height: 100%;
-  background-color: $color-background-base;
+  background-color: #dadada;
+}
+
+body.dark-theme {
+  background-color: #1f1f1f;
 }
 
 *,
@@ -23,7 +24,9 @@ body {
   color: $color-base;
   line-height: $line-height-base;
   font-family: $font-base;
+  font-weight: $font-weight-normal;
   overflow-x: hidden;
+  font-size: $font-size-base;
 }
 
 h1 {
@@ -31,7 +34,6 @@ h1 {
   font-size: $font-size-h1;
   line-height: $line-height-heading;
   font-weight: $font-weight-bold;
-  letter-spacing: -1px;
   font-family: $font-heading;
 }
 
@@ -67,27 +69,29 @@ p {
 }
 
 a {
+  @extend %link-reset;
   color: $color-base;
 }
 
 ::-moz-selection {
-  background: $selection-color;
+  background: $color-selection;
 }
 ::selection {
-  background: $selection-color;
+  background: $color-selection;
 }
 
 //
 // utils
 //
-@import "utils/media_query";
-@import "utils/mixins";
+@import "../_sass/utils/media_query";
+@import "../_sass/utils/mixins";
 
 //
 // elements
 //
-@import "code-syntax";
-@import "top_nav";
-@import "content";
-@import "posts-list";
-@import "markdown/index";
+@import "../_sass/code-syntax";
+@import "../_sass/content";
+@import "../_sass/posts-list";
+@import "../_sass/tags";
+@import "../_sass/top_nav";
+@import "../_sass/markdown/index";

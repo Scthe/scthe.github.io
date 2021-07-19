@@ -6,7 +6,8 @@ $color-blockquote: #666;
   & > p {
     @extend %word-wrap;
     @extend %post-margins;
-    @include margin-v($post-heading-margin-top, 0);
+    @include margin-v($post-element-margin-top, 0);
+    letter-spacing: 0.5px; // hmm.....
   }
 
   // h2: major header ##
@@ -15,12 +16,12 @@ $color-blockquote: #666;
   h3,
   h4 {
     @extend %post-margins;
-    @include margin-v($post-heading-margin-top, 0);
+    @include margin-v($post-element-margin-top, 0);
   }
 
   // bold: **text**
   strong {
-    color: #303030;
+    color: $color-strong;
     font-weight: $font-weight-bold;
   }
 
@@ -32,13 +33,29 @@ $color-blockquote: #666;
   // blockquote: '>'
   blockquote {
     @extend %post-margins;
-    @include margin-v($post-heading-margin-top, 0);
+    @include margin-v($post-element-margin-top, 0);
     font-style: italic;
     color: $color-blockquote;
     border-left: 5px solid $blockquote-left-border;
+    letter-spacing: 0.5px; // hmm.....
 
     & > * {
-      margin-left: 10px;
+      margin-left: 0.8em;
     }
+  }
+
+  // inline code
+  p > code,
+  p > blockquote > code {
+    background-color: #009cb580;
+    color: #005866;
+  }
+
+  // drop cap
+  & > p:first-of-type::first-letter {
+    float: left;
+    font-size: $line-height-base * 3;
+    line-height: $line-height-base * 3;
+    padding: 4px 10px 0 3px;
   }
 }

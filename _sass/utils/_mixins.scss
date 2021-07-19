@@ -49,3 +49,9 @@
     background-color: transparent;
   }
 }
+
+@mixin dark-mode {
+  .dark-theme {
+    @content;
+  }
+}

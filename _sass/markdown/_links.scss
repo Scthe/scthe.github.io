@@ -1,32 +1,23 @@
-.markdown {
-  // links in text (not anchor for paragraph)
-  a:not(.anchorjs-link) {
-    @extend %link-reset;
-    @include highlighter($link-highlight);
+// links in text (not anchor for paragraph)
+.markdown a:not(.anchorjs-link) {
+  @include highlighter($link-highlight);
 
-    color: inherit;
-    padding: 0 3px;
-    text-decoration: none;
-  }
+  color: inherit;
+  padding: 0 3px;
+  text-decoration: none;
 }
 
 // anchors for each paragraph added from js
-.markdown .content__anchor {
+$color-anchor-js: #cccccc;
+$color-anchor-js-hover: #a7a7a7;
+
+.markdown .anchorjs-link {
   background-color: transparent !important;
   text-decoration: none !important;
-  color: #e2e2e2 !important;
+  color: $color-anchor-js !important;
+  cursor: pointer;
 
   &:hover {
-    color: #c3c3c3 !important;
-    cursor: pointer;
-  }
-}
-
-// links at the end of article
-// TODO exists?
-.markdown .links-list {
-  a {
-    display: block;
-    @extend %ellipsis;
+    color: $color-anchor-js-hover !important;
   }
 }

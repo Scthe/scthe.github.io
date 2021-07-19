@@ -11,31 +11,30 @@
 .top_nav {
   position: fixed;
   display: inline-block;
-  background: #fafafa;
+  background: $background-content;
   top: 0;
   padding: 7px 16px 7px 30px;
   border-bottom-right-radius: 16px;
   height: 60px;
-  box-shadow: 0 4px 8px 4px #385f663e;
-  z-index: 50;
+  box-shadow: 0 4px 8px 4px $shadow-content;
+  z-index: $z-index-top-nav;
 }
 
 .top_nav-home {
-  @extend %link-reset;
-  font-size: 24px;
+  font-size: 1.5rem;
   display: inline-block;
-  margin-right: 40px;
+  margin-right: 3.75rem;
   font-weight: $font-weight-normal;
 }
 
 %top_nav-icon {
   position: relative;
-  top: 6px;
+  top: 7px;
 }
 
 .top_nav-theme_toggle {
   display: inline-block;
-  margin-right: 16px;
+  margin-right: 1rem;
   @extend %top_nav-icon;
 }
 
@@ -52,65 +51,17 @@
   background: 0;
   border: 0;
   opacity: 0.8;
-  border-radius: 50%;
   position: relative;
-  isolation: isolate;
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: hsla(0, 0%, 50%, 0.2);
-    border-radius: inherit;
-    transform: scale(0);
-    opacity: 0;
-    z-index: -1;
-  }
-
-  &::after {
-    content: attr(aria-label);
-    position: absolute;
-    color: var(--clr-background);
-    background: var(--clr-foreground);
-    width: max-content;
-    font-size: 1.5rem;
-    left: 0;
-    right: 0;
-    top: 95%;
-    margin: 0 auto;
-    padding: 0.5em 1em;
-    border-radius: 0.125em;
-    opacity: 0;
-    transform: scale(0);
-    transform-origin: top;
-    transition: transform 0ms linear 100ms, opacity 100ms linear;
-  }
 
   &:hover,
   &:focus {
     outline: 0;
     opacity: 1;
-    background: hsla(0, 0%, 50%, 0.15);
-  }
-
-  &:hover::after,
-  &:focus-visible::after {
-    opacity: 0.7;
-    transform: scale(1);
-    transition: transform 70ms linear, opacity 70ms linear;
   }
 
   svg {
     fill: var(--clr-foreground);
   }
-}
-
-.light-theme .theme-toggle::before {
-  animation: pulseToLight 650ms ease-out;
-}
-
-.dark-theme .theme-toggle::before {
-  animation: pulseToDark 650ms ease-out;
 }
 
 .toggle-circle {
@@ -129,38 +80,4 @@
 
 .light-theme .toggle-sun {
   transform: rotate(0.5turn);
-}
-
-@keyframes pulseToLight {
-  0% {
-    transform: scale(0);
-    opacity: 0.5;
-  }
-  10% {
-    transform: scale(1);
-  }
-  75% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1);
-  }
-}
-
-@keyframes pulseToDark {
-  0% {
-    transform: scale(0);
-    opacity: 0.5;
-  }
-  10% {
-    transform: scale(1);
-  }
-  75% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1);
-  }
 }

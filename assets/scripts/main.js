@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   addAnchorsForAllHeadings([".markdown h2", ".markdown h3"]);
   imageZoom();
   enrichTags();
+  installThemeToggle();
 });
 
 ///////////////////
@@ -39,24 +40,29 @@ function enrichTags() {
 ///////////////////
 // THEME
 
-const themeToggle = document.querySelector("#theme-toggle");
+function installThemeToggle() {
+  const themeToggle = document.querySelector("#theme-toggle");
+  themeToggle.addEventListener("click", toggleTheme);
+}
 
-themeToggle.addEventListener("click", () => {
+function toggleTheme() {
   document.body.classList.contains("light-theme")
     ? enableDarkMode()
     : enableLightMode();
-});
+}
 
 function enableDarkMode() {
   document.body.classList.remove("light-theme");
   document.body.classList.add("dark-theme");
   localStorage.setItem("app-theme", "dark-theme");
+  setMetaTheme(false);
 }
 
 function enableLightMode() {
   document.body.classList.remove("dark-theme");
   document.body.classList.add("light-theme");
   localStorage.setItem("app-theme", "light-theme");
+  setMetaTheme(true);
 }
 
 ///////////////////

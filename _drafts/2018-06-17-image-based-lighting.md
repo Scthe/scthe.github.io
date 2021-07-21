@@ -14,11 +14,12 @@ tags: ['Rendering', 'PBR']
 
 TODO https://github.com/derkreature/IBLBaker for pseudo-algo
 TODO brdf is always function of direction, this article provides args. randomly
+TODO new syntax for images
 
 
 mathjax:
   newline: \\
-  http://docs.mathjax.org/en/latest/output.html?highlight=linebreak#automatic-line-breaking
+  https://docs.mathjax.org/en/latest/output.html?highlight=linebreak#automatic-line-breaking
 {:/comment}
 
 
@@ -369,7 +370,7 @@ indirectLighting = indirectDiffuse + indirectSpecular
 [2] https://seblagarde.files.wordpress.com/2015/07/course_notes_moving_frostbite_to_pbr_v32.pdf
 [3] https://math.stackexchange.com/questions/337643/split-up-sum-of-products-suma-i-b-i-approx1-n-suma-i-sumb-i-for-uncor
 [4] https://learnopengl.com/PBR/IBL/Specular-IBL
-[5] http://www.crytek.com/cryengine/presentations/lighting-in-crysis-2
+[5] https://www.crytek.com/cryengine/presentations/lighting-in-crysis-2
 
 
 

@@ -1,6 +1,7 @@
 @import "../_sass/utils/reset";
 @import "../_sass/variables";
 @import "../_sass/fonts";
+@import "../_sass/utils/mixins";
 
 //
 // default styles for text
@@ -23,13 +24,12 @@ body.dark-theme {
   --color-base: #f8fafb;
   --color-subtitle: #b3b3b3;
   --color-strong: #a6a6a6;
-  // TODO anchor links
 
   // some images have black lines on transparent backgrounds,
   // we need something with good contrast, but still dark
   --background-image-dark: #{darken(#fafafa, 15%)};
 
-  background-color: #1f1f1f;
+  background-color: #262626;
 }
 
 *,
@@ -39,6 +39,7 @@ body.dark-theme {
 }
 
 body {
+  position: relative;
   color: var(--color-base);
   line-height: $line-height-base;
   font-family: $font-base;
@@ -97,12 +98,6 @@ a {
 ::selection {
   background: var(--color-selection);
 }
-
-//
-// utils
-//
-@import "../_sass/utils/media_query";
-@import "../_sass/utils/mixins";
 
 //
 // elements

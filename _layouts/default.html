@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fafafa" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -48,12 +48,33 @@
 <body>
   <!-- DARK MODE -->
   <script>
+    window.setMetaTheme = setMetaTheme;
+    const THEME_LIGHT_BG = "#fafafa";
+    const THEME_DARK_BG = "#353535";
+
     let isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
     const storageThemeColor = localStorage.getItem("app-theme");
     if (storageThemeColor === "dark-theme") {
       isLight = false;
     }
-    document.body.classList.add(isLight ? "light-theme" : "dark-theme");
+
+    if (isLight) {
+      document.body.classList.add("light-theme");
+      setMetaTheme(true);
+    } else {
+      document.body.classList.add("dark-theme");
+      setMetaTheme(false);
+    }
+
+    function setMetaTheme(isLight) {
+      let el = document.querySelector('meta[name="theme-color"]');
+      if (el == null) {
+        el = document.createElement("meta");
+        el.setAttribute("name", "theme-color");
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", isLight ? THEME_LIGHT_BG : THEME_DARK_BG);
+    }
   </script>
 
   <div class="hero-wrapper">
@@ -90,9 +111,5 @@
   </script>
   {% endif %}
 </body>
-
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,400;0,700;1,400&display=swap"
-  rel="stylesheet">
 
 </html>

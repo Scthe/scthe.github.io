@@ -13,11 +13,6 @@
   @include margin-v($post-element-margin-top, 0);
   margin-left: 0;
   margin-right: 0;
-
-  // images only
-  & > figcaption {
-    @extend %figure-caption;
-  }
 }
 
 // image
@@ -25,6 +20,7 @@
   display: block;
   margin: 0 auto 0;
   max-width: 100%;
+  height: auto; // preserve aspect ratio when width&height provided
   background-color: var(--background-content);
 }
 @include dark-mode {
@@ -32,6 +28,10 @@
     filter: $dark-mode-image-filter;
     background-color: var(--background-image-dark);
   }
+}
+
+.lazyimage figcaption {
+  @extend %figure-caption;
 }
 
 // code

@@ -10,8 +10,8 @@ $font-size-blockquote: 1.25rem;
 $font-size-image-caption: 0.85rem;
 
 // text: line-height
-$line-height-base: 2rem;
-$line-height-heading: 1.3rem;
+$line-height-base: 2em;
+$line-height-heading: 1.3em;
 
 // text: font-weight
 $font-weight-bold: 700;
@@ -23,7 +23,8 @@ $font-heading: "Open Sans", sans-serif;
 $font-code: "Ubuntu Mono", monospace;
 
 // text: margins
-$post-padding-h: 50px; // on desktop
+$post-padding-h: 1rem; // on mobile
+$post-padding-h-desktop: 3rem; // on desktop
 $post-element-margin-top: 2.5em;
 $post-figure-caption-margin-top: 0.8em;
 $post-list-margin-top: 1.25em;
@@ -36,10 +37,9 @@ $link-highlight: #{$color-accent}80;
 $color-hero-1: #add5f5;
 $color-hero-2: #47a6d8;
 
-// media queries
-$sm-screen-width: 25rem; /* 400px */
-$md-screen-width: 47.5rem; /* 760px */
-$lg-screen-width: 60rem; /* 900px */
+// breakpoints
+$break-content-desktop: 950px;
+$break-top-nav-desktop: 450px;
 
 // z-index
 $z-index-top-nav: 50;
@@ -48,7 +48,8 @@ $z-index-image-popup: 60;
 // misc
 $hero-height: 400px;
 $content-margin-top: 140px;
-$content-margin-bottom: 100px;
+$content-margin-bottom: 20px;
+$content-desktop-margin-bottom: 100px;
 $content-desktop-offset-from-center: 80px;
 $content-padding-vert: 2.5rem;
 $dark-mode-image-filter: brightness(0.8) contrast(1.2);

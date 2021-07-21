@@ -47,15 +47,17 @@ $blockquote-left-border: #ddd;
   p > code,
   p > blockquote > code {
     background-color: #009cb580;
-    color: #005866;
+    color: var(--color-base);
   }
 
   // drop cap
-  & > p:first-of-type::first-letter {
-    float: left;
-    font-size: $line-height-base * 3;
-    line-height: $line-height-base * 3;
-    padding: 4px 10px 0 3px;
+  @include mq-above($break-content-desktop) {
+    & > p:first-of-type::first-letter {
+      float: left;
+      font-size: $line-height-base * 3;
+      line-height: 0.9;
+      padding: 4px 10px 0 3px;
+    }
   }
 }
 

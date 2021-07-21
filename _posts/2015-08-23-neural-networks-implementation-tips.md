@@ -14,7 +14,7 @@ Judging by number of new articles neural networks were very popular in recent mo
 
 
 
-### Why not use [Caffe](http://caffe.berkeleyvision.org/) / [Torch7](http://torch.ch/) / ... ?
+## Why not use [Caffe](https://caffe.berkeleyvision.org/) / [Torch7](https://torch.ch/) / ... ?
 
 Using neural network frameworks have numerous advantages: they can provide minimum viable product faster, offer shorter training time, are thoroughly tested, have good documentation and You can always ask for help/submit issue in case of problem. Why would one want to do it all by hand? Let’s see:
 
@@ -27,13 +27,20 @@ Using neural network frameworks have numerous advantages: they can provide minim
 
 
 
-### My project
+## My project
 
-Throughout this post, I will be referring to my latest project: **super-resolution using neural networks**. Repo is accessible [here](https://github.com/Scthe/cnn-Super-Resolution "Repositorium of my project") and the original paper (Image Super-Resolution Using Deep Convolutional Networks - SRCNN) [here](http://arxiv.org/abs/1501.00092 "Image Super-Resolution Using Deep Convolutional Networks").
+Throughout this post, I will be referring to my latest project: [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution "Repositorium of my project"). The original paper [Image Super-Resolution Using Deep Convolutional Networks - SRCNN](https://arxiv.org/abs/1501.00092 "Image Super-Resolution Using Deep Convolutional Networks") was written by Chao Dong, Chen Change Loy, Kaiming He, Xiaoou Tang.
 
 [Super-resolution](https://en.wikipedia.org/wiki/Superresolution "What is super-resolution?") in itself is quite simple problem: how to make image bigger without losing much *quality*. It's a popular question in computer vision, so there are quite a few methods to achieve such effect. I should point out that while there are infinitely many solutions, we -as humans- can instinctively determine if result is *better*. There are also special metrics (f.e. [PSNR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) and [SSIM](https://en.wikipedia.org/wiki/Structural_similarity)) used for more engineerical approach.
 
-![From left to right: ground truth, scaling with bicubic interpolation, CNN results]({{image_dir}}/result_cmp.jpg){: standalone }
+{% capture image_caption %}
+From left to right: ground truth, scaling with bicubic interpolation, CNN results.
+{% endcapture %}
+{% include lazyimage.html
+  image_src='result_cmp.jpg'
+  width='1500'
+  height='500'
+%}
 
 
 My implementation was a simplified version of SRCNN. While number of layers and kernel sizes are still the same, due to performance constraints I've reduced number of feature maps for layers 1 & 2 by half. I also didn't have enough time to wait for \\( 10^8 \\) epochs for network to converge.
@@ -115,19 +122,22 @@ Everything that is needed to reproduce results. This includes hyperparameters, p
 
 ### Choosing training samples
 
-If there is standard sample set for Your domain use it. Good example is [MNIST](http://yann.lecun.com/exdb/mnist/ "MNIST sample set") for handwritten numbers. Generating samples by hand is actually quite complicated. When I started I took small patches from random images and hoped my program would infer some general rules that would make it extremely universal and flexible. This was not a case. Fortunately, at least I was able to see that the network works (feature maps for first layer had familiar shapes of gaussian/edge kernels). I’d switched to images based on comics/vector graphic and received something recognisable much faster. Also important is the number of used samples and training/validation set split. With f.e. 200 samples at Your disposal and 80/20 split only 40 images will be used to measure model's progress. This will attribute to huge variance. To compare: MNIST consists of over 60,000 images while [ImageNet](http://www.image-net.org/ "ImageNet sample set") over 14,000,000.
+If there is standard sample set for Your domain use it. Good example is [MNIST](https://yann.lecun.com/exdb/mnist/ "MNIST sample set") for handwritten numbers. Generating samples by hand is actually quite complicated. When I started I took small patches from random images and hoped my program would infer some general rules that would make it extremely universal and flexible. This was not a case. Fortunately, at least I was able to see that the network works (feature maps for first layer had familiar shapes of gaussian/edge kernels). I’d switched to images based on comics/vector graphic and received something recognisable much faster. Also important is the number of used samples and training/validation set split. With f.e. 200 samples at Your disposal and 80/20 split only 40 images will be used to measure model's progress. This will attribute to huge variance. To compare: MNIST consists of over 60,000 images while [ImageNet](https://www.image-net.org/ "ImageNet sample set") over 14,000,000.
 
 > "The size of training sub-images is fsub = 33. Thus the 91-image dataset can be decomposed into 24,800 sub-images, which are extracted from original images with a stride of 14."
 > - Chao Dong, Chen Change Loy, Kaiming He, Xiaoou Tang: "Image Super-Resolution Using Deep Convolutional Networks"
 
-There is also an excellent article written by Andrej Karpathy: [„What I learned from competing against a ConvNet on ImageNet”](http://karpathy.github.io/2014/09/02/what-i-learned-from-competing-against-a-convnet-on-imagenet/ "Article by Andrej Karpathy about data classifying and machine learning in general") that highlights some problems related to gathering samples. One solution is to use services like [Amazon Mechanical Turk](https://www.mturk.com/mturk/welcome "Amazon Mechanical Turk") that allows to commision tasks that require human input.
+There is also an excellent article written by Andrej Karpathy: [„What I learned from competing against a ConvNet on ImageNet”](https://karpathy.github.io/2014/09/02/what-i-learned-from-competing-against-a-convnet-on-imagenet/ "Article by Andrej Karpathy about data classifying and machine learning in general") that highlights some problems related to gathering samples. One solution is to use services like [Amazon Mechanical Turk](https://www.mturk.com/mturk/welcome "Amazon Mechanical Turk") that allows to commision tasks that require human input.
 
-<figure>
-  <img src="{{image_dir}}/mnist_100_digits.png" alt=""/>
-  <figcaption>
-  MNIST samples. Image taken from Michael Nielsen's "Neural Networks and Deep Learning". Distributed under MIT Licence found [here](https://github.com/mnielsen/neural-networks-and-deep-learning).
-  </figcaption>
-</figure>
+
+{% capture image_caption %}
+MNIST samples. Image taken from Michael Nielsen's "Neural Networks and Deep Learning". Distributed under  [MIT Licence](https://github.com/mnielsen/neural-networks-and-deep-learning).
+{% endcapture %}
+{% include lazyimage.html
+  image_src='mnist_100_digits.png'
+  width='812'
+  height='612'
+%}
 
 
 ### Tests
@@ -210,7 +220,14 @@ List of scripts that I've used (feel free to reuse them):
 * [schedule_training.py](https://github.com/Scthe/cnn-Super-Resolution/blob/master/schedule_training.py) – user can specify number of epochs or duration in minutes
 
 
-![Drawing of weights for first layer. There are some gradients visible, but nothing interesting in particular (at least for now).]({{image_dir}}/weights1.png){: standalone }
+{% capture image_caption %}
+Drawing of weights for first layer. There are some gradients visible, but nothing interesting in particular (at least for now).
+{% endcapture %}
+{% include lazyimage.html
+  image_src='weights1.png'
+  width='658'
+  height='470'
+%}
 
 It's also worth mentioning that You can hardcode some values into scripts and then change them without recompiling. It makes managing the configuration through separate folders very easy as You can just copy the scripts and switch the values.
 
@@ -218,9 +235,14 @@ It's also worth mentioning that You can hardcode some values into scripts and th
 
 I highly recommend to write separate scheduling script. Some basic functionality should include f.e. ability to specify for how long to train (both by number of epochs and by duration), stop/resume, logs and backup management. Logging itself can be implemented as redirecting from sysout to file (although this solution has a lot of disadvantages).
 
-![Scheduling script example]({{image_dir}}/scheduling.jpg){: standalone }
-
-
+{% capture image_caption %}
+Scheduling script example
+{% endcapture %}
+{% include lazyimage.html
+  image_src='scheduling.jpg'
+  width='752'
+  height='246'
+%}
 
 
 ### Separate parameters from hyperparameters
@@ -246,8 +268,14 @@ Also, [AWS](https://aws.amazon.com/ec2/instance-types/#gpu "GPU instances on AWS
 
 One of the most important thing about profiling code is IMO to make it simple. Having to configure and run external program is often too much hassle. Sure, to closely investigate a bottleneck some additional information may be required, but a lot can be shown just from comparing 2 timer values. Writing separate profiling script makes it also easy to generate reports.
 
-![Quick and easy profiling]({{image_dir}}/profile_normal.jpg){: standalone }
-
+{% capture image_caption %}
+Quick and easy profiling
+{% endcapture %}
+{% include lazyimage.html
+  image_src='profile_normal.jpg'
+  width='657'
+  height='107'
+%}
 
 
 
@@ -276,15 +304,21 @@ After each kernel wait for it to finish and then retrieve the timestamps
 </figcaption>
 
 
-![Time spent per kernel. Compile-time macros are also provided]({{image_dir}}/profile_kernels.jpg){: standalone }
-
+{% capture image_caption %}
+Time spent per kernel. Compile-time macros are also provided
+{% endcapture %}
+{% include lazyimage.html
+  image_src='profile_kernels.jpg'
+  width='719'
+  height='372'
+%}
 
 
 
 
 ### Profiling OpenCL – [Nvidia Visual Profiler](https://developer.nvidia.com/nvidia-visual-profiler "Nvidia Visual Profiler")
 
-James Price has written an excellent article on [getting nvvp to display OpenCL profile data](http://uob-hpc.github.io/2015/05/27/nvvp-import-opencl/ "Visualising OpenCL Timelines with NVVP"). All that is needed is to set COMPUTE_PROFILE environment variable. You can also provide config file.
+James Price has written an excellent article on [getting nvvp to display OpenCL profile data](https://uob-hpc.github.io/2015/05/27/nvvp-import-opencl/ "Visualising OpenCL Timelines with NVVP"). All that is needed is to set COMPUTE_PROFILE environment variable. You can also provide config file.
 
 {% highlight c %}
 > set COMPUTE_PROFILE=1
@@ -317,9 +351,18 @@ Available information includes f.e.:
 * memory transfers size & bandwidth between host and GPU
 * detailed timeline that marks start and end of each event
 
-![Nvidia Visual Profiler timeline view. On the left side we can see images being loaded to VRAM. Single epoch has been marked - it took 1.156s.]({{image_dir}}/nvvp.jpg){: standalone }
 
-Use [CodeXL](http://developer.amd.com/tools-and-sdks/opencl-zone/codexl/ "AMD CodeXL") for AMD devices.
+{% capture image_caption %}
+Nvidia Visual Profiler timeline view. On the left side we can see images being loaded to VRAM. Single epoch has been marked - it took 1.156s.
+{% endcapture %}
+{% include lazyimage.html
+  image_src='nvvp.jpg'
+  width='1298'
+  height='609'
+%}
+
+
+Use [CodeXL](https://developer.amd.com/tools-and-sdks/opencl-zone/codexl/ "AMD CodeXL") for AMD devices.
 
 
 
@@ -373,7 +416,7 @@ clBuildProgram(__cl_program, 1, __device_id, "-D NUM_1=5 -D NUM_2=6", nullptr, n
 
 ### Kernel fusion
 
-There is an interesting publication ([J. Filipovič, M. Madzin, J. Fousek, L. Matyska: Optimizing CUDA Code By Kernel Fusion---Application on BLAS](http://arxiv.org/abs/1305.1183)) about combining multiple kernels into one. When multiple kernels share data, instead of having each one load and store values in global memory they execute as one (access to registers/local memory is orders of magnitude faster). One target of such optimization is activation function - it can be written as part of forward kernel:
+There is an interesting publication ([J. Filipovič, M. Madzin, J. Fousek, L. Matyska: Optimizing CUDA Code By Kernel Fusion---Application on BLAS](https://arxiv.org/abs/1305.1183)) about combining multiple kernels into one. When multiple kernels share data, instead of having each one load and store values in global memory they execute as one (access to registers/local memory is orders of magnitude faster). One target of such optimization is activation function - it can be written as part of forward kernel:
 
 {% highlight c linenos %}
 #ifdef ACTIVATION_RELU
@@ -407,11 +450,11 @@ Sometimes You can create more efficient kernel when working under some assumptio
 
 Memory access works in a different way on GPU than on CPU. That means that some preconceptions should be checked again. Some of the materials that I've found useful:
 
-* [AMD Accelerated Parallel Processing OpenCL Programming Guide](http://developer.amd.com/wordpress/media/2013/07/AMD_Accelerated_Parallel_Processing_OpenCL_Programming_Guide-rev-2.7.pdf) (also other materials on [AMD APP SDK info page](http://developer.amd.com/tools-and-sdks/opencl-zone/amd-accelerated-parallel-processing-app-sdk/) )
-* [OpenCL Programming Guide for the CUDA Architecture](http://developer.download.nvidia.com/compute/DevZone/docs/html/OpenCL/doc/OpenCL_Programming_Guide.pdf)
+* [AMD Accelerated Parallel Processing OpenCL Programming Guide](https://developer.amd.com/wordpress/media/2013/07/AMD_Accelerated_Parallel_Processing_OpenCL_Programming_Guide-rev-2.7.pdf) (also other materials on [AMD APP SDK info page](https://developer.amd.com/tools-and-sdks/opencl-zone/amd-accelerated-parallel-processing-app-sdk/) )
+* [OpenCL Programming Guide for the CUDA Architecture](https://developer.download.nvidia.com/compute/DevZone/docs/html/OpenCL/doc/OpenCL_Programming_Guide.pdf)
 * Paulius Micikevicius - [Analysis-Driven Optimization](https://www.nvidia.com/content/GTC-2010/pdfs/2012_GTC2010.pdf) and [Fundamental Optimizations](https://www.nvidia.com/content/PDF/sc_2010/CUDA_Tutorial/SC10_Fundamental_Optimizations.pdf)
 * [Mark Harris - Optimizing Parallel Reduction in CUDA](https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf)
-* [Why aren't there bank conflicts in global memory for Cuda/OpenCL](http://stackoverflow.com/questions/3843032/why-arent-there-bank-conflicts-in-global-memory-for-cuda-opencl)
+* [Why aren't there bank conflicts in global memory for Cuda/OpenCL](https://stackoverflow.com/questions/3843032/why-arent-there-bank-conflicts-in-global-memory-for-cuda-opencl)
 * [CS224D Guest Lecture: Elliot English](https://www.youtube.com/watch?v=8Uxe8umUDYA)
 
 Of course the road from theory to application is quite long.
@@ -425,6 +468,10 @@ Of course the road from theory to application is quite long.
 Implementing neural network is quite long process. It is also an interesting learning experience. It does not teach You everything there is about machine learning, but gives a solid understanding how these things work.
 Sure there are always things that can be implemented better and another milliseconds to shave. I've also seen a couple of interesting publications about FFT in convolutions. But right now I don't think I'm going to experiment any further - the goal of this project was already achieved.
 
-![Compile errors]({{image_dir}}/clBuildProgram_error.png)
 
-
+{% capture image_caption %}{% endcapture %}
+{% include lazyimage.html
+  image_src='clBuildProgram_error.png'
+  width='696'
+  height='125'
+%}

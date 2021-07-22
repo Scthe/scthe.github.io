@@ -1,3 +1,7 @@
 _site
-
 .sass-cache
+
+# my
+references
+node_modules
+*.code-workspace

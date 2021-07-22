@@ -117,7 +117,7 @@ $$
 
 as the rest of the equation is constant and can be provided during runtime. We will store the result in separate cubemap. Since radiance for every direction l is known (just read it from the HDR image), all we need to do is sum it in hemisphere for each possible normal vector n (bascically calculate irradiance). Due to limitations of number of texels on the cubemap, there are not that many normals to calculate for. During precomputing step we run pixel shader for each texel of resulting cubemap, with leads to quite elegant implementation. Overall sampling procedure is based on [Monte Carlo simulation](https://en.wikipedia.org/wiki/Monte_Carlo_method).
 
-{% highlight python linenos %}
+{% highlight python %}
   for texel in irradianceCubemap:
     # pixel shader shader executed for each texel
     normal = getNormalFromCubemapCoords(texel)
@@ -139,7 +139,7 @@ Generating irradiance map
 
 The result is then read during run time:
 
-{% highlight python linenos %}
+{% highlight python %}
   diffuseColor = albedo / Math.PI * texture(irradiance, fragmentNormal)
 {% endhighlight %}
 <figcaption>

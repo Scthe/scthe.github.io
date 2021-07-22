@@ -6,8 +6,7 @@
 //
 // default styles for text
 //
-html,
-body {
+html {
   --background-content: #fafafa;
   --shadow-content: #385f663e;
   --color-base: #19282b;
@@ -18,7 +17,7 @@ body {
   background-color: #dadada;
 }
 
-body.dark-theme {
+html.dark-theme {
   --background-content: #353535;
   --shadow-content: transparent; // dark shadow on dark background? Don't bother..
   --color-base: #f8fafb;

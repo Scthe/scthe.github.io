@@ -30,7 +30,8 @@ $syntax-gutter-text-color: $syntax-text-color;
   & > pre {
     overflow-x: auto;
     background-color: $syntax-background-color;
-    padding: 5px;
+    border-radius: 6px;
+    padding: 1rem 1.5rem;
   }
 
   & code {

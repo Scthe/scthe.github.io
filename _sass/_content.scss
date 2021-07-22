@@ -1,6 +1,6 @@
 .hero-wrapper {
   position: absolute;
-  top: -$content-margin-top;
+  top: 0;
   left: 0;
   right: 0;
   height: $hero-height;
@@ -13,7 +13,8 @@
 .content {
   white-space: normal;
   position: relative;
-  margin: $content-margin-top auto 0;
+  margin: 0 auto 0;
+  padding-top: $content-margin-top;
   padding-bottom: $content-margin-bottom;
 
   @include mq-above($break-content-desktop) {
@@ -36,7 +37,7 @@
 .content-title {
   font-size: 2.25em;
   text-align: center;
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
   font-weight: $font-weight-normal;
 }
 
@@ -70,4 +71,13 @@
     filter: $dark-mode-image-filter;
     background-color: var(--background-image-dark);
   }
+}
+
+.footer {
+  @extend %post-margins;
+  text-align: center;
+}
+
+.footer-copyright {
+  font-size: 0.75em;
 }

@@ -5,8 +5,8 @@ $tags: (
   "artificial_intelligence": rgb(61.01%, 55.07%, 29.15%),
   "gpu": rgb(57.37%, 52.1%, 78.42%),
   "project": rgb(78.53%, 44.86%, 55.97%),
-  "jekyll": transparent,
-  "test": transparent,
+  "jekyll": rgb(53, 53, 53),
+  "test": rgb(53, 53, 53),
 );
 
 @each $tagName, $tagColor in $tags {

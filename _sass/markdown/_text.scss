@@ -6,7 +6,7 @@ $blockquote-left-border: #ddd;
     @extend %word-wrap;
     @extend %post-margins;
     @include margin-v($post-element-margin-top, 0);
-    letter-spacing: 0.5px; // hmm.....
+    @extend %char-spacing;
   }
 
   // h2: major header ##
@@ -36,7 +36,7 @@ $blockquote-left-border: #ddd;
     font-style: italic;
     color: var(--color-subtitle);
     border-left: 5px solid $blockquote-left-border;
-    letter-spacing: 0.5px; // hmm.....
+    @extend %char-spacing;
 
     & > * {
       margin-left: 0.8em;

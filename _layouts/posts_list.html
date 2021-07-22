@@ -2,46 +2,51 @@
 layout: default
 ---
 
-<section class="post-meta posts_list-meta">
+<header class="post-meta posts_list-meta">
   <h1 class="content-title">All articles</h1>
-</section>
+</header>
 
 <div class="posts_list">
-  <ul class="posts_list-inner">
+  <div class="posts_list-inner">
 
     {% for post in site.posts %}
-    <li class="post_item">
-      <h2 class="post_item-title">
-        <a href="{{ site.baseurl }}{{ post.url }}">
-          {{ post.title }}
-        </a>
-      </h2>
-
-      <div class="post_item-meta_row">
-        <h3 class="post_item-date">
-          {{ post.date | date_to_string}}
-        </h3>
-
-        {% comment %}
-        <span class="post_item-dot">&middot;</span> In:
-
-        {% assign tags2 = post.tags %}
-        {% include tags_list.html %}
-        {% endcomment %}
-      </div>
-
-      <p class="post_item-excerpt">
-        {{ post.excerpt }}
-
-        <span class="post_item-read_more">
-          <a href="{{ site.baseurl }}{{ post.url }}" class="post_item-read_more-link" aria-label="{{ post.title }}">
-            Read more
+    <article class="post_item">
+      <header>
+        <h2 class="post_item-title">
+          <a href="{{ site.baseurl }}{{ post.url }}">
+            {{ post.title }}
           </a>
-        </span>
-      </p>
+        </h2>
 
-    </li>
+        <div class="post_item-meta_row">
+          <h3 class="post_item-date">
+            {{ post.date | date_to_string}}
+          </h3>
+
+          {% comment %}
+          <span class="post_item-dot">&middot;</span> In:
+
+          {% assign tags2 = post.tags %}
+          {% include tags_list.html %}
+          {% endcomment %}
+        </div>
+      </header>
+      <section>
+        <p class="post_item-excerpt">
+          {{ post.excerpt }}
+        </p>
+      </section>
+      <footer>
+        <h4 class="post_item-read_more">
+          Continue reading
+          <a href="{{ site.baseurl }}{{ post.url }}" class="post_item-read_more-link" aria-label="{{ post.title }}">
+            {{ post.title }}
+          </a>
+          &rarr;
+        </h4>
+      </footer>
+    </article>
     {% endfor %}
 
-  </ul>
+  </div>
 </div>

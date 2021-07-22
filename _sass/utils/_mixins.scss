@@ -1,5 +1,5 @@
 %word-wrap {
-  word-break: break-word;
+  word-break: normal;
   -webkit-hyphens: auto;
   -moz-hyphens: auto;
   hyphens: auto;
@@ -16,6 +16,11 @@
   & > a {
     text-decoration: none;
   }
+}
+
+%char-spacing {
+  // wonder if this causes problems?
+  letter-spacing: $font-letter-spacing; // hmm.....
 }
 
 @mixin margin-v($top, $bottom) {
@@ -35,6 +40,9 @@
 }
 
 @mixin non-selectable() {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 
   &::-moz-selection {

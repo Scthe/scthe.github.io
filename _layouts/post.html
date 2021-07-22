@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<section class="post-meta">
+<header class="post-meta">
   <h1 class="content-title">{{ page.title }}</h1>
   <span class="content-subtitle">
     {{ page.date | date_to_string}}
@@ -15,7 +15,7 @@ layout: default
     {% include tags_list.html %}
   </div>
   {% endcomment %}
-</section>
+</header>
 
 <div class="markdown">
   {{ content }}

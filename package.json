@@ -1,0 +1,12 @@
+{
+  "name": "scthe-blog",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Scthe/scthe.github.io",
+  "author": "Scthe <marcin1113C@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "anchor-js": "^4.3.1",
+    "medium-zoom": "^1.0.6"
+  }
+}

@@ -19,6 +19,7 @@ $font-weight-normal: 300;
 
 // text: fonts
 $font-base: "Merriweather Sans", sans-serif;
+// $font-heading: "Merriweather Sans", sans-serif;
 $font-heading: "Open Sans", sans-serif;
 $font-code: "Ubuntu Mono", monospace;
 
@@ -48,9 +49,10 @@ $z-index-image-popup: 60;
 // misc
 $hero-height: 400px;
 $content-margin-top: 140px;
-$content-margin-bottom: 20px;
+$content-margin-bottom: 50px;
 $content-desktop-margin-bottom: 100px;
 $content-desktop-offset-from-center: 80px;
 $content-padding-vert: 2.5rem;
 $dark-mode-image-filter: brightness(0.8) contrast(1.2);
 $post_items-spacing: 4.5rem;
+$font-letter-spacing: 0.5px;

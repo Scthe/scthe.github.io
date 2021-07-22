@@ -3,6 +3,7 @@ title: "Neural networks: implementation tips"
 excerpt: "Tips for implementing neural networks from scratch. From identifying use cases and data generation to implementation, testing, debugging and profiling. Separate section dedicated to GPUs and unique problems for massively parallel devices."
 date: 2015-08-23 12:00:00
 tags: ['Artificial intelligence', 'GPU', 'Project']
+image: "/assets/2015-08-19-neural-networks-implementation-tips/result_cmp.jpg"
 ---
 
 {% capture image_dir %}/assets/2015-08-19-neural-networks-implementation-tips{% endcapture %}
@@ -96,7 +97,7 @@ Batches (each kernel operates on multiple images):
 
 When I was converting from single-sample to batch approach I got it wrong the first time. There were quite a lot of interface changes and I made too many changes at once. Second time, when I knew which changes needed to be made it was quite easy. If You find yourself in similar position I recommend first tuning the API, then to switch the memory layout and only after that to execute kernels with all images at once. Turns out the last step can be done quite easily: You just need to add additional work dimension and in `global_work_size` set it to number of images and to 1 in `local_work_size`. Other way is to add loop inside the kernels. This is probably even faster, since for multiple images You only load weights once.
 
-{% highlight c linenos %}
+{% highlight c %}
 uint sample_id = get_global_id(2);
 ...
 #define IMAGE_OFFSET_IN  sample_id* PREVIOUS_FILTER_COUNT* input_w* input_h
@@ -125,13 +126,13 @@ Everything that is needed to reproduce results. This includes hyperparameters, p
 If there is standard sample set for Your domain use it. Good example is [MNIST](https://yann.lecun.com/exdb/mnist/ "MNIST sample set") for handwritten numbers. Generating samples by hand is actually quite complicated. When I started I took small patches from random images and hoped my program would infer some general rules that would make it extremely universal and flexible. This was not a case. Fortunately, at least I was able to see that the network works (feature maps for first layer had familiar shapes of gaussian/edge kernels). I’d switched to images based on comics/vector graphic and received something recognisable much faster. Also important is the number of used samples and training/validation set split. With f.e. 200 samples at Your disposal and 80/20 split only 40 images will be used to measure model's progress. This will attribute to huge variance. To compare: MNIST consists of over 60,000 images while [ImageNet](https://www.image-net.org/ "ImageNet sample set") over 14,000,000.
 
 > "The size of training sub-images is fsub = 33. Thus the 91-image dataset can be decomposed into 24,800 sub-images, which are extracted from original images with a stride of 14."
-> - Chao Dong, Chen Change Loy, Kaiming He, Xiaoou Tang: "Image Super-Resolution Using Deep Convolutional Networks"
+> - <cite>Chao Dong, Chen Change Loy, Kaiming He, Xiaoou Tang: "Image Super-Resolution Using Deep Convolutional Networks"</cite>
 
-There is also an excellent article written by Andrej Karpathy: [„What I learned from competing against a ConvNet on ImageNet”](https://karpathy.github.io/2014/09/02/what-i-learned-from-competing-against-a-convnet-on-imagenet/ "Article by Andrej Karpathy about data classifying and machine learning in general") that highlights some problems related to gathering samples. One solution is to use services like [Amazon Mechanical Turk](https://www.mturk.com/mturk/welcome "Amazon Mechanical Turk") that allows to commision tasks that require human input.
+There is also an excellent article written by Andrej Karpathy: [„What I learned from competing against a ConvNet on ImageNet”](https://karpathy.github.io/2014/09/02/what-i-learned-from-competing-against-a-convnet-on-imagenet/ "Article by Andrej Karpathy about data classifying and machine learning in general") that highlights some problems related to gathering samples. One solution is to use services like [Amazon Mechanical Turk](https://www.mturk.com/mturk/welcome) that allows to commision tasks that require human input.
 
 
 {% capture image_caption %}
-MNIST samples. Image taken from Michael Nielsen's "Neural Networks and Deep Learning". Distributed under  [MIT Licence](https://github.com/mnielsen/neural-networks-and-deep-learning).
+MNIST samples. Image taken from <cite>Michael Nielsen's "Neural Networks and Deep Learning"</cite>. Distributed under  [MIT Licence](https://github.com/mnielsen/neural-networks-and-deep-learning).
 {% endcapture %}
 {% include lazyimage.html
   image_src='mnist_100_digits.png'
@@ -148,7 +149,7 @@ Tests are necessary to check if math is implemented correctly, but is not only r
 
 It is also profitable to think how we would design testing framework. Of course we could use standard frameworks, but creating our own is quite simple and may suit our requirements better. Our kernels are quite simple data transformations so making the test data-driven is a good choice. Take a look at [this file](https://github.com/Scthe/cnn-Super-Resolution/blob/master/test/data/test_cases.json) that defines all test cases for forward execution phase. By adding another entry I can easily create more tests, without even touching C++. Use scripts to generate test data f.e.:
 
-{% highlight python linenos %}
+{% highlight python %}
 def convolution(x, y, spatial_size, values):
   for dx in range(spatial_size):
     for dy in range(spatial_size):
@@ -287,7 +288,7 @@ The simplest way is to measure time spent per kernel. Fortunately OpenCL provide
 
 Code sample (it slows down execution a lot):
 
-{% highlight c linenos %}
+{% highlight c %}
 cl_event kernel_ev;
 clEnqueueNDRangeKernel(..., &kernel_ev); // call kernel
 
@@ -316,7 +317,7 @@ Time spent per kernel. Compile-time macros are also provided
 
 
 
-### Profiling OpenCL – [Nvidia Visual Profiler](https://developer.nvidia.com/nvidia-visual-profiler "Nvidia Visual Profiler")
+### Profiling OpenCL – [Nvidia Visual Profiler](https://developer.nvidia.com/nvidia-visual-profiler)
 
 James Price has written an excellent article on [getting nvvp to display OpenCL profile data](https://uob-hpc.github.io/2015/05/27/nvvp-import-opencl/ "Visualising OpenCL Timelines with NVVP"). All that is needed is to set COMPUTE_PROFILE environment variable. You can also provide config file.
 
@@ -396,7 +397,7 @@ And by hardcode I mean [provide them at compile time](https://www.khronos.org/re
 * arrays in kernels
 * better compiler optimizations (f.e. comparisons with constants)
 
-{% highlight c linenos %}
+{% highlight c %}
 // kernel with NUM_1, NUM_2 compile time constants
 __kernel void main(...){
   float arr[NUM_1]; // this is legal
@@ -418,7 +419,7 @@ clBuildProgram(__cl_program, 1, __device_id, "-D NUM_1=5 -D NUM_2=6", nullptr, n
 
 There is an interesting publication ([J. Filipovič, M. Madzin, J. Fousek, L. Matyska: Optimizing CUDA Code By Kernel Fusion---Application on BLAS](https://arxiv.org/abs/1305.1183)) about combining multiple kernels into one. When multiple kernels share data, instead of having each one load and store values in global memory they execute as one (access to registers/local memory is orders of magnitude faster). One target of such optimization is activation function - it can be written as part of forward kernel:
 
-{% highlight c linenos %}
+{% highlight c %}
 #ifdef ACTIVATION_RELU
   output_buffer[idx] = max(0.0f, output_val);
 #elif ACTIVATION_SIGMOID

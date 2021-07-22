@@ -2,6 +2,8 @@ baseurl: ""
 github_account: "https://github.com/Scthe"
 title: "Scthe's blog"
 description: "Mostly some programming stuff"
+url: "https://scthe.github.io"
+permalink: /blog/:title/
 
 markdown: kramdown
 highlighter: rouge
@@ -20,18 +22,26 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-      author: "Scthe"
+      author: "Marcin Matuszczyk"
   - scope:
       path: ""
       type: "drafts"
     values:
       layout: "post"
-      author: "Scthe"
+      author: "Marcin Matuszczyk"
+      sitemap: false
+
+plugins:
+  - jekyll-sitemap
 
 exclude:
   - "README.md"
+  - "LICENSE"
   - "CNAME"
   - "Gemfile"
   - "Gemfile.lock"
   - "references"
   - "node_modules"
+  - "yarn.lock"
+  - "package.json"
+  - "makefile"

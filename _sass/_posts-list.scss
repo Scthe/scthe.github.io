@@ -21,9 +21,9 @@
 }
 
 .post_item-title {
-  margin-bottom: 1.3rem;
+  margin-bottom: 0.5rem;
   text-align: center;
-  font-weight: normal;
+  font-weight: $font-weight-normal;
 
   & a:hover {
     text-decoration: underline;
@@ -47,25 +47,23 @@
   text-transform: uppercase;
   font-size: inherit;
   line-height: inherit;
-  font-weight: normal;
+  font-weight: $font-weight-normal;
   margin: 0 auto;
 }
 
 .post_item-excerpt {
+  margin-bottom: 0.5rem;
+  @extend %char-spacing;
 }
 
 .post_item-read_more {
-  cursor: pointer;
   margin-bottom: 0;
-  display: block;
-  font-weight: bold;
-  margin-top: 0.5em;
+  font-size: 1rem;
 }
 
 .post_item-read_more-link {
-  font-size: 1rem;
-  text-transform: uppercase;
   color: darken($color-accent, 8%);
+  font-weight: $font-weight-bold;
 
   &:hover {
     text-decoration: underline;

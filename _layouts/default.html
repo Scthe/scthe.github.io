@@ -1,66 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fafafa" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="referrer" content="no-referrer-when-downgrade">
 
-  {% if page.title %}
-    <title>{{ page.author }} - {{ page.title }}</title>
-  {% else %}
-    <title>{{ site.title }}</title>
-  {% endif %}
+  <title>
+    {% if page.title %}{{ page.title }}
+    {% else %}{{ site.title }}
+    {% endif %}
+  </title>
+  <meta name="description" content="{% if page.excerpt %}{{ page.excerpt }}{% else %}{{ site.description }}{% endif %}">
+  <meta name="author" content="Marcin Matuszczyk">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 
-  {% if page.excerpt %}
-    <meta name="description" content="{{ page.excerpt }}">
-  {% else %}
-    <meta name="description" content="{{ site.description }}">
-  {% endif %}
+  <!-- favicon -->
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
-  <!-- some weird ~mobile stuff -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="cleartype" content="on">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-  <!-- Open Graph -->
-  <meta property="og:locale" content="en_US">
-  <meta property="og:type" content="article">
-  <meta property="og:title" content="{% if page.title %}{{ page.author }} - {{ page.title }}{% else %}{{ site.title }}{% endif %}">
-  <meta property="og:description" content="{% if page.excerpt %}{{ page.excerpt }}{% else %}{{ site.description }}{% endif %}">
-  <meta property="og:url" content="{{ site.url }}{{ page.url }}">
-  <meta property="og:site_name" content="{{ site.title }}">
+  {% include seo.html %}
 
   <!-- CSS -->
-  <link rel="stylesheet" href="{{ site.baseurl }}/css/reset.css">
-  <link rel="stylesheet" href="{{ site.baseurl }}/css/main.css">
-
-  <!-- Fonts -->
-  <link href='https://fonts.googleapis.com/css?family=Bitter:400,700,400italic|Open+Sans:400italic,600italic,400,600|Ubuntu+Mono:400,700,400italic' rel='stylesheet' type='text/css'>
-
+  <!-- beautify ignore:start -->
+  {% capture styles %}
+  {% include main.scss %}
+  {% endcapture %}
+  <style>
+    {{ styles | scssify }}
+  </style>
+  <!-- beautify ignore:end -->
 </head>
+
 <body>
+  <!-- DARK MODE -->
+  <script>
+    window.setAppTheme = setAppTheme;
+    const THEME_LIGHT_BG = "#fafafa";
+    const THEME_DARK_BG = "#353535";
 
-  {% include side_panel.html %}
+    let isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const storageThemeColor = localStorage.getItem("app-theme");
+    if (storageThemeColor === "dark-theme") {
+      isLight = false;
+    }
+    setAppTheme(isLight);
 
-  <div class="content">
+    function setAppTheme(nextIsLight) {
+      console.log(`setAppTheme light=${nextIsLight}`);
+      const el = document.documentElement;
+      if (nextIsLight) {
+        el.classList.remove("dark-theme");
+        el.classList.add("light-theme");
+        setMetaTheme(THEME_LIGHT_BG);
+      } else {
+        el.classList.remove("light-theme");
+        el.classList.add("dark-theme");
+        setMetaTheme(THEME_DARK_BG);
+      }
+    }
+
+    function setMetaTheme(color) {
+      let el = document.querySelector('meta[name="theme-color"]');
+      if (el == null) {
+        el = document.createElement("meta");
+        el.setAttribute("name", "theme-color");
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", color);
+    }
+  </script>
+
+  <div class="hero-wrapper">
+    <div class="hero-image"></div>
+  </div>
+
+  {% include top_nav.html %}
+
+  <main class="content">
     <div class="content__inner">
       {{ content }}
     </div>
-  </div>
+  </main>
+
+  <footer class="footer">
+    <div>Thanks for reading!</div>
+    <div class="footer-copyright">
+      Content and illustrations © 2021 Marcin Matuszczyk. All Rights Reserved.
+    </div>
+  </footer>
 
   <!-- Scripts -->
-  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/1.2.1/anchor.min.js"></script>
-  <script src="{{ site.baseurl }}/scripts/main.js"></script>
-  <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-66646958-1', 'auto');
-  ga('send', 'pageview');
-
+  <script src="{{ site.baseurl }}/assets/scripts/anchor-js/anchor.min.js"></script>
+  <script src="{{ site.baseurl }}/assets/scripts/medium-zoom/medium-zoom.min.js"></script>
+  <script src="{{ site.baseurl }}/assets/scripts/main.js"></script>
+  <!-- Use CDN as mathjax has many runtime dependencies. Don't even bother.. -->
+  <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
   </script>
+
+  {% include analytics.html %}
 </body>
+
 </html>

@@ -1,25 +1,30 @@
 ---
 title: "Backpropagation notes"
-excerpt: "Electronic version of notes that I took during super-resolution CNN project"
+excerpt: "My notes containing neural network backpropagation equations. From chain rule to cost function, gradient descent and deltas. Complete with Convolutional Neural Networks as used for images."
 date: 2015-08-30 12:00:00
+tags: ['Artificial intelligence']
+image: "/assets/2015-08-30-backpropagation-notes/network.png"
 ---
 
-{% capture image_dir %}{{ site.url }}/images/2015-08-30-backpropagation-notes{% endcapture %}
+{% capture image_dir %}/assets/2015-08-30-backpropagation-notes{% endcapture %}
 
 
-This is an electronic version of my notes created during [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution) project (read more at: ["Neural networks: implementation tips"]({{ site.url }}/2015/08/23/neural-networks-implementation-tips.html)). Feel free to read it. You don't even have to deal with my sloppy handwriting.
-
-Also be warned that I'm not going to explain 'what' and 'how'. My only goal is to show why the equations have presented forms.
-
+This is an electronic version of my notes created during [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution) project. You can read more at: ["Neural networks: implementation tips"](/2015/08/23/neural-networks-implementation-tips.html).
 
 
 
 ## Chain rule
 
-> You may not want to skip this part. Whole article is just application of this rule and following graphic representation helps a lot.
+> Do not skip this part. Whole article is just application of this rule and following graphic representation helps a lot.
 
-![Chain rule]({{image_dir}}/chain-rule.png)
-*Function*
+{% capture image_caption %}
+Chain rule as applied to functions
+{% endcapture %}
+{% include lazyimage.html
+  image_src='chain-rule2.png'
+  width='586'
+  height='294'
+%}
 
 We have $$y=f(x)$$. Let say we also have some $${dz \over dy}$$ (requirement: *z* is function of *y*) and we know the function *f*. We can calculate $${dz \over dx}$$ using following formula:
 
@@ -33,8 +38,17 @@ Now look again at the picture above and locale each variable. What is $${dy \ove
 
 ## Dictionary
 
-![Full network example]({{image_dir}}/network.png)
-*Example of neural network*
+{% capture image_caption %}
+Example of neural network
+{% endcapture %}
+{% include lazyimage.html
+  image_src='network.png'
+  width='700'
+  height='391'
+%}
+
+
+<br/>
 
 * *l* - layer index, especially *l=1* for input layer and *L* for last layer
 * $$h_{W,b} (X)$$ - hypothesis produced by the network. We are going to assume that $$h_{W,b} (X) = y^{(L)}$$
@@ -49,9 +63,14 @@ Now look again at the picture above and locale each variable. What is $${dy \ove
 * $$\delta^{(l)}_j$$ - error term of j-th node of l-th layer
 * cost function *J* - how good the network's output maps to ground truth
 
-![Relation between 2 nodes on successive layers]({{image_dir}}/forward-1.png)
-*Relation between 2 nodes on successive layers*
-
+{% capture image_caption %}
+Relation between 2 nodes on successive layers
+{% endcapture %}
+{% include lazyimage.html
+  image_src='forward-1.png'
+  width='704'
+  height='205'
+%}
 
 
 
@@ -122,8 +141,14 @@ Do You see how $$\frac{\partial}{\partial x^{(L)}_j} J(W,b;Y,X)$$ expresses *res
 
 Sadly, calculations of deltas for other layers is a little bit more complicated. Let's look again on the image of forward propagation between 2 nodes on successive layers:
 
-![Relation between 2 nodes on successive layers]({{image_dir}}/forward-1.png)
-*Relation between 2 nodes on successive layers*
+{% capture image_caption %}
+Relation between 2 nodes on successive layers. Please refer to dictionary for explanation of the symbols.
+{% endcapture %}
+{% include lazyimage.html
+  image_src='forward-1.png'
+  width='704'
+  height='205'
+%}
 
 Let's assume that **l** is the layer before the last ($$l + 1 = L$$). We have just provided equations for $$\delta^{(L)}_j = \frac{\partial}{\partial x^{(L)}_j} J(W,b;Y,X)$$. After investigating the image above it turns out that we can use chain rule to provide formula for $$\delta^{(l)}_i$$. We are going to do this in several steps. First observation:
 
@@ -138,8 +163,16 @@ $$\frac{\partial}{\partial y^{(l)}_i} J(W,b;Y,X) =\\
   = \sum_{j=1}^{s_{l+1}} (
   W^{(l)}_{ji} \cdot \delta^{(l+1)}_j ) $$
 
-![Full network example]({{image_dir}}/network.png)
-*On previous image we focused only on 2 nodes. While it makes easier to derive formulas, we lose the general view. Do You see how every node contributes to values of all nodes on next layer?*
+
+{% capture image_caption %}
+On previous image we focused only on 2 nodes as it makes easier to derive formulas. In reality, every node contributes to values of all nodes on next layer?
+{% endcapture %}
+{% include lazyimage.html
+  image_src='network.png'
+  width='700'
+  height='391'
+%}
+
 
 Remember when I said that in deltas we were calculating derivative w.r.t. $$x^{(L)}_j$$, not $$y^{(L)}_j$$? This applies here too. We have to use chain rule once more:
 
@@ -158,8 +191,14 @@ If $$y^{(l)}=f_a(x^{(l)})$$ then $$\frac{\partial y^{(l)}_i}{\partial x^{(l)}_i}
 
 We have calculated deltas, now how does this help with parameters? Take a look once more on this image:
 
-![Relation between 2 nodes on successive layers]({{image_dir}}/forward-1.png)
-*Relation between 2 nodes on successive layers*
+{% capture image_caption %}
+Relation between 2 nodes on successive layers. Please refer to dictionary for explanation of the symbols.
+{% endcapture %}
+{% include lazyimage.html
+  image_src='forward-1.png'
+  width='704'
+  height='205'
+%}
 
 This should be simple:
 
@@ -202,15 +241,15 @@ $$ \frac{\partial}{\partial b_{j}^{(l)}} J(W,b) =\\
 
 1. Calculate deltas for each output unit (ones in last layer):
 
-$$ \delta^{(L)}_j = (h_{W,b}(X) - Y) \cdot {f_a}'(x^{(L)}_j) $$
+    $$ \delta^{(L)}_j = (h_{W,b}(X) - Y) \cdot {f_a}'(x^{(L)}_j) $$
 
-1. For each unit in other layers calculate deltas (do it layer by layer):
+2. For each unit in other layers calculate deltas (do it layer by layer):
 
-$$ \delta^{(l)}_i
-= {f_a}'(x^{(l)}_i) \cdot \sum_{j=1}^{s_{l+1}} (
-  W^{(l)}_{ji} \cdot \delta^{(l+1)}_j )$$
+    $$ \delta^{(l)}_i
+    = {f_a}'(x^{(l)}_i) \cdot \sum_{j=1}^{s_{l+1}} (
+    W^{(l)}_{ji} \cdot \delta^{(l+1)}_j )$$
 
-1. Calculate the derivatives for **all** weights and biases:
+3. Calculate the derivatives for **all** weights and biases:
 
 $$ {\partial \over \partial W^{(l)}_{ji}} J(W,b;Y,X) = y^{(l)}_i\cdot \delta^{(l+1)}_j $$
 
@@ -225,12 +264,19 @@ Now it's time for part II.
 
 ## Backpropagation in Convolutional Neural Networks (as it applies to images)
 
-Main difference between fully connected and convolutional neural networks is that weights and biases are now reused. As this is not general neural networks tutorial I'm not going to explain this.
+Main difference between fully connected and convolutional neural networks is that weights and biases are now reused.
 
 > TL;DR: You have a kernel (that actually consists of weights!) and You convolve it with pixels in top-left corner of image, then with pixels a little bit to the right (and so on), later repeat this in next row (and so on). Since we apply **same** kernel several times across the image, we effectively share kernel (therefore - weights).
 
-![CNN - weights sharing]({{image_dir}}/cnn-all.gif)
-*Weights sharing in CNN. For each node on next layer the kernel stays the same, but input units change*
+{% capture image_caption %}
+Weights sharing in CNN. For each node on next layer the kernel stays the same, but input units change
+{% endcapture %}
+{% include lazyimage.html
+  image_src='cnn-all.gif'
+  width='530'
+  height='385'
+%}
+
 
 Another thing we are not going to talk about is pooling.
 

@@ -1,0 +1,1842 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.92.0 r15299"
+   sodipodi:docname="images.svg">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend"
+       style="overflow:visible;">
+      <path
+         id="path4286"
+         style="fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lstart"
+       style="overflow:visible">
+      <path
+         id="path4265"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt"
+         transform="scale(0.8) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-9"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4286-8"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-8"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4286-6"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-86"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4286-62"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-7"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4286-82"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-2"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4286-0"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5080"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5082"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5084"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5086"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5088"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5090"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker5092"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path5094"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-5"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4286-07"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-94"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4286-3"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4172"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4170"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="200.31335"
+     inkscape:cy="1236.4946"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer2"
+     showgrid="false"
+     inkscape:window-width="1823"
+     inkscape:window-height="1057"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="forward-1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:none">
+    <rect
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.67239875;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+       id="rect2997"
+       width="133.86774"
+       height="68.207825"
+       x="133.99008"
+       y="28.972561"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2985-5"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="translate(46.892624,96.270913)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471"><flowRegion
+         id="flowRegion2987-2"><rect
+           id="rect2989-3"
+           width="75.761444"
+           height="52.527924"
+           x="120.20815"
+           y="84.63604" /></flowRegion><flowPara
+         id="flowPara2991-1"
+         style="font-size:65.00091553%;baseline-shift:super">W<flowSpan
+   id="flowSpan3945">(l)</flowSpan></flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2985-8"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="translate(113.06017,105.05997)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471"><flowRegion
+         id="flowRegion2987-8"><rect
+           id="rect2989-2"
+           width="52.527935"
+           height="49.497471"
+           x="119.198"
+           y="75.54467" /></flowRegion><flowPara
+         id="flowPara2991-7"
+         style="font-size:65.00091553%;baseline-shift:super">b<flowSpan
+   id="flowSpan3948">(l)</flowSpan></flowPara></flowRoot>    <rect
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+       id="rect2997-1"
+       width="44.095581"
+       height="24.673569"
+       x="578.37408"
+       y="160.02534"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:26.51973915px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="638.93097"
+       y="168.74286"
+       id="text3838"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471"><tspan
+         sodipodi:role="line"
+         id="tspan3840"
+         x="638.93097"
+         y="168.74286"
+         style="font-size:13.25986958px">data</tspan><tspan
+         sodipodi:role="line"
+         x="638.93097"
+         y="205.7025"
+         style="font-size:13.25986958px"
+         id="tspan3842">transformations</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:24.9307518px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="150.3564"
+       y="68.713264"
+       id="text3844"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471"><tspan
+         sodipodi:role="line"
+         id="tspan3846"
+         x="150.3564"
+         y="68.713264">y * W + b</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2985-2"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="translate(197.50735,-22.622894)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471"><flowRegion
+         id="flowRegion2987-6"><rect
+           id="rect2989-0"
+           width="97.984802"
+           height="64.649757"
+           x="119.198"
+           y="75.54467" /></flowRegion><flowPara
+         id="flowPara2991-4"
+         style="font-size:65.00091553%;baseline-shift:super">x<flowSpan
+   style="font-size:64.99999762%;baseline-shift:sub"
+   id="flowSpan3300">j</flowSpan><flowSpan
+   id="flowSpan3302">(l+1)</flowSpan></flowPara></flowRoot>    <rect
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.97893161;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+       id="rect2997-4"
+       width="194.18777"
+       height="99.664169"
+       x="423.62039"
+       y="13.244389"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2985-8-6"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.55465151,0,0,0.55465151,531.10908,43.330945)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471"><flowRegion
+         id="flowRegion2987-8-0"><rect
+           id="rect2989-2-3"
+           width="52.527935"
+           height="49.497471"
+           x="119.198"
+           y="75.54467" /></flowRegion><flowPara
+         id="flowPara2991-7-6">f<flowSpan
+   style="font-size:65.00091553%;baseline-shift:sub"
+   id="flowSpan3951">a</flowSpan></flowPara></flowRoot>    <path
+       id="path3971"
+       style="fill:none;stroke:#a7a7a7;stroke-width:0.75485164px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 517.865,24.096337 V 101.19904 M 436.44886,33.262395 H 603.6927 m 0.72419,29.11573 H 436.44886 m 0,29.115685 h 168.76326"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.75485164px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 446.15409,88.69007 c 0,0 47.35855,5.05895 71.71091,-25.772784 24.35235,-30.831735 83.46502,-27.821681 83.46502,-27.821681"
+       id="path3973"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="czc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2985-2-2"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="translate(585.8644,-3.4513828)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471"><flowRegion
+         id="flowRegion2987-6-1"><rect
+           id="rect2989-0-4"
+           width="97.984802"
+           height="64.649757"
+           x="119.198"
+           y="75.54467" /></flowRegion><flowPara
+         id="flowPara2991-4-9"
+         style="font-size:65.00091553%;baseline-shift:super">y<flowSpan
+   style="font-size:64.99999762%;baseline-shift:sub"
+   id="flowSpan3304">j</flowSpan><flowSpan
+   id="flowSpan3306">(l+1)</flowSpan></flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2985-2-2-2"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="translate(-91.821259,-3.4513828)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471"><flowRegion
+         id="flowRegion2987-6-1-4"><rect
+           id="rect2989-0-4-5"
+           width="97.984802"
+           height="64.649757"
+           x="119.198"
+           y="75.54467" /></flowRegion><flowPara
+         id="flowPara2991-4-9-2"
+         style="font-size:65.00091553%;baseline-shift:super">y<flowSpan
+   style="font-size:65.00091553%;baseline-shift:sub"
+   id="flowSpan3294">i </flowSpan><flowSpan
+   id="flowSpan3298">(l)</flowSpan></flowPara></flowRoot>    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-mid:none;marker-end:url(#Arrow2Lend)"
+       d="M 71.642858,63.094088 H 131.42856"
+       id="path4079"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-mid:none;marker-end:url(#Arrow2Lend)"
+       d="M 268.71429,63.094088 H 422.71428"
+       id="path4079-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-mid:none;marker-end:url(#Arrow2Lend)"
+       d="m 618.71429,63.094088 h 77.99999"
+       id="path4079-3-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-mid:none;marker-end:url(#Arrow2Lend)"
+       d="m 186.9343,149.8085 8.93544,-52.022858"
+       id="path4079-38"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-mid:none;marker-end:url(#Arrow2Lend)"
+       d="m 240.9343,149.8085 0.93544,-52.022856"
+       id="path4079-38-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2985-2-2-2-8"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.66870599,0,0,0.66870599,508.81388,172.48544)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471"><flowRegion
+         id="flowRegion2987-6-1-4-0"><rect
+           id="rect2989-0-4-5-2"
+           width="97.984802"
+           height="64.649757"
+           x="119.198"
+           y="75.54467" /></flowRegion><flowPara
+         id="flowPara2991-4-9-2-0"
+         style="font-size:65.00091553%;baseline-shift:super">y<flowSpan
+   id="flowSpan4046-9-8">(l)</flowSpan></flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:26.51973915px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="638.75616"
+       y="220.32361"
+       id="text3838-9"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\forward-1.png"
+       inkscape:export-xdpi="84.892471"
+       inkscape:export-ydpi="84.892471"><tspan
+         sodipodi:role="line"
+         x="638.75616"
+         y="220.32361"
+         style="font-size:13.25986958px"
+         id="tspan3842-8">symbols</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="chain-rule"
+     style="display:inline">
+    <rect
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+       id="rect2997-1-0"
+       width="44.095581"
+       height="24.673569"
+       x="192.9959"
+       y="-163.89348"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\chain-rule2.png"
+       inkscape:export-xdpi="157.25482"
+       inkscape:export-ydpi="157.25482" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:26.51973915px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="250.52232"
+       y="-147.59984"
+       id="text3838-95"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\chain-rule2.png"
+       inkscape:export-xdpi="157.25482"
+       inkscape:export-ydpi="157.25482"><tspan
+         sodipodi:role="line"
+         x="250.52232"
+         y="-147.59984"
+         style="font-size:13.25986958px"
+         id="tspan3842-9">functions</tspan></text>
+    <g
+       id="g5277"
+       transform="matrix(0.81956609,0,0,1.0003067,24.019584,-0.93810537)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\chain-rule2.png"
+       inkscape:export-xdpi="157.25482"
+       inkscape:export-ydpi="157.25482">
+      <rect
+         y="-269.13571"
+         x="133.88185"
+         height="68.424294"
+         width="61.353226"
+         id="rect2997-5"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.4559274;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate" />
+      <text
+         id="text3844-0"
+         y="-229.28677"
+         x="160.54739"
+         style="font-style:normal;font-weight:normal;font-size:24.9307518px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           y="-229.28677"
+           x="160.54739"
+           id="tspan3846-0"
+           sodipodi:role="line">f</tspan></text>
+    </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2985-2-2-9"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="translate(-84.1356,-314.70284)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\chain-rule2.png"
+       inkscape:export-xdpi="157.25482"
+       inkscape:export-ydpi="157.25482"><flowRegion
+         id="flowRegion2987-6-1-8"><rect
+           id="rect2989-0-4-3"
+           width="97.984802"
+           height="64.649757"
+           x="119.198"
+           y="75.54467" /></flowRegion><flowPara
+         id="flowPara2991-4-9-5"
+         style="font-size:65.00091553%;baseline-shift:super">x</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2985-2-2-2-1"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="translate(224.17874,-308.1746)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\chain-rule2.png"
+       inkscape:export-xdpi="157.25482"
+       inkscape:export-ydpi="157.25482"><flowRegion
+         id="flowRegion2987-6-1-4-5"><rect
+           id="rect2989-0-4-5-5"
+           width="97.984802"
+           height="64.649757"
+           x="119.198"
+           y="75.54467" /></flowRegion><flowPara
+         id="flowPara2991-4-9-2-8"
+         style="font-size:65.00091553%;baseline-shift:super">z</flowPara></flowRoot>    <path
+       style="fill:none;stroke:#000000;stroke-width:0.88612676px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-mid:none;marker-end:url(#Arrow2Lend)"
+       d="m 53.90615,-234.90468 h 77.48057"
+       id="path4079-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\chain-rule2.png"
+       inkscape:export-xdpi="157.25482"
+       inkscape:export-ydpi="157.25482" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2985-2-2-2-8-4"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="matrix(0.66870599,0,0,0.66870599,140.1032,-161.53491)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\chain-rule2.png"
+       inkscape:export-xdpi="157.25482"
+       inkscape:export-ydpi="157.25482"><flowRegion
+         id="flowRegion2987-6-1-4-0-9"><rect
+           id="rect2989-0-4-5-2-9"
+           width="138.77119"
+           height="59.362621"
+           x="124.48512"
+           y="80.076492" /></flowRegion><flowPara
+         id="flowPara2991-4-9-2-0-0"
+         style="font-size:65.00091553%;baseline-shift:super">y<flowSpan
+   id="flowSpan4046-9-8-3" /></flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:26.51973915px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="248.83229"
+       y="-93.493706"
+       id="text3838-9-0"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\chain-rule2.png"
+       inkscape:export-xdpi="157.25482"
+       inkscape:export-ydpi="157.25482"><tspan
+         sodipodi:role="line"
+         x="248.83229"
+         y="-93.493706"
+         style="font-size:13.25986958px"
+         id="tspan3842-8-3">symbols</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.8799786px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-mid:none;marker-end:url(#Arrow2Lend)"
+       d="m 185.35003,-234.90464 h 76.40913"
+       id="path4079-0-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\chain-rule2.png"
+       inkscape:export-xdpi="157.25482"
+       inkscape:export-ydpi="157.25482" />
+    <path
+       style="display:inline;fill:none;stroke:#000000;stroke-width:0.86797822px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-mid:none;marker-end:url(#Arrow2Lend-94)"
+       d="M 317.79226,-234.9046 H 392.1316"
+       id="path4079-0-6-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\chain-rule2.png"
+       inkscape:export-xdpi="157.25482"
+       inkscape:export-ydpi="157.25482" />
+    <g
+       style="display:inline"
+       id="g5277-6"
+       transform="matrix(0.81956609,0,0,1.0003067,156.01959,-0.93812817)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\chain-rule2.png"
+       inkscape:export-xdpi="157.25482"
+       inkscape:export-ydpi="157.25482">
+      <rect
+         y="-269.13571"
+         x="133.88185"
+         height="68.424294"
+         width="61.353226"
+         id="rect2997-5-2"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.4559274;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate" />
+      <text
+         id="text3844-0-3"
+         y="-229.28677"
+         x="155.66675"
+         style="font-style:normal;font-weight:normal;font-size:24.9307518px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           y="-229.28677"
+           x="155.66675"
+           id="tspan3846-0-6"
+           sodipodi:role="line">f<tspan
+   style="font-size:71.78848386%;baseline-shift:sub"
+   id="tspan4395">2</tspan></tspan></text>
+    </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2985-2-2-2-1-6"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       transform="translate(92.17874,-310.17459)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\chain-rule2.png"
+       inkscape:export-xdpi="157.25482"
+       inkscape:export-ydpi="157.25482"><flowRegion
+         id="flowRegion2987-6-1-4-5-1"><rect
+           id="rect2989-0-4-5-5-9"
+           width="97.984802"
+           height="64.649757"
+           x="119.198"
+           y="75.54467" /></flowRegion><flowPara
+         id="flowPara2991-4-9-2-8-6"
+         style="font-size:65.00091553%;baseline-shift:super">y<flowSpan
+   id="flowSpan4046-9-4-3" /></flowPara></flowRoot>  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="network"
+     style="display:none"
+     sodipodi:insensitive="true">
+    <g
+       id="g5366"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533">
+      <circle
+         id="path5307"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358"
+         y="319.21082"
+         x="69.70797"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="319.21082"
+           x="69.70797"
+           id="tspan5360"
+           sodipodi:role="line">X<tspan
+   id="tspan5364"
+   style="font-size:65.00091553%;baseline-shift:sub">1</tspan><tspan
+   style="font-size:65.00091553%;baseline-shift:super"
+   id="tspan5521" /></tspan></text>
+    </g>
+    <g
+       transform="translate(-1.0779857e-7,44.000003)"
+       id="g5366-4"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533">
+      <circle
+         id="path5307-1"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-9"
+         y="319.21082"
+         x="69.70797"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="319.21082"
+           x="69.70797"
+           id="tspan5360-5"
+           sodipodi:role="line">X<tspan
+   id="tspan5364-5"
+   style="font-size:65.00091553%;baseline-shift:sub">2</tspan><tspan
+   id="tspan5525"
+   style="font-size:65.00091553%;baseline-shift:super" /></tspan></text>
+    </g>
+    <g
+       transform="translate(-1.0779857e-7,86)"
+       id="g5366-7"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533">
+      <circle
+         id="path5307-4"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-7"
+         y="319.21082"
+         x="69.70797"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="319.21082"
+           x="69.70797"
+           id="tspan5360-3"
+           sodipodi:role="line">X<tspan
+   id="tspan5364-4"
+   style="font-size:65.00091553%;baseline-shift:sub">3</tspan><tspan
+   id="tspan5537"
+   style="font-size:65.00091553%;baseline-shift:super" /></tspan></text>
+    </g>
+    <g
+       transform="translate(130,3.3928013e-6)"
+       id="g5366-0"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533">
+      <circle
+         id="path5307-8"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-8"
+         y="319.21082"
+         x="69.70797"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="319.21082"
+           x="69.70797"
+           id="tspan5360-1"
+           sodipodi:role="line">y<tspan
+   id="tspan5364-52"
+   style="font-size:65.00091553%;baseline-shift:sub">1</tspan><tspan
+   id="tspan5541"
+   style="font-size:65.00091553%;baseline-shift:super">2</tspan></tspan></text>
+    </g>
+    <g
+       transform="translate(130,44.000003)"
+       id="g5366-4-3"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533">
+      <circle
+         id="path5307-1-2"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-9-4"
+         y="319.21082"
+         x="69.70797"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="319.21082"
+           x="69.70797"
+           id="tspan5360-5-6"
+           sodipodi:role="line">y<tspan
+   id="tspan5364-5-6"
+   style="font-size:65.00091553%;baseline-shift:sub">2</tspan><tspan
+   id="tspan5545"
+   style="font-size:65.00091553%;baseline-shift:super">2</tspan></tspan></text>
+    </g>
+    <g
+       transform="translate(130,86.000003)"
+       id="g5366-7-6"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533">
+      <circle
+         id="path5307-4-2"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-7-9"
+         y="319.21082"
+         x="69.70797"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="319.21082"
+           x="69.70797"
+           id="tspan5360-3-0"
+           sodipodi:role="line">y<tspan
+   id="tspan5364-4-4"
+   style="font-size:65.00091553%;baseline-shift:sub">3</tspan><tspan
+   id="tspan5549"
+   style="font-size:65.00091553%;baseline-shift:super">2</tspan></tspan></text>
+    </g>
+    <g
+       id="g5511"
+       transform="translate(5.0000087,-180)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533">
+      <circle
+         transform="translate(59.999998,132.85714)"
+         id="path5307-4-3"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-7-1"
+         y="453.31424"
+         x="131.24315"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="453.31424"
+           x="131.24315"
+           id="tspan5360-3-1"
+           sodipodi:role="line">b<tspan
+   style="font-size:65.00091553%;baseline-shift:super"
+   id="tspan5551">1</tspan></tspan></text>
+    </g>
+    <g
+       transform="translate(259.99998,44.000003)"
+       id="g5366-4-3-9"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533">
+      <circle
+         id="path5307-1-2-5"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-9-4-5"
+         y="319.21082"
+         x="69.70797"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="319.21082"
+           x="69.70797"
+           id="tspan5360-5-6-5"
+           sodipodi:role="line">y<tspan
+   id="tspan5364-5-6-6"
+   style="font-size:65.00091553%;baseline-shift:sub">1</tspan><tspan
+   id="tspan5545-0"
+   style="font-size:65.00091553%;baseline-shift:super">3</tspan></tspan></text>
+    </g>
+    <g
+       id="g5511-5"
+       transform="translate(134.99998,-180)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533">
+      <circle
+         transform="translate(59.999998,132.85714)"
+         id="path5307-4-3-9"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-7-1-4"
+         y="453.31424"
+         x="131.24315"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="453.31424"
+           x="131.24315"
+           id="tspan5360-3-1-6"
+           sodipodi:role="line">b<tspan
+   style="font-size:65.00091553%;baseline-shift:super"
+   id="tspan5551-3">2</tspan></tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="51.428574"
+       y="443.43362"
+       id="text5616"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533"><tspan
+         sodipodi:role="line"
+         id="tspan5618"
+         x="51.428574"
+         y="443.43362"
+         style="font-size:10px">layer 1</tspan><tspan
+         sodipodi:role="line"
+         x="51.428574"
+         y="502.05353"
+         id="tspan5620"
+         style="font-size:10px">(input layer)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="177.42857"
+       y="455.93362"
+       id="text5616-4"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533"><tspan
+         sodipodi:role="line"
+         x="177.42857"
+         y="455.93362"
+         id="tspan5620-0"
+         style="font-size:10px">hidden layers</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="323.42859"
+       y="443.43362"
+       id="text5616-5"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533"><tspan
+         sodipodi:role="line"
+         id="tspan5618-3"
+         x="323.42859"
+         y="443.43362"
+         style="font-size:10px">layer L</tspan><tspan
+         sodipodi:role="line"
+         x="323.42859"
+         y="502.05353"
+         id="tspan5620-9"
+         style="font-size:10px">(output layer)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="372.54324"
+       y="356.49619"
+       id="text5616-5-1"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533"><tspan
+         sodipodi:role="line"
+         x="372.54324"
+         y="356.49619"
+         id="tspan5620-9-8"
+         style="font-size:10px">h<tspan
+   style="font-size:65.00091553%;baseline-shift:sub"
+   id="tspan5698">W,b</tspan>(X)</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 169.28571,428.50504 v 14.28571 h 82.85715 V 428.3979"
+       id="path5700"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#03fa00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="M 98.489873,317.47621 H 180.81731"
+       id="path5702"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#03fa00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="M 99.500026,361.41784 179.86843,317.65478"
+       id="path5704"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#03fa00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="M 98.994949,403.33917 180.4908,317.35891"
+       id="path5706"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#03fa00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="m 160.8113,271.9405 20.00601,45.53571"
+       id="path5702-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#0033fa;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="M 98.489873,317.47621 186.5316,360.51192"
+       id="path5702-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#0033fa;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="m 99.500026,361.41784 86.082694,-0.72735"
+       id="path5704-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#0033fa;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="M 98.994949,403.33917 186.20509,360.39462"
+       id="path5706-6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#0033fa;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="m 160.8113,271.9405 25.00601,88.39285"
+       id="path5702-8-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#fa0008;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="M 98.489873,317.47621 182.08,401.82395"
+       id="path5702-2"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#fa0008;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="m 99.500026,361.41784 81.631094,40.58468"
+       id="path5704-4"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#fa0008;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="m 98.994949,403.33917 82.758541,-1.63252"
+       id="path5706-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#fa0008;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="M 160.8113,271.9405 182.08,401.82395"
+       id="path5702-8-02"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#0033fa;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="m 228.48987,317.47621 88.04173,43.03571"
+       id="path5702-1-2"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#0033fa;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="m 229.50003,361.41784 86.08269,-0.72735"
+       id="path5704-8-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#0033fa;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="m 228.99495,403.33917 87.21014,-42.94455"
+       id="path5706-6-5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#0033fa;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:none"
+       d="m 290.8113,271.9405 25.00601,88.39285"
+       id="path5702-8-0-4"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+    <path
+       style="fill:none;stroke:#0033fa;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 357.50003,361.41784 63.35426,-0.72735"
+       id="path5704-8-1-4"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\g5366.png"
+       inkscape:export-xdpi="170.80533"
+       inkscape:export-ydpi="170.80533" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="cnn-kernel-base"
+     style="display:inline">
+    <rect
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.73199999;marker:none;enable-background:accumulate"
+       id="rect3293"
+       width="312.85706"
+       height="227.14278"
+       x="36.42857"
+       y="582.36218"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="152.46581"
+       inkscape:export-ydpi="152.46581" />
+    <g
+       transform="translate(0,300)"
+       style="display:inline"
+       id="g5366-42"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149">
+      <circle
+         id="path5307-5"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-0"
+         y="319.21082"
+         x="69.70797"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="319.21082"
+           x="69.70797"
+           id="tspan5360-4"
+           sodipodi:role="line">X<tspan
+   id="tspan5364-2"
+   style="font-size:65.00091553%;baseline-shift:sub">1</tspan><tspan
+   style="font-size:65.00091553%;baseline-shift:super"
+   id="tspan5521-1" /></tspan></text>
+    </g>
+    <g
+       style="display:inline"
+       transform="translate(0,344)"
+       id="g5366-4-2"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149">
+      <circle
+         id="path5307-1-7"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-9-7"
+         y="319.21082"
+         x="69.70797"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="319.21082"
+           x="69.70797"
+           id="tspan5360-5-9"
+           sodipodi:role="line">X<tspan
+   id="tspan5364-5-5"
+   style="font-size:65.00091553%;baseline-shift:sub">2</tspan><tspan
+   id="tspan5525-5"
+   style="font-size:65.00091553%;baseline-shift:super" /></tspan></text>
+    </g>
+    <g
+       style="display:inline"
+       transform="translate(0,386)"
+       id="g5366-7-4"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149">
+      <circle
+         id="path5307-4-0"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-7-3"
+         y="319.21082"
+         x="69.70797"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="319.21082"
+           x="69.70797"
+           id="tspan5360-3-4"
+           sodipodi:role="line">X<tspan
+   id="tspan5364-4-1"
+   style="font-size:65.00091553%;baseline-shift:sub">3</tspan><tspan
+   id="tspan5537-2"
+   style="font-size:65.00091553%;baseline-shift:super" /></tspan></text>
+    </g>
+    <g
+       style="display:inline"
+       transform="translate(230,336.69666)"
+       id="g5366-0-2"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149">
+      <circle
+         id="path5307-8-9"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-8-8"
+         y="319.21082"
+         x="69.70797"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="319.21082"
+           x="69.70797"
+           id="tspan5360-1-2"
+           sodipodi:role="line">y<tspan
+   id="tspan5364-52-2"
+   style="font-size:65.00091553%;baseline-shift:sub">1</tspan><tspan
+   id="tspan5541-7"
+   style="font-size:65.00091553%;baseline-shift:super">2</tspan></tspan></text>
+    </g>
+    <g
+       style="display:inline"
+       transform="translate(230,384.98984)"
+       id="g5366-4-3-8"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149">
+      <circle
+         id="path5307-1-2-58"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-9-4-3"
+         y="319.21082"
+         x="69.70797"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="319.21082"
+           x="69.70797"
+           id="tspan5360-5-6-9"
+           sodipodi:role="line">y<tspan
+   id="tspan5364-5-6-4"
+   style="font-size:65.00091553%;baseline-shift:sub">2</tspan><tspan
+   id="tspan5545-4"
+   style="font-size:65.00091553%;baseline-shift:super">2</tspan></tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       x="51.428574"
+       y="781.43359"
+       id="text5616-2"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149"><tspan
+         sodipodi:role="line"
+         x="51.428574"
+         y="781.43359"
+         id="tspan5620-6"
+         style="font-size:10px">layer l</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       x="289.85712"
+       y="781.43359"
+       id="text5616-5-2"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149"><tspan
+         sodipodi:role="line"
+         x="289.85712"
+         y="781.43359"
+         id="tspan5620-9-0"
+         style="font-size:10px">layer l+1</tspan></text>
+    <g
+       style="display:inline"
+       transform="translate(-2.1559715e-7,426)"
+       id="g5366-7-4-8"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149">
+      <circle
+         id="path5307-4-0-5"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.93199998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="76.428574"
+         cy="317.36218"
+         r="17.857143" />
+      <text
+         id="text5358-7-3-8"
+         y="319.21082"
+         x="69.70797"
+         style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           style="font-size:12px"
+           y="319.21082"
+           x="69.70797"
+           id="tspan5360-3-4-5"
+           sodipodi:role="line">X<tspan
+   id="tspan5364-4-1-8"
+   style="font-size:65.00091553%;baseline-shift:sub">3</tspan><tspan
+   id="tspan5537-2-7"
+   style="font-size:65.00091553%;baseline-shift:super" /></tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       x="149.42857"
+       y="781.43359"
+       id="text5616-2-3"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149"><tspan
+         sodipodi:role="line"
+         x="149.42857"
+         y="781.43359"
+         id="tspan5620-6-3"
+         style="font-size:10px">kernel</tspan><tspan
+         sodipodi:role="line"
+         x="149.42857"
+         y="840.05353"
+         style="font-size:10px"
+         id="tspan7564">(f=3)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+       x="221.85712"
+       y="781.43359"
+       id="text5616-5-2-5"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149"><tspan
+         sodipodi:role="line"
+         x="221.85712"
+         y="781.43359"
+         id="tspan5620-9-0-7"
+         style="font-size:10px">bias</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="cnn-kernel-w1"
+     style="display:none">
+    <g
+       id="g7576"
+       transform="matrix(1.2371303,0,0,1.2371303,-68.681357,-125.03815)"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-1.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149">
+      <rect
+         y="612.005"
+         x="180.35715"
+         height="12.5"
+         width="12.5"
+         id="rect7568"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.73199999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         id="text7570"
+         y="619.82251"
+         x="183.18398"
+         style="font-size:7.96977329px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         xml:space="preserve"><tspan
+           y="619.82251"
+           x="183.18398"
+           id="tspan7572"
+           sodipodi:role="line">w<tspan
+   id="tspan7574"
+   style="font-size:5.18042564px;baseline-shift:sub">1</tspan></tspan></text>
+    </g>
+    <g
+       transform="matrix(1.2371303,0,0,1.2371303,-68.681357,-109.48565)"
+       id="g7576-1"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-1.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149">
+      <rect
+         y="612.005"
+         x="180.35715"
+         height="12.5"
+         width="12.5"
+         id="rect7568-0"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.73199999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         id="text7570-8"
+         y="619.82251"
+         x="183.18398"
+         style="font-size:7.96977329px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         xml:space="preserve"><tspan
+           y="619.82251"
+           x="183.18398"
+           id="tspan7572-1"
+           sodipodi:role="line">w<tspan
+   id="tspan7574-0"
+   style="font-size:5.18042564px;baseline-shift:sub">2</tspan></tspan></text>
+    </g>
+    <g
+       transform="matrix(1.2371303,0,0,1.2371303,-68.681357,-93.977337)"
+       id="g7576-9"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-1.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149">
+      <rect
+         y="612.005"
+         x="180.35715"
+         height="12.5"
+         width="12.5"
+         id="rect7568-2"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.73199999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         id="text7570-4"
+         y="619.82251"
+         x="183.18398"
+         style="font-size:7.96977329px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         xml:space="preserve"><tspan
+           y="619.82251"
+           x="183.18398"
+           id="tspan7572-9"
+           sodipodi:role="line">w<tspan
+   id="tspan7574-1"
+   style="font-size:5.18042564px;baseline-shift:sub">3</tspan></tspan></text>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 94.449263,618.50166 c 59.093927,20.70813 59.093927,20.70813 59.093927,20.70813"
+       id="path7648"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-1.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 94.449263,660.42299 59.093927,-5.05076"
+       id="path7650"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-1.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 94.449263,703.35448 154.04826,671.0296"
+       id="path7652"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-1.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 287.3884,655.37224 182.08,655.4985"
+       id="path7654"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-1.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 172.86235,632.13872 c 3.40926,2.56747 -0.47625,19.05775 6.43972,23.48605 -7.47469,5.53151 -2.52538,20.16096 -6.43972,22.98097"
+       id="path7656"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-1.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       x="221.85712"
+       y="651.43359"
+       id="text5616-5-2-5-3"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-1.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149"><tspan
+         sodipodi:role="line"
+         x="221.85712"
+         y="651.43359"
+         id="tspan5620-9-0-7-3"
+         style="font-size:10px">+ b</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer6"
+     inkscape:label="cnn-kernel-w2"
+     style="display:inline">
+    <g
+       id="g7576-4"
+       transform="matrix(1.2371303,0,0,1.2371303,-68.681357,-79.482314)">
+      <rect
+         y="612.005"
+         x="180.35715"
+         height="12.5"
+         width="12.5"
+         id="rect7568-22"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.73199999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         id="text7570-0"
+         y="619.82251"
+         x="183.18398"
+         style="font-size:7.96977329px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         xml:space="preserve"><tspan
+           y="619.82251"
+           x="183.18398"
+           id="tspan7572-12"
+           sodipodi:role="line">w<tspan
+   id="tspan7574-7"
+   style="font-size:5.18042564px;baseline-shift:sub">1</tspan></tspan></text>
+    </g>
+    <g
+       transform="matrix(1.2371303,0,0,1.2371303,-68.681357,-63.929814)"
+       id="g7576-1-7">
+      <rect
+         y="612.005"
+         x="180.35715"
+         height="12.5"
+         width="12.5"
+         id="rect7568-0-0"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.73199999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         id="text7570-8-2"
+         y="619.82251"
+         x="183.18398"
+         style="font-size:7.96977329px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         xml:space="preserve"><tspan
+           y="619.82251"
+           x="183.18398"
+           id="tspan7572-1-4"
+           sodipodi:role="line">w<tspan
+   id="tspan7574-0-1"
+   style="font-size:5.18042564px;baseline-shift:sub">2</tspan></tspan></text>
+    </g>
+    <g
+       transform="matrix(1.2371303,0,0,1.2371303,-68.681357,-48.421501)"
+       id="g7576-9-0">
+      <rect
+         y="612.005"
+         x="180.35715"
+         height="12.5"
+         width="12.5"
+         id="rect7568-2-3"
+         style="color:#000000;fill:none;stroke:#000000;stroke-width:0.73199999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+      <text
+         id="text7570-4-7"
+         y="619.82251"
+         x="183.18398"
+         style="font-size:7.96977329px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         xml:space="preserve"><tspan
+           y="619.82251"
+           x="183.18398"
+           id="tspan7572-9-3"
+           sodipodi:role="line">w<tspan
+   id="tspan7574-1-9"
+   style="font-size:5.18042564px;baseline-shift:sub">3</tspan></tspan></text>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 94.449263,664.05754 c 59.093927,20.70813 59.093927,20.70813 59.093927,20.70813"
+       id="path7648-5"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 94.449263,705.97887 59.093927,-5.05076"
+       id="path7650-9"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 94.449263,748.91036 154.04826,716.58548"
+       id="path7652-7"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 287.64094,700.92812 182.08,701.05438"
+       id="path7654-2"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 172.86235,677.6946 c 3.40926,2.56747 -0.47625,19.05775 6.43972,23.48605 -7.47469,5.53151 -2.52538,20.16096 -6.43972,22.98097"
+       id="path7656-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;display:inline;font-family:Sans"
+       x="221.85712"
+       y="696.98932"
+       id="text5616-5-2-5-3-2"><tspan
+         sodipodi:role="line"
+         x="221.85712"
+         y="696.98932"
+         id="tspan5620-9-0-7-3-8"
+         style="font-size:10px">+ b</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer7"
+     inkscape:label="cnn-kernel-transition1"
+     style="display:none;opacity:0.46902651">
+    <rect
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.90557939;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+       id="rect7568-7"
+       width="15.464128"
+       height="15.464128"
+       x="154.44394"
+       y="647.10205"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-2.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:9.85964775px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="157.94109"
+       y="656.77332"
+       id="text7570-08"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-2.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149"><tspan
+         sodipodi:role="line"
+         id="tspan7572-18"
+         x="157.94109"
+         y="656.77332">w<tspan
+   style="font-size:6.40886164px;baseline-shift:sub"
+   id="tspan7574-3">1</tspan></tspan></text>
+    <rect
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.90557939;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+       id="rect7568-0-3"
+       width="15.464128"
+       height="15.464128"
+       x="154.44394"
+       y="662.65454"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-2.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:9.85964775px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="157.94109"
+       y="672.32581"
+       id="text7570-8-6"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-2.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149"><tspan
+         sodipodi:role="line"
+         id="tspan7572-1-2"
+         x="157.94109"
+         y="672.32581">w<tspan
+   style="font-size:6.40886164px;baseline-shift:sub"
+   id="tspan7574-0-0">2</tspan></tspan></text>
+    <rect
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:0.90557939;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+       id="rect7568-2-8"
+       width="15.464128"
+       height="15.464128"
+       x="154.44394"
+       y="678.16284"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-2.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:9.85964775px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="157.94109"
+       y="687.83411"
+       id="text7570-4-4"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-2.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149"><tspan
+         sodipodi:role="line"
+         id="tspan7572-9-1"
+         x="157.94109"
+         y="687.83411">w<tspan
+   style="font-size:6.40886164px;baseline-shift:sub"
+   id="tspan7574-1-8">3</tspan></tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer8"
+     inkscape:label="cnn-kernel-transition1#1"
+     style="display:none"
+     sodipodi:insensitive="true">
+    <rect
+       style="opacity:0.46902651;color:#000000;fill:none;stroke:#000000;stroke-width:0.90557939;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect7568-7-4"
+       width="15.464128"
+       height="15.464128"
+       x="154.44394"
+       y="662.38538"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149" />
+    <text
+       xml:space="preserve"
+       style="font-size:9.85964775px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;opacity:0.46902651;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="157.94109"
+       y="672.05664"
+       id="text7570-08-8"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149"><tspan
+         sodipodi:role="line"
+         id="tspan7572-18-8"
+         x="157.94109"
+         y="672.05664">w<tspan
+   style="font-size:6.40886164px;baseline-shift:sub"
+   id="tspan7574-3-1">1</tspan></tspan></text>
+    <rect
+       style="opacity:0.46902651;color:#000000;fill:none;stroke:#000000;stroke-width:0.90557939;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect7568-0-3-3"
+       width="15.464128"
+       height="15.464128"
+       x="154.44394"
+       y="677.93787"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149" />
+    <text
+       xml:space="preserve"
+       style="font-size:9.85964775px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;opacity:0.46902651;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="157.94109"
+       y="687.60913"
+       id="text7570-8-6-6"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149"><tspan
+         sodipodi:role="line"
+         id="tspan7572-1-2-7"
+         x="157.94109"
+         y="687.60913">w<tspan
+   style="font-size:6.40886164px;baseline-shift:sub"
+   id="tspan7574-0-0-8">2</tspan></tspan></text>
+    <rect
+       style="opacity:0.46902651;color:#000000;fill:none;stroke:#000000;stroke-width:0.90557939;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect7568-2-8-9"
+       width="15.464128"
+       height="15.464128"
+       x="154.44394"
+       y="693.44617"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149" />
+    <text
+       xml:space="preserve"
+       style="font-size:9.85964775px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;opacity:0.46902651;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="157.94109"
+       y="703.11743"
+       id="text7570-4-4-5"
+       inkscape:export-filename="C:\Users\Marcin\Desktop\projects\my\page\repo\images\draft\cnn-4.png"
+       inkscape:export-xdpi="164.20149"
+       inkscape:export-ydpi="164.20149"><tspan
+         sodipodi:role="line"
+         id="tspan7572-9-1-5"
+         x="157.94109"
+         y="703.11743">w<tspan
+   style="font-size:6.40886164px;baseline-shift:sub"
+   id="tspan7574-1-8-5">3</tspan></tspan></text>
+  </g>
+</svg>

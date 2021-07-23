@@ -1,0 +1,75 @@
+%word-wrap {
+  word-break: normal;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+}
+
+%ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+%link-reset {
+  &,
+  & > a {
+    text-decoration: none;
+  }
+}
+
+%char-spacing {
+  // wonder if this causes problems?
+  letter-spacing: $font-letter-spacing; // hmm.....
+}
+
+@mixin margin-v($top, $bottom) {
+  margin-top: $top;
+  margin-bottom: $bottom;
+}
+
+@mixin highlighter($highlighter-color) {
+  border-bottom: 3px solid $highlighter-color;
+  box-shadow: inset 0 -5px 0 $highlighter-color;
+
+  &:hover {
+    background: $highlighter-color;
+    box-shadow: none;
+    border-color: transparent;
+  }
+}
+
+@mixin non-selectable() {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  &::-moz-selection {
+    background-color: transparent;
+  }
+  &::selection {
+    background-color: transparent;
+  }
+}
+
+@mixin dark-mode {
+  .dark-theme {
+    @content;
+  }
+}
+
+@mixin mq-above($width) {
+  @media screen and (min-width: $width) {
+    @content;
+  }
+}
+
+%post-margins {
+  margin-left: $post-padding-h;
+  margin-right: $post-padding-h;
+  @include mq-above($break-content-desktop) {
+    margin-left: $post-padding-h-desktop;
+    margin-right: $post-padding-h-desktop;
+  }
+}

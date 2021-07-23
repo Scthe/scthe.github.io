@@ -1,29 +1,76 @@
-$post-item-elements-margin: 1.0rem;
-$post-items-spacing: 3.5rem;
+.posts_list-meta {
+  @extend %post-margins;
+}
 
-.post-item{
-  margin-bottom: $post-items-spacing;
+.posts_list {
+  @include margin-v($post-element-margin-top * 2, 0);
+}
 
-  &:last-child{
+.posts_list-inner {
+  @extend %post-margins;
+  padding: 0;
+}
+
+.post_item {
+  margin-bottom: $post_items-spacing;
+  display: block;
+
+  &:last-child {
     margin-bottom: 0;
   }
 }
 
-.post-item__title{
-  margin-bottom: $post-item-elements-margin;
+.post_item-title {
+  margin-bottom: 0.5rem;
   text-align: center;
+  font-weight: $font-weight-normal;
+
+  & a:hover {
+    text-decoration: underline;
+  }
 }
 
-.post-item__date{
-  margin-bottom: $post-item-elements-margin;
-  text-align: center;
+.post_item-meta_row {
+  display: flex;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
 }
 
-.post-item__excerpt{
-    margin-bottom: $post-item-elements-margin;
+.post_item-dot {
+  margin: 0 8px;
+  display: inline-block;
+  font-weight: $font-weight-bold;
 }
 
-.post-item__read-more{
-    text-align: center;
-    text-transform: uppercase;
+.post_item-date {
+  color: var(--color-subtitle);
+  text-transform: uppercase;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: $font-weight-normal;
+  margin: 0 auto;
+}
+
+.post_item-excerpt {
+  margin-bottom: 0.5rem;
+  @extend %char-spacing;
+}
+
+.post_item-read_more {
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+.post_item-read_more-link {
+  color: darken($color-accent, 8%);
+  font-weight: $font-weight-bold;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+@include dark-mode {
+  .post_item-read_more-link {
+    color: lighten($color-accent, 8%);
+  }
 }

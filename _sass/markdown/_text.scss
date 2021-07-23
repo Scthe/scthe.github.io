@@ -1,0 +1,69 @@
+$blockquote-left-border: #ddd;
+
+.markdown {
+  // paragraph text
+  & > p {
+    @extend %word-wrap;
+    @extend %post-margins;
+    @include margin-v($post-element-margin-top, 0);
+    @extend %char-spacing;
+  }
+
+  // h2: major header ##
+  // h3: minor header ###
+  h2,
+  h3,
+  h4 {
+    @extend %post-margins;
+    @include margin-v($post-element-margin-top, 0);
+  }
+
+  // bold: **text**
+  strong {
+    color: var(--color-strong);
+    font-weight: $font-weight-bold;
+  }
+
+  // italic: *text*
+  em {
+    font-style: italic;
+  }
+
+  // blockquote: '>'
+  blockquote {
+    @extend %post-margins;
+    @include margin-v($post-element-margin-top, 0);
+    font-style: italic;
+    color: var(--color-subtitle);
+    border-left: 5px solid $blockquote-left-border;
+    @extend %char-spacing;
+
+    & > * {
+      margin-left: 0.8em;
+    }
+  }
+
+  // inline code
+  p > code,
+  p > blockquote > code {
+    background-color: #009cb580;
+    color: var(--color-base);
+  }
+
+  // drop cap
+  @include mq-above($break-content-desktop) {
+    & > p:first-of-type::first-letter {
+      float: left;
+      font-size: $line-height-base * 3;
+      line-height: 0.9;
+      padding: 4px 10px 0 3px;
+    }
+  }
+}
+
+@include dark-mode {
+  .markdown p > code,
+  .markdown p > blockquote > code {
+    color: var(--color-base);
+  }
+}

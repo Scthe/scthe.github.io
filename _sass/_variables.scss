@@ -7,7 +7,7 @@ $font-size-h4: 1rem;
 $font-size-h5: 1rem;
 $font-size-h6: 1rem;
 $font-size-blockquote: 1.25rem;
-$font-size-image-caption: 0.85rem;
+$font-size-image-caption: 0.9rem;
 
 // text: line-height
 $line-height-base: 2em;
@@ -26,10 +26,12 @@ $font-code: "Ubuntu Mono", monospace;
 // text: margins
 $post-padding-h: 1rem; // on mobile
 $post-padding-h-desktop: 3rem; // on desktop
-$post-element-margin-top: 2.5em;
+$post-header-margin-top: 2.5em;
+$post-p-margin-top: 1em;
+$post-element-margin-top: 2em;
 $post-figure-caption-margin-top: 0.8em;
 $post-list-margin-top: 1.25em;
-$post-list-item-margin-top: 0.7em;
+$post-list-item-margin-top: 0.3em;
 $post-list-left-inset: 0;
 
 // basic colors

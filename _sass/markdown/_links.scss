@@ -1,5 +1,5 @@
 // links in text (not anchor for paragraph)
-.markdown a:not(.anchorjs-link) {
+.markdown a:not(.anchorjs-link):not(.lazyimage-lightbox_link) {
   @include highlighter($link-highlight);
 
   color: inherit;

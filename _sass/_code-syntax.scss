@@ -1,6 +1,6 @@
 // General colors
 $syntax-text-color: #f8f8f2;
-$syntax-background-color: #282828;
+$syntax-background-color: #202020;
 $syntax-gutter-text-color: $syntax-text-color;
 
 // inline highlight
@@ -23,6 +23,15 @@ $syntax-gutter-text-color: $syntax-text-color;
   @extend %inline-highlight;
 }
 
+.markdown .highlight {
+  margin: $post-element-margin-top 0 0;
+
+  & > pre {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
 .highlight {
   font-family: $font-code;
   font-style: normal;
@@ -30,8 +39,9 @@ $syntax-gutter-text-color: $syntax-text-color;
   & > pre {
     overflow-x: auto;
     background-color: $syntax-background-color;
-    border-radius: 6px;
     padding: 1rem 1.5rem;
+    border-top: 5px solid var(--color-accent);
+    word-spacing: normal;
   }
 
   & code {
@@ -54,7 +64,7 @@ $syntax-gutter-text-color: $syntax-text-color;
   background-color: #282828;
 }
 .highlight .c {
-  color: #75715e;
+  color: #8c8872;
 } /* Comment */
 .highlight .err {
   color: #960050;
@@ -70,22 +80,22 @@ $syntax-gutter-text-color: $syntax-text-color;
   color: #f8f8f2;
 } /* Name */
 .highlight .o {
-  color: #f92672;
+  color: #ff2f7a;
 } /* Operator */
 .highlight .p {
   color: #f8f8f2;
 } /* Punctuation */
 .highlight .cm {
-  color: #75715e;
+  color: #8c8872;
 } /* Comment.Multiline */
 .highlight .cp {
-  color: #75715e;
+  color: #8c8872;
 } /* Comment.Preproc */
 .highlight .c1 {
-  color: #75715e;
+  color: #8c8872;
 } /* Comment.Single */
 .highlight .cs {
-  color: #75715e;
+  color: #8c8872;
 } /* Comment.Special */
 .highlight .ge {
   font-style: italic;
@@ -100,7 +110,7 @@ $syntax-gutter-text-color: $syntax-text-color;
   color: #66d9ef;
 } /* Keyword.Declaration */
 .highlight .kn {
-  color: #f92672;
+  color: #ff2f7a;
 } /* Keyword.Namespace */
 .highlight .kp {
   color: #66d9ef;
@@ -157,13 +167,13 @@ $syntax-gutter-text-color: $syntax-text-color;
   color: #f8f8f2;
 } /* Name.Property */
 .highlight .nt {
-  color: #f92672;
+  color: #ff2f7a;
 } /* Name.Tag */
 .highlight .nv {
   color: #f8f8f2;
 } /* Name.Variable */
 .highlight .ow {
-  color: #f92672;
+  color: #ff2f7a;
 } /* Operator.Word */
 .highlight .w {
   color: #f8f8f2;
@@ -232,10 +242,10 @@ $syntax-gutter-text-color: $syntax-text-color;
 .highlight .gh {
 } /* Generic Heading & Diff Header */
 .highlight .gu {
-  color: #75715e;
+  color: #8c8872;
 } /* Generic.Subheading & Diff Unified/Comment? */
 .highlight .gd {
-  color: #f92672;
+  color: #ff2f7a;
 } /* Generic.Deleted & Diff Deleted */
 .highlight .gi {
   color: #a6e22e;

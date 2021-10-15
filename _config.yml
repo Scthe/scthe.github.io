@@ -3,7 +3,6 @@ github_account: "https://github.com/Scthe"
 title: "Scthe's blog"
 description: "Mostly some programming stuff"
 url: "https://scthe.github.io"
-permalink: /blog/:title/
 
 markdown: kramdown
 highlighter: rouge

@@ -3,7 +3,7 @@
 }
 
 .posts_list {
-  @include margin-v($post-element-margin-top * 2, 0);
+  @include margin-v($post-element-margin-top, 0);
 }
 
 .posts_list-inner {
@@ -59,6 +59,7 @@
 .post_item-read_more {
   margin-bottom: 0;
   font-size: 1rem;
+  font-weight: $font-weight-bold;
 }
 
 .post_item-read_more-link {

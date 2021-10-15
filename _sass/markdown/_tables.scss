@@ -17,8 +17,4 @@
   tbody tr:nth-child(odd) th {
     background-color: #{$color-accent}0a;
   }
-
-  & + figcaption {
-    @extend %figure-caption;
-  }
 }

@@ -56,20 +56,21 @@
   }
 }
 
-.medium-zoom--opened {
-  .medium-zoom-overlay {
-    z-index: $z-index-image-popup;
-  }
-  .medium-zoom-image--opened {
-    z-index: $z-index-image-popup + 10;
-    background-color: var(--background-content);
-  }
+.markdown figure {
+  @include margin-v($post-element-margin-top, 0);
+  margin-left: 0;
+  margin-right: 0;
 }
 
-@include dark-mode {
-  .medium-zoom-image--opened {
-    filter: $dark-mode-image-filter;
-    background-color: var(--background-image-dark);
+.figure figcaption,
+.table_wrapper > table + figcaption {
+  @extend %post-margins;
+  font-size: $font-size-image-caption;
+  margin-top: $post-figure-caption-margin-top;
+  text-align: center;
+
+  & > p {
+    display: inline;
   }
 }
 

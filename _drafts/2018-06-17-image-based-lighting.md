@@ -1,5 +1,6 @@
 ---
 title: "Image based lighting notes"
+permalink: "Image based lighting notes"
 excerpt: "Image based lighting - equations + explanation"
 date: 2018-06-17 12:00:00
 tags: ['Rendering', 'PBR']

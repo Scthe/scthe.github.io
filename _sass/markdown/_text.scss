@@ -5,17 +5,21 @@ $blockquote-left-border: #ddd;
   & > p {
     @extend %word-wrap;
     @extend %post-margins;
-    @include margin-v($post-element-margin-top, 0);
+    @include margin-v($post-p-margin-top, 0);
     @extend %char-spacing;
   }
 
   // h2: major header ##
   // h3: minor header ###
   h2,
-  h3,
+  h3 {
+    @extend %post-margins;
+    @include margin-v($post-header-margin-top, 0);
+  }
+
   h4 {
     @extend %post-margins;
-    @include margin-v($post-element-margin-top, 0);
+    @include margin-v($post-p-margin-top, 0);
   }
 
   // bold: **text**

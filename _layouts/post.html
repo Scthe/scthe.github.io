@@ -4,8 +4,9 @@ layout: default
 
 <header class="post-meta">
   <h1 class="content-title">{{ page.title }}</h1>
+
   <span class="content-subtitle">
-    {{ page.date | date_to_string}}
+    <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date_to_string}}</time>
   </span>
 
   {% comment %}

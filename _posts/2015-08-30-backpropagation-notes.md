@@ -1,5 +1,6 @@
 ---
-title: "Backpropagation notes"
+title: "Math behind (convolutional) neural networks"
+permalink: "/blog/backpropagation-notes/"
 excerpt: "My notes containing neural network backpropagation equations. From chain rule to cost function, gradient descent and deltas. Complete with Convolutional Neural Networks as used for images."
 date: 2015-08-30 12:00:00
 tags: ['Artificial intelligence']
@@ -18,12 +19,13 @@ This is an electronic version of my notes created during [super-resolution using
 > Do not skip this part. Whole article is just application of this rule and following graphic representation helps a lot.
 
 {% capture image_caption %}
-Chain rule as applied to functions
+Example combination of functions f, f2 that we want to calculate partial derivatives from
 {% endcapture %}
 {% include lazyimage.html
   image_src='chain-rule2.png'
   width='586'
   height='294'
+  alt='Function f applied to x produces y. Then another function f2 takes y and produces z.'
 %}
 
 We have $$y=f(x)$$. Let say we also have some $${dz \over dy}$$ (requirement: *z* is function of *y*) and we know the function *f*. We can calculate $${dz \over dx}$$ using following formula:
@@ -45,6 +47,7 @@ Example of neural network
   image_src='network.png'
   width='700'
   height='391'
+  alt='Neural network with 3 layers, weights, biases. Results in hypothesis h wrt. current weights and biases.'
 %}
 
 
@@ -70,6 +73,7 @@ Relation between 2 nodes on successive layers
   image_src='forward-1.png'
   width='704'
   height='205'
+  alt='Calulation of value of node from layer l+1. Multiply value from previous layer by weight, add bias and apply activation function.'
 %}
 
 
@@ -148,6 +152,7 @@ Relation between 2 nodes on successive layers. Please refer to dictionary for ex
   image_src='forward-1.png'
   width='704'
   height='205'
+  alt='Calulation of value of node from layer l+1. Multiply value from previous layer by weight, add bias and apply activation function.'
 %}
 
 Let's assume that **l** is the layer before the last ($$l + 1 = L$$). We have just provided equations for $$\delta^{(L)}_j = \frac{\partial}{\partial x^{(L)}_j} J(W,b;Y,X)$$. After investigating the image above it turns out that we can use chain rule to provide formula for $$\delta^{(l)}_i$$. We are going to do this in several steps. First observation:
@@ -165,12 +170,13 @@ $$\frac{\partial}{\partial y^{(l)}_i} J(W,b;Y,X) =\\
 
 
 {% capture image_caption %}
-On previous image we focused only on 2 nodes as it makes easier to derive formulas. In reality, every node contributes to values of all nodes on next layer?
+On previous image we focused only on 2 nodes as it makes easier to derive formulas. In reality, every node contributes to values of all nodes on next layer.
 {% endcapture %}
 {% include lazyimage.html
   image_src='network.png'
   width='700'
   height='391'
+  alt='Neural network with 3 layers, weights, biases. Results in hypothesis h wrt. current weights and biases.'
 %}
 
 
@@ -198,6 +204,7 @@ Relation between 2 nodes on successive layers. Please refer to dictionary for ex
   image_src='forward-1.png'
   width='704'
   height='205'
+  alt='Calulation of value of node from layer l+1. Multiply value from previous layer by weight, add bias and apply activation function.'
 %}
 
 This should be simple:
@@ -275,6 +282,7 @@ Weights sharing in CNN. For each node on next layer the kernel stays the same, b
   image_src='cnn-all.gif'
   width='530'
   height='385'
+  alt='Weights in CNN create a kernel (that does not change during a single epoch) that is multiplied by previous layer output.'
 %}
 
 

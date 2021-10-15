@@ -50,7 +50,6 @@
     setAppTheme(isLight);
 
     function setAppTheme(nextIsLight) {
-      console.log(`setAppTheme light=${nextIsLight}`);
       const el = document.documentElement;
       if (nextIsLight) {
         el.classList.remove("dark-theme");
@@ -92,6 +91,9 @@
       Content and illustrations © 2021 Marcin Matuszczyk. All Rights Reserved.
     </div>
   </footer>
+
+  <div id="image-zoom-alert" role="status" tabindex="-1" aria-live="assertive" class="sr-only">
+  </div>
 
   <!-- Scripts -->
   <script src="{{ site.baseurl }}/assets/scripts/anchor-js/anchor.min.js"></script>

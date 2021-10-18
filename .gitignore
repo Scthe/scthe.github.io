@@ -36,6 +36,10 @@ apollo.config.js
 generated/*
 !generated/Readme.md
 
+# GraphQL schema
+src/__generated__/*
+!src/__generated__/.keep
+
 # my
 references
 _references

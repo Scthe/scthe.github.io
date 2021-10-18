@@ -5,11 +5,8 @@ import { PageProps, Link, graphql } from 'gatsby';
 import Layout from '../components/layout';
 import Seo from '../components/seo';
 
-type DataProps = {
-  site: {
-    buildTime: string;
-  };
-};
+type DataProps = GatsbyTypes.UsingTypescriptQueryQuery;
+
 
 const UsingTypescript: React.FC<PageProps<DataProps>> = ({
   data,
@@ -46,7 +43,7 @@ const UsingTypescript: React.FC<PageProps<DataProps>> = ({
 export default UsingTypescript;
 
 export const query = graphql`
-  {
+  query UsingTypescriptQuery {
     site {
       buildTime(formatString: "YYYY-MM-DD hh:mm a z")
     }

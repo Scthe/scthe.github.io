@@ -3,12 +3,13 @@ import { Link, graphql } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
 import { MDXProvider } from '@mdx-js/react';
 
-import Bio from '../components/bio';
 import Layout from '../components/layout';
 import Seo from '../components/seo';
-import PageHeader from '../components/pageHeader';
+// import PageHeader from '../components/pageHeader';
 
-const shortcodes = { PageHeader };
+const shortcodes = {
+  /*PageHeader*/
+};
 
 const BlogPostTemplate = ({ data, location }) => {
   const post = data.mdx;
@@ -16,10 +17,10 @@ const BlogPostTemplate = ({ data, location }) => {
 
   return (
     <Layout location={location} title={siteTitle}>
-      <Seo
+      {/* <Seo
         title={post.frontmatter.title}
         description={post.frontmatter.description || post.excerpt}
-      />
+      /> */}
       <article
         className="blog-post"
         itemScope
@@ -33,9 +34,6 @@ const BlogPostTemplate = ({ data, location }) => {
           <MDXRenderer>{post.body}</MDXRenderer>
         </MDXProvider>
         <hr />
-        <footer>
-          <Bio />
-        </footer>
       </article>
     </Layout>
   );

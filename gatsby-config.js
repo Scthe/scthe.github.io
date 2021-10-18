@@ -4,13 +4,15 @@ module.exports = {
     author: {
       name: `Marcin Matuszczyk`,
       username: `Scthe`,
-      github_account: 'https://github.com/Scthe',
+      githubAccount: 'https://github.com/Scthe',
     },
     description: `Mostly some programming stuff`,
     siteUrl: `https://scthe.github.io`,
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-sass`,
+    'gatsby-plugin-scss-typescript',
     `gatsby-plugin-image`,
     {
       resolve: `gatsby-source-filesystem`,

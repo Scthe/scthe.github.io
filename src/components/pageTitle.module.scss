@@ -1,0 +1,12 @@
+@import '../styles/mixins';
+
+.postsMeta {
+  @extend %post-margins;
+}
+
+.contentTitle {
+  font-size: 2.25em;
+  text-align: center;
+  margin-bottom: 0.5em;
+  font-weight: var(--font-weight-normal);
+}

@@ -1,0 +1,10 @@
+@import '../styles/mixins';
+
+.postsList {
+  @include margin-v(var(--post-element-margin-top), 0);
+}
+
+.postsListInner {
+  @extend %post-margins;
+  padding: 0;
+}

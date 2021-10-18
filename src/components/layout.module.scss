@@ -1,0 +1,47 @@
+@import '../styles/mixins';
+
+.heroWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--hero-height);
+  background: linear-gradient(
+    to right,
+    var(--color-hero-1),
+    var(--color-hero-2)
+  );
+}
+
+.content {
+  white-space: normal;
+  position: relative;
+  margin: 0 auto 0;
+  padding-top: var(--content-margin-top);
+  padding-bottom: var(--content-margin-bottom);
+
+  @include mq-above($break-content-desktop) {
+    max-width: $break-content-desktop;
+    padding-right: var(--content-desktop-offset-from-center);
+    padding-bottom: var(--content-desktop-margin-bottom);
+  }
+}
+
+.contentInner {
+  background-color: var(--background-content);
+  border-radius: 24px;
+  padding: var(--content-padding-vert) 0;
+
+  @include mq-above($break-content-desktop) {
+    box-shadow: 0 4px 8px 4px var(--shadow-content);
+  }
+}
+
+.footer {
+  @extend %post-margins;
+  text-align: center;
+}
+
+.footerCopyright {
+  font-size: 0.75em;
+}

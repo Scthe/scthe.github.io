@@ -1,0 +1,61 @@
+@import '../styles/mixins';
+
+.postItem {
+  margin-bottom: var(--post_items-spacing);
+  display: block;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.postItemTitle {
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-weight: var(--font-weight-normal);
+
+  & a:hover {
+    text-decoration: underline;
+  }
+}
+
+.postItemMetaRow {
+  display: flex;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.postItemDate {
+  color: var(--color-subtitle);
+  text-transform: uppercase;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: var(--font-weight-normal);
+  margin: 0 auto;
+}
+
+.postItemExcerpt {
+  margin-bottom: 0.5rem;
+  @extend %char-spacing;
+}
+
+.postItemReadMore {
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: var(--font-weight-bold);
+}
+
+.postItemReadMoreLink {
+  color: var(--color-accent-darken);
+  font-weight: var(--font-weight-bold);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@include dark-mode {
+  .postItemReadMoreLink {
+    color: var(--color-accent-lighten);
+  }
+}

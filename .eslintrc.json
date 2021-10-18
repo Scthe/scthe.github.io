@@ -62,7 +62,13 @@
       }
     ],
     "import/no-duplicates": "off", // default eslint is good enough?
-    "import/no-unused-modules": ["warn", { "unusedExports": true }],
+    "import/no-unused-modules": [
+      "warn",
+      {
+        "unusedExports": true,
+        "ignoreExports": ["src/pages"]
+      }
+    ],
     // we have TS for following:
     "import/namespace": "off",
     "import/no-named-as-default": "off",

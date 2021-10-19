@@ -1,8 +1,9 @@
 ---
 title: Hello World
+permalink: "/blog/hello-world"
+excerpt: "TODO remove me"
 date: "2015-05-01T22:12:03.284Z"
 description: "Hello World"
-slug: "/blog/hello-world"
 ---
 
 This is my first post on my new fake blog! How exciting!

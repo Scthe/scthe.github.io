@@ -20,8 +20,8 @@ const BlogIndex: React.FC<PageProps<DataProps>> = ({ data }) => {
           date: post.frontmatter!.date!,
           isoDate: post.frontmatter!.isoDate!,
           title: post.frontmatter!.title!,
-          excerpt: post.frontmatter!.description!,
-          slug: post.frontmatter!.slug!,
+          excerpt: post.frontmatter!.excerpt!,
+          permalink: post.frontmatter!.permalink!,
         }))}
       />
     </Layout>
@@ -40,9 +40,9 @@ export const pageQuery = graphql`
     allMdx(sort: { fields: frontmatter___date, order: DESC }) {
       nodes {
         frontmatter {
-          slug
           title
-          description
+          permalink
+          excerpt
           date(formatString: "DD MMM YYYY")
           isoDate: date(formatString: "YYYY-MM-DDTHH:mm:ssZ")
         }

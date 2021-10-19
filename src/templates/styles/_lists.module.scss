@@ -1,14 +1,16 @@
-.markdown {
+@import '../../styles/mixins';
+
+:global(.markdown) {
   ul,
   ol,
   dl {
     @extend %post-margins;
-    @include margin-v($post-list-margin-top, 0);
+    @include margin-v(var(--post-list-margin-top), 0);
   }
 
   li {
-    margin-left: $post-list-left-inset;
-    margin-top: $post-list-item-margin-top;
+    margin-left: var(--post-list-left-inset);
+    margin-top: var(--post-list-item-margin-top);
 
     &:first-child {
       margin-top: 0px; // already from list element

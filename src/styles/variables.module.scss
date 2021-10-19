@@ -43,6 +43,7 @@ $color-accent: #009cb5;
   --color-accent-darken: #{darken($color-accent, 8%)};
 
   --color-selection: #{$color-accent}80;
+  --color-table-alternate-row: #{$color-accent}0a;
   --link-highlight: #009cb580;
   --color-hero-1: #add5f5;
   --color-hero-2: #47a6d8;

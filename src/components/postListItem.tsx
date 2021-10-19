@@ -6,7 +6,7 @@ export interface PostListItemProps {
   title: string;
   date: string;
   isoDate: string;
-  slug: string;
+  permalink: string;
   excerpt: string;
 }
 
@@ -14,14 +14,14 @@ const PostListItem: React.FC<PostListItemProps> = ({
   title,
   date,
   isoDate,
-  slug,
+  permalink,
   excerpt,
 }) => {
   return (
     <article className={styles.postItem} itemType="http://schema.org/Article">
       <header>
         <h2 className={styles.postItemTitle} itemProp="headline">
-          <Link to={slug} itemProp="url">
+          <Link to={permalink} itemProp="url">
             {title}
           </Link>
         </h2>
@@ -40,7 +40,7 @@ const PostListItem: React.FC<PostListItemProps> = ({
       <footer>
         <span className={styles.postItemReadMore}>
           Continue reading&nbsp;
-          <Link to={slug} tabIndex={-1} className={styles.postItemReadMoreLink}>
+          <Link to={permalink} tabIndex={-1} className={styles.postItemReadMoreLink}>
             {title}
           </Link>
           <span aria-hidden="true">&nbsp;&rarr;</span>

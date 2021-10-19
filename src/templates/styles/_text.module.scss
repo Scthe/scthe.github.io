@@ -1,11 +1,13 @@
+@import '../../styles/mixins';
+
 $blockquote-left-border: #ddd;
 
-.markdown {
+:global(.markdown) {
   // paragraph text
   & > p {
     @extend %word-wrap;
     @extend %post-margins;
-    @include margin-v($post-p-margin-top, 0);
+    @include margin-v(var(--post-p-margin-top), 0);
     @extend %char-spacing;
   }
 
@@ -14,18 +16,18 @@ $blockquote-left-border: #ddd;
   h2,
   h3 {
     @extend %post-margins;
-    @include margin-v($post-header-margin-top, 0);
+    @include margin-v(var(--post-header-margin-top), 0);
   }
 
   h4 {
     @extend %post-margins;
-    @include margin-v($post-p-margin-top, 0);
+    @include margin-v(var(--post-p-margin-top), 0);
   }
 
   // bold: **text**
   strong {
     color: var(--color-strong);
-    font-weight: $font-weight-bold;
+    font-weight: var(--font-weight-bold);
   }
 
   // italic: *text*
@@ -36,7 +38,7 @@ $blockquote-left-border: #ddd;
   // blockquote: '>'
   blockquote {
     @extend %post-margins;
-    @include margin-v($post-element-margin-top, 0);
+    @include margin-v(var(--post-element-margin-top), 0);
     font-style: italic;
     color: var(--color-subtitle);
     border-left: 5px solid $blockquote-left-border;
@@ -58,7 +60,7 @@ $blockquote-left-border: #ddd;
   @include mq-above($break-content-desktop) {
     & > p:first-of-type::first-letter {
       float: left;
-      font-size: $line-height-base * 3;
+      font-size: calc(var(--line-height-base) * 3);
       line-height: 0.9;
       padding: 4px 10px 0 3px;
     }
@@ -66,8 +68,8 @@ $blockquote-left-border: #ddd;
 }
 
 @include dark-mode {
-  .markdown p > code,
-  .markdown p > blockquote > code {
+  :global(.markdown) p > code,
+  :global(.markdown) p > blockquote > code {
     color: var(--color-base);
   }
 }

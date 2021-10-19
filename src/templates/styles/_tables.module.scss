@@ -1,8 +1,10 @@
-.markdown .table_wrapper {
+@import '../../styles/mixins';
+
+:global(.markdown .table_wrapper) {
   @extend %post-margins;
 }
 
-.table_wrapper > table {
+:global(.table_wrapper) > table {
   width: 100%;
   border: 1px solid #e5e5e5;
   border-collapse: collapse;
@@ -15,6 +17,6 @@
   }
   tbody tr:nth-child(odd) td,
   tbody tr:nth-child(odd) th {
-    background-color: #{$color-accent}0a;
+    background-color: var(--color-table-alternate-row);
   }
 }

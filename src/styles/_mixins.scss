@@ -58,7 +58,7 @@ $break-top-nav-desktop: 450px;
 }
 
 @mixin dark-mode {
-  .dark-theme {
+  :global(.dark-theme) {
     @content;
   }
 }
@@ -78,7 +78,7 @@ $break-top-nav-desktop: 450px;
   }
 }
 
-.sr-only {
+:global(.sr-only) {
   clip: rect(0 0 0 0);
   clip-path: inset(100%);
   height: 1px;

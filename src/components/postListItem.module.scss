@@ -1,12 +1,7 @@
 @import '../styles/mixins';
 
 .postItem {
-  margin-bottom: var(--post_items-spacing);
   display: block;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
 }
 
 .postItemTitle {

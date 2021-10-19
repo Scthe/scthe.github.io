@@ -3,3 +3,4 @@ public
 yarn.lock
 
 _references
+src\__generated__

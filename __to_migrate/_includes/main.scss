@@ -1,135 +1,14 @@
-@import "../_sass/utils/reset";
-@import "../_sass/variables";
-@import "../_sass/fonts";
-@import "../_sass/utils/mixins";
-
-//
-// default styles for text
-//
-html {
-  --background-content: #fafafa;
-  --shadow-content: #385f663e;
-  --color-base: #19282b;
-  --color-subtitle: #656565;
-  --color-strong: #303030;
-  --color-selection: #{$color-accent}80;
-  --color-accent: #{$color-accent};
-  --animation-fast: 0.1s;
-
-  background-color: #dadada;
-  word-spacing: 105%;
-}
-
-html.dark-theme {
-  --background-content: #353535;
-  --shadow-content: transparent; // dark shadow on dark background? Don't bother..
-  --color-base: #f8fafb;
-  --color-subtitle: #b3b3b3;
-  --color-strong: #a6a6a6;
-
-  // some images have black lines on transparent backgrounds,
-  // we need something with good contrast, but still dark
-  --background-image-dark: #{darken(#fafafa, 15%)};
-
-  background-color: #262626;
-}
-
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-}
-
-*:focus-visible {
-  outline: 2px dashed #{$color-accent} !important;
-  outline-offset: 0px;
-  border-radius: 5px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  *:focus-visible {
-    animation: focus-slide-in var(--color-accent);
-  }
-}
-
-@keyframes focus-slide-in {
-  from {
-    outline-offset: 10px;
-  }
-  to {
-    outline-offset: 3px;
-  }
-}
-
-body {
-  position: relative;
-  color: var(--color-base);
-  line-height: $line-height-base;
-  font-family: $font-base;
-  font-weight: $font-weight-normal;
-  overflow-x: hidden;
-  font-size: $font-size-base;
-}
-
-h1 {
-  margin: 0;
-  font-size: $font-size-h1;
-  line-height: $line-height-heading;
-  font-weight: $font-weight-bold;
-  font-family: $font-heading;
-  word-spacing: normal;
-}
-
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0 0 0.75em;
-  line-height: $line-height-heading;
-  font-weight: $font-weight-bold;
-  font-family: $font-heading;
-  word-spacing: normal;
-}
-
-h2 {
-  font-size: $font-size-h2;
-}
-h3 {
-  font-size: $font-size-h3;
-}
-h4 {
-  font-size: $font-size-h4;
-}
-h5 {
-  font-size: $font-size-h5;
-}
-h6 {
-  font-size: $font-size-h6;
-}
-
-p {
-  margin: 0 0 1em;
-}
-
-a {
-  @extend %link-reset;
-  color: var(--color-base);
-}
-
-::-moz-selection {
-  background: var(--color-selection);
-}
-::selection {
-  background: var(--color-selection);
-}
+// @import '../_sass/utils/reset';
+// @import '../_sass/variables';
+// @import '../_sass/fonts';
+@import '../_sass/utils/mixins';
 
 //
 // elements
 //
-@import "../_sass/code-syntax";
-@import "../_sass/content";
-@import "../_sass/posts-list";
-@import "../_sass/tags";
-@import "../_sass/top_nav";
-@import "../_sass/markdown/index";
+@import '../_sass/code-syntax';
+@import '../_sass/content';
+@import '../_sass/posts-list';
+@import '../_sass/tags';
+@import '../_sass/top_nav';
+@import '../_sass/markdown/index';

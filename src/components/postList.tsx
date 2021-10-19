@@ -1,19 +1,21 @@
 import * as React from 'react';
-import * as styles from "./postList.module.scss";
+import * as styles from './postList.module.scss';
 import PostListItem, { PostListItemProps } from './postListItem';
 
 interface Props {
   posts: PostListItemProps[];
 }
 
-const PostList: React.FC<Props> = ({
-  posts
-}) => {
+const PostList: React.FC<Props> = ({ posts }) => {
   return (
     <div className={styles.postsList}>
-      <div className={styles.postsListInner}>
-        {posts.map(post => <PostListItem key={post.slug} {...post} />)}
-      </div>
+      <ol className={styles.postsListInner}>
+        {posts.map((post) => (
+          <li key={post.slug} className={styles.postItem}>
+            <PostListItem {...post} />
+          </li>
+        ))}
+      </ol>
     </div>
   );
 };

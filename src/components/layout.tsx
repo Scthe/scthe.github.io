@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet';
-import * as styles from "./layout.module.scss";
 
-import "../styles/normalize.module.css";
-import "../styles/variables.module.scss";
-import "../styles/global.module.scss";
-import "../styles/fonts.module.css";
+import themeToggleScript from '../utils/themeToggleScript';
+import * as styles from './layout.module.scss';
+import TopNav from './topNav';
+
+import '../styles/normalize.module.css';
+import '../styles/variables.module.scss';
+import '../styles/global.module.scss';
+import '../styles/fonts.module.css';
 
 interface Props {
   title: string;
@@ -25,17 +28,21 @@ const Layout: React.FC<Props> = ({ title, children }) => {
   //   `,
   // );
 
+  const themeToggleScriptEl = {
+    type: 'text/javascript',
+    innerHTML: themeToggleScript
+  };
+
   // TODO SEO here
   // TODO title, description
-  // TODO dark mode
   return (
     <>
-      <Helmet
-        htmlAttributes={{ lang: "en" }}
-        title={title}
-      >
+      <Helmet htmlAttributes={{ lang: 'en' }} title={title} script={[themeToggleScriptEl]}>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, viewport-fit=cover" />
+        <meta
+          name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, viewport-fit=cover"
+        />
         <meta name="theme-color" content="#fafafa" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -48,24 +55,23 @@ const Layout: React.FC<Props> = ({ title, children }) => {
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
       </Helmet>
 
-      {/* TODO DARK MODE */}
+      {/* Dark mode */}
 
       <div className={styles.heroWrapper}>
         <div />
       </div>
 
-      {/* TODO include top_nav.html - PageNav */}
+      <TopNav />
 
       <main className={styles.content}>
-        <div className={styles.contentInner}>
-          {children}
-        </div>
+        <div className={styles.contentInner}>{children}</div>
       </main>
 
       <footer className={styles.footer}>
         <div>Thanks for reading!</div>
         <div className={styles.footerCopyright}>
-          Content and illustrations © 2021 Marcin Matuszczyk. All Rights Reserved.
+          Content and illustrations © 2021 Marcin Matuszczyk. All Rights
+          Reserved.
         </div>
       </footer>
 

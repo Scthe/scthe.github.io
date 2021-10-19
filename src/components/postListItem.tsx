@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from 'gatsby';
-import * as styles from "./postListItem.module.scss";
+import * as styles from './postListItem.module.scss';
 
 export interface PostListItemProps {
   title: string;
@@ -11,7 +11,11 @@ export interface PostListItemProps {
 }
 
 const PostListItem: React.FC<PostListItemProps> = ({
-  title, date, isoDate, slug, excerpt
+  title,
+  date,
+  isoDate,
+  slug,
+  excerpt,
 }) => {
   return (
     <article className={styles.postItem} itemType="http://schema.org/Article">
@@ -35,11 +39,11 @@ const PostListItem: React.FC<PostListItemProps> = ({
       </section>
       <footer>
         <span className={styles.postItemReadMore}>
-          Continue reading
+          Continue reading&nbsp;
           <Link to={slug} tabIndex={-1} className={styles.postItemReadMoreLink}>
             {title}
           </Link>
-          <span aria-hidden="true">&rarr;</span>
+          <span aria-hidden="true">&nbsp;&rarr;</span>
         </span>
       </footer>
     </article>

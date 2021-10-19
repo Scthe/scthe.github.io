@@ -10,16 +10,16 @@ interface Props {
 
 // TODO date published
 const ldJSON = (title: string, description: string) => ({
-  "@context": "http://schema.org",
-  "@type": "Article",
-  "headline": title,
-  "author": {
-    "@type": "Person",
-    "name": "Marcin Matuszczyk" // TODO from graphql
+  '@context': 'http://schema.org',
+  '@type': 'Article',
+  headline: title,
+  author: {
+    '@type': 'Person',
+    name: 'Marcin Matuszczyk', // TODO from graphql
   },
-  "datePublished": "{{ page.date | date_to_xmlschema }}",
-  "dateModified": "{{ page.date | date_to_xmlschema }}",
-  "description": description,
+  datePublished: '{{ page.date | date_to_xmlschema }}',
+  dateModified: '{{ page.date | date_to_xmlschema }}',
+  description: description,
 });
 
 const Seo: React.FC<Props> = ({ title, description, isArticle }) => {
@@ -41,17 +41,19 @@ const Seo: React.FC<Props> = ({ title, description, isArticle }) => {
   description = isArticle ? description : siteDescription;
 
   // TODO finish me!
-  const pageUrl = "";
-  const pageImageUrl = "";
+  const pageUrl = '';
+  const pageImageUrl = '';
   const pageTags: string[] = [];
 
   return (
     <Helmet
       title={title}
-      meta={[{
-        name: `description`,
-        content: description,
-      }]}
+      meta={[
+        {
+          name: `description`,
+          content: description,
+        },
+      ]}
     >
       {/* Open Graph */}
       <meta property="og:locale" content="en_US" />
@@ -72,15 +74,17 @@ const Seo: React.FC<Props> = ({ title, description, isArticle }) => {
           <meta property="og:type" content="article" />
           <meta property="article:author" content="{{ site.url }}" />
           <meta property="article:publisher" content="{{ site.url }}" />
-          <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}" />
-          {pageTags.map(tag => (
+          <meta
+            property="article:published_time"
+            content="{{ page.date | date_to_xmlschema }}"
+          />
+          {pageTags.map((tag) => (
             <meta property="og:article:tag" content={tag} />
           ))}
         </>
       ) : (
         <meta property="og:type" content="website" />
       )}
-
 
       {/* Twitter */}
       {isArticle && (
@@ -101,6 +105,5 @@ const Seo: React.FC<Props> = ({ title, description, isArticle }) => {
     </Helmet>
   );
 };
-
 
 export default Seo;

@@ -15,13 +15,15 @@ const BlogIndex: React.FC<PageProps<DataProps>> = ({ data }) => {
   return (
     <Layout title={siteTitle}>
       <PageTitle title="All articles" />
-      <PostList posts={posts.map(post => ({
-        date: post.frontmatter!.date!,
-        isoDate: post.frontmatter!.isoDate!,
-        title: post.frontmatter!.title!,
-        excerpt: post.frontmatter!.description!,
-        slug: post.frontmatter!.slug!,
-      }))} />
+      <PostList
+        posts={posts.map((post) => ({
+          date: post.frontmatter!.date!,
+          isoDate: post.frontmatter!.isoDate!,
+          title: post.frontmatter!.title!,
+          excerpt: post.frontmatter!.description!,
+          slug: post.frontmatter!.slug!,
+        }))}
+      />
     </Layout>
   );
 };

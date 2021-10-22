@@ -16,9 +16,7 @@ const PageTitle: React.FC<Props> = ({ title, date }) => {
 
       {date != null && (
         <span className={styles.contentSubtitle}>
-          <time dateTime={date.isoDate}>
-            {date.date}
-          </time>
+          <time dateTime={date.isoDate}>{date.date}</time>
         </span>
       )}
     </header>

@@ -1,0 +1,42 @@
+/* This background color was intended by the author of this theme. */
+// background: hsla(0, 0%, 100%, 0.5);
+
+//
+//  ***********************
+
+// General colors
+$syntax-text-color: #f8f8f2;
+
+.highlight {
+  margin: var(--post-element-margin-top) 0 0;
+  padding: 1rem 1.5rem 0;
+  overflow-x: auto;
+  border-top: 5px solid var(--color-accent);
+  // font and colors:
+  font-family: var(--font-code);
+  font-style: normal;
+  background-color: #f5f2f0;
+  word-spacing: normal;
+  line-height: 1.5em;
+}
+
+/*
+.highlightWrapper {
+  position: relative;
+}
+
+.highlightWrapper:before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  top: 0;
+  height: 5px;
+  left: 0;
+  z-index: 99;
+  background: linear-gradient(
+    to right,
+    var(--color-hero-1),
+    var(--color-hero-2)
+  );
+}
+*/

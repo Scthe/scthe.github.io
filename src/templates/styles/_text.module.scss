@@ -52,8 +52,11 @@ $blockquote-left-border: #ddd;
   // inline code
   p > code,
   p > blockquote > code {
-    background-color: #009cb580;
-    color: var(--color-base);
+    color: #19282b;
+    padding: 1px 4px;
+    background-color: #f5f2f0;
+    border: 2px solid var(--color-accent);
+    border-radius: 3px;
   }
 
   // drop cap
@@ -64,12 +67,5 @@ $blockquote-left-border: #ddd;
       line-height: 0.9;
       padding: 4px 10px 0 3px;
     }
-  }
-}
-
-@include dark-mode {
-  :global(.markdown) p > code,
-  :global(.markdown) p > blockquote > code {
-    color: var(--color-base);
   }
 }

@@ -30,14 +30,18 @@ const Layout: React.FC<Props> = ({ title, children }) => {
 
   const themeToggleScriptEl = {
     type: 'text/javascript',
-    innerHTML: themeToggleScript
+    innerHTML: themeToggleScript,
   };
 
   // TODO SEO here
   // TODO title, description
   return (
     <>
-      <Helmet htmlAttributes={{ lang: 'en' }} title={title} script={[themeToggleScriptEl]}>
+      <Helmet
+        htmlAttributes={{ lang: 'en' }}
+        title={title}
+        script={[themeToggleScriptEl]}
+      >
         <meta charset="utf-8" />
         <meta
           name="viewport"

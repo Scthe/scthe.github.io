@@ -5,14 +5,20 @@ import { MDXProvider } from '@mdx-js/react';
 
 import Layout from '../components/layout';
 import PageTitle from '../components/pageTitle';
+import Heading from '../components/markdown/heading';
+import CodeBlock, { CodeBlockWrapper } from '../components/markdown/codeBlock';
 
 import './styles/_text.module.scss';
 import './styles/_links.module.scss';
 import './styles/_lists.module.scss';
 import './styles/_tables.module.scss';
 
-const shortcodes = {
+const COMPONENTS = {
   /*PageHeader*/
+  h2: (props) => <Heading level="2" {...props} />,
+  h3: (props) => <Heading level="3" {...props} />,
+  pre: (props) => <CodeBlockWrapper {...props} />,
+  code: (props) => <CodeBlock {...props} />,
 };
 
 // TODO SEO
@@ -25,7 +31,7 @@ const BlogPostTemplate = ({ data }) => {
       <PageTitle title={fm.title} date={fm} />
 
       <div className="markdown">
-        <MDXProvider components={shortcodes}>
+        <MDXProvider components={COMPONENTS}>
           <MDXRenderer>{post.body}</MDXRenderer>
         </MDXProvider>
       </div>

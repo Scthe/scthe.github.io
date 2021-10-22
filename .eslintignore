@@ -1,6 +1,6 @@
 .yarn
-public
 yarn.lock
+public
 
 _references
-src\__generated__
+src/__generated__

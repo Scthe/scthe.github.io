@@ -1,0 +1,29 @@
+@import '../../styles/mixins';
+
+// anchors for each paragraph added from js
+$color-anchor-js: #cccccc;
+$color-anchor-js-dark: #a2a2a2;
+
+.heading .anchor {
+  background-color: transparent !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+  padding-left: 0.375em !important;
+  color: $color-anchor-js !important;
+  border-style: none !important;
+  box-shadow: none !important;
+
+  &:hover {
+    color: $color-anchor-js-dark !important;
+  }
+}
+
+@include dark-mode {
+  .heading .anchor {
+    color: $color-anchor-js-dark !important;
+    &:hover {
+      color: $color-anchor-js !important;
+    }
+  }
+}

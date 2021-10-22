@@ -10,30 +10,3 @@
   padding: 0 3px;
   text-decoration: none;
 }
-
-/*
-// TODO restore permalinks
-// anchors for each paragraph added from js
-$color-anchor-js: #cccccc;
-$color-anchor-js-dark: #a2a2a2;
-
-:global(.markdown) .anchorjs-link {
-  background-color: transparent;
-  text-decoration: none;
-  cursor: pointer;
-
-  color: $color-anchor-js;
-  &:hover {
-    color: $color-anchor-js-dark;
-  }
-}
-
-@include dark-mode {
-  :global(.markdown) .anchorjs-link {
-    color: $color-anchor-js-dark;
-    &:hover {
-      color: $color-anchor-js;
-    }
-  }
-}
-*/

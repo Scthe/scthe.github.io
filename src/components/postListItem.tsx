@@ -40,7 +40,11 @@ const PostListItem: React.FC<PostListItemProps> = ({
       <footer>
         <span className={styles.postItemReadMore}>
           Continue reading&nbsp;
-          <Link to={permalink} tabIndex={-1} className={styles.postItemReadMoreLink}>
+          <Link
+            to={permalink}
+            tabIndex={-1}
+            className={styles.postItemReadMoreLink}
+          >
             {title}
           </Link>
           <span aria-hidden="true">&nbsp;&rarr;</span>

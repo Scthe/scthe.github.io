@@ -6,17 +6,17 @@ import * as styles from './topNav.module.scss';
 const TopNav: React.FC = () => {
   const { site } = useStaticQuery<GatsbyTypes.TopNavQuery>(
     graphql`
-       query TopNav {
-         site {
-           siteMetadata {
-             title
-             author {
-               githubAccount
-             }
-           }
-         }
-       }
-     `,
+      query TopNav {
+        site {
+          siteMetadata {
+            title
+            author {
+              githubAccount
+            }
+          }
+        }
+      }
+    `,
   );
   const title = site!.siteMetadata!.title;
   const githubAccount = site!.siteMetadata!.author!.githubAccount;

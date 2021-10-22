@@ -12,7 +12,7 @@ module.exports = {
   plugins: [
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-sass`,
-    'gatsby-plugin-scss-typescript',
+    // 'gatsby-plugin-scss-typescript',
     `gatsby-plugin-image`,
     {
       resolve: `gatsby-source-filesystem`,
@@ -47,7 +47,6 @@ module.exports = {
               maxWidth: 630,
             },
           },
-          `gatsby-remark-prismjs`,
           `gatsby-remark-copy-linked-files`,
           `gatsby-remark-smartypants`,
         ],

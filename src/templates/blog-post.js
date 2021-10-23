@@ -7,6 +7,10 @@ import Layout from '../components/layout';
 import PageTitle from '../components/pageTitle';
 import Heading from '../components/markdown/heading';
 import CodeBlock, { CodeBlockWrapper } from '../components/markdown/codeBlock';
+import {
+  interceptBlockMath,
+  interceptInlineMath,
+} from '../components/markdown/math';
 
 import './styles/_text.module.scss';
 import './styles/_links.module.scss';
@@ -19,6 +23,8 @@ const COMPONENTS = {
   h3: (props) => <Heading level="3" {...props} />,
   pre: (props) => <CodeBlockWrapper {...props} />,
   code: (props) => <CodeBlock {...props} />,
+  div: interceptBlockMath,
+  span: interceptInlineMath,
 };
 
 // TODO SEO

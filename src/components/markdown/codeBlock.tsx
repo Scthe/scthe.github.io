@@ -9,7 +9,7 @@ import theme from './codeBlock.theme';
 // TODO small hint about language in top right (with border radius), hides on code hover
 
 export const CodeBlockWrapper: React.FC = (props) => (
-  <div className={styles.highlightWrapper} {...props} />
+  <div {...props} />
 );
 
 interface Props {

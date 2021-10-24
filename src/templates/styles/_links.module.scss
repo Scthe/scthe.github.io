@@ -3,7 +3,7 @@
 // TODO do not apply these styles to .anchorjs-link and .lazyimage-lightbox_link
 
 // links in text (not anchor for paragraph)
-:global(.markdown) a {
+.linkStyle {
   @include highlighter(var(--link-highlight));
 
   color: inherit;

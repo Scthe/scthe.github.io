@@ -1,9 +1,13 @@
-.markdown figure {
-  @include margin-v($post-element-margin-top, 0);
+@import '../../styles/mixins';
+
+:global(.markdown) figure {
+  @include margin-v(var(--post-element-margin-top), 0);
   margin-left: 0;
   margin-right: 0;
 }
 
+/*
+TODO figcaptions..
 .figure figcaption,
 .table_wrapper > table + figcaption {
   @extend %post-margins;
@@ -15,3 +19,4 @@
     display: inline;
   }
 }
+*/

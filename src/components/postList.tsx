@@ -11,7 +11,7 @@ const PostList: React.FC<Props> = ({ posts }) => {
     <div className={styles.postsList}>
       <ol className={styles.postsListInner}>
         {posts.map((post) => (
-          <li key={post.slug} className={styles.postItem}>
+          <li key={post.permalink} className={styles.postItem}>
             <PostListItem {...post} />
           </li>
         ))}

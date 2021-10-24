@@ -21,15 +21,26 @@ module.exports = {
         name: `blog`,
       },
     },
+    `gatsby-transformer-sharp`,
     {
-      resolve: `gatsby-source-filesystem`,
+      resolve: `gatsby-plugin-sharp`,
       options: {
-        name: `images`,
-        path: `${__dirname}/src/images`,
+        defaults: {
+          // https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image/
+          formats: [`jpg`],
+          placeholder: `blurred`,
+          quality: 50,
+          // breakpoints: [750, 1080, 1366, 1920],
+          // backgroundColor: `transparent`,
+          // tracedSVGOptions: {},
+          // blurredOptions: {},
+          // jpgOptions: {},
+          // pngOptions: {},
+          // webpOptions: {},
+          // avifOptions: {},
+        },
       },
     },
-    `gatsby-transformer-sharp`,
-    `gatsby-plugin-sharp`,
     // {
     //   resolve: `gatsby-plugin-google-analytics`,
     //   options: {
@@ -43,9 +54,10 @@ module.exports = {
         remarkPlugins: [require('remark-math')],
         gatsbyRemarkPlugins: [
           {
+            // TODO remove
             resolve: `gatsby-remark-images`,
             options: {
-              maxWidth: 630,
+              maxWidth: 870,
             },
           },
           `gatsby-remark-copy-linked-files`,

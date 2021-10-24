@@ -1,4 +1,6 @@
-.markdown img {
+@import '../../styles/mixins';
+
+.image {
   display: block;
   margin: 0 auto 0;
   max-width: 100%;
@@ -6,12 +8,36 @@
   background-color: var(--background-content);
 }
 @include dark-mode {
-  .markdown img {
-    filter: $dark-mode-image-filter;
+  .image {
+    filter: var(--dark-mode-image-filter);
     background-color: var(--background-image-dark);
   }
 }
 
+.link {
+  position: relative;
+  display: block;
+}
+
+.placeholder {
+  background-size: cover;
+  position: relative;
+  opacity: 1;
+  transition: opacity 0.5s ease 0s;
+}
+
+.img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  opacity: 0;
+  transition: opacity 0.5s ease 0s;
+}
+
+/*
+TODO medium-zoom
 .medium-zoom--opened {
   .medium-zoom-overlay {
     z-index: $z-index-image-popup;
@@ -28,3 +54,4 @@
     background-color: var(--background-image-dark);
   }
 }
+*/

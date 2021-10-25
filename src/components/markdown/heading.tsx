@@ -12,7 +12,12 @@ const Heading: React.FC<Props> = ({ level, children }) => {
   return (
     <HeadingTag className={styles.heading} id={id}>
       {children}
-      <a className={styles.anchor} aria-hidden="true" href={`#${id}`}>
+      <a
+        className={styles.anchor}
+        aria-hidden="true"
+        href={`#${id}`}
+        tabIndex={-1}
+      >
         §
       </a>
     </HeadingTag>

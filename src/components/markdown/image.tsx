@@ -1,7 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { getImage } from 'gatsby-plugin-image';
 import cx from 'classnames';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
 
+import { joinPaths } from '../../utils';
 import useGetStaticImageData from '../../hooks/useGetStaticImageData';
 import useGetBlogPost from '../../hooks/useGetBlogPost';
 import * as styles from './image.module.scss';
@@ -14,7 +17,7 @@ interface Props {
 const BlogImage: React.FC<Props> = ({ src, alt }) => {
   const mdPage = useGetBlogPost();
   const blogPostDir = mdPage?.parent?.relativeDirectory;
-  const imagePath = `${blogPostDir}${src.substring(1)}`;
+  const imagePath = joinPaths(blogPostDir || '', src);
 
   const imgData = useGetStaticImageData(imagePath);
   const image = getImage(imgData as any);
@@ -23,7 +26,7 @@ const BlogImage: React.FC<Props> = ({ src, alt }) => {
   const onImgLoaded = useCallback(() => setImageloaded(true), []);
 
   return (
-    <a href={src} className={styles.link}>
+    <Zoom wrapStyle={{ position: 'relative', display: 'block' }}>
       <span
         className={cx(styles.image, styles.placeholder)}
         style={{
@@ -48,7 +51,7 @@ const BlogImage: React.FC<Props> = ({ src, alt }) => {
         }}
         onLoad={onImgLoaded}
       />
-    </a>
+    </Zoom>
   );
 };
 

@@ -1,12 +1,10 @@
 import { useStaticQuery, graphql } from 'gatsby';
+import { ArrayItemType } from '../utils';
 
-type ArrayItemType<T> = T extends Array<infer R> ? R : T;
+type NodeArray = GatsbyTypes.AllStaticImagesQuery['allImageSharp']['nodes'];
+type ReturnType = ArrayItemType<NodeArray>;
 
-type ImageData = ArrayItemType<
-  GatsbyTypes.AllStaticImagesQuery['allImageSharp']['nodes']
->;
-
-export default function useGetStaticImageData(filePath: string): ImageData {
+export default function useGetStaticImageData(filePath: string): ReturnType {
   const { allImageSharp } = useStaticQuery<GatsbyTypes.AllStaticImagesQuery>(
     graphql`
       query AllStaticImages {

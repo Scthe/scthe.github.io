@@ -13,6 +13,7 @@ import {
   interceptInlineMath,
 } from '../components/markdown/math';
 
+import { BlogPostContextProvider } from '../hooks/useGetBlogPost';
 import './styles/_text.module.scss';
 import * as linkStyles from './styles/_links.module.scss';
 import './styles/_lists.module.scss';
@@ -37,20 +38,22 @@ const COMPONENTS = {
 };
 
 // TODO SEO
-const BlogPostTemplate = ({ data }) => {
+const BlogPostTemplate = ({ data, pageContext }) => {
   const post = data.mdx;
   const fm = post.frontmatter;
 
   return (
-    <Layout title={fm.title}>
-      <PageTitle title={fm.title} date={fm} />
+    <BlogPostContextProvider id={pageContext.id}>
+      <Layout title={fm.title}>
+        <PageTitle title={fm.title} date={fm} />
 
-      <div className="markdown">
-        <MDXProvider components={COMPONENTS}>
-          <MDXRenderer>{post.body}</MDXRenderer>
-        </MDXProvider>
-      </div>
-    </Layout>
+        <div className="markdown">
+          <MDXProvider components={COMPONENTS}>
+            <MDXRenderer>{post.body}</MDXRenderer>
+          </MDXProvider>
+        </div>
+      </Layout>
+    </BlogPostContextProvider>
   );
 };
 

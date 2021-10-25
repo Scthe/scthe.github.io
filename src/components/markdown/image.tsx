@@ -26,7 +26,11 @@ const BlogImage: React.FC<Props> = ({ src, alt }) => {
   const onImgLoaded = useCallback(() => setImageloaded(true), []);
 
   return (
-    <Zoom wrapStyle={{ position: 'relative', display: 'block' }}>
+    <Zoom
+      wrapStyle={{ position: 'relative', display: 'block' }}
+      overlayBgColorStart="transparent"
+      overlayBgColorEnd="rgba(0, 0, 0, 0.7)"
+    >
       <span
         className={cx(styles.image, styles.placeholder)}
         style={{

@@ -17,13 +17,18 @@ import './styles/_text.module.scss';
 import * as linkStyles from './styles/_links.module.scss';
 import './styles/_lists.module.scss';
 import './styles/_tables.module.scss';
-import './styles/_figure.module.scss';
+import * as figureStyles from './styles/_figure.module.scss';
 
 const COMPONENTS = {
   h2: (props) => <Heading level="2" {...props} />,
   h3: (props) => <Heading level="3" {...props} />,
   pre: (props) => <CodeBlockWrapper {...props} />,
   code: (props) => <CodeBlock {...props} />,
+  Figure: (props) => <figure className={figureStyles.figure} {...props} />,
+  // figcaption requires blank lines before and after!!!
+  Figcaption: (props) => (
+    <figcaption className={figureStyles.figcaption} {...props} />
+  ),
   div: interceptBlockMath,
   span: interceptInlineMath,
   // eslint-disable-next-line jsx-a11y/anchor-has-content

@@ -6,9 +6,7 @@ type ImageData = ArrayItemType<
   GatsbyTypes.AllStaticImagesQuery['allImageSharp']['nodes']
 >;
 
-export default function useGetStaticImageData(
-  filePath: string,
-): ImageData | undefined {
+export default function useGetStaticImageData(filePath: string): ImageData {
   const { allImageSharp } = useStaticQuery<GatsbyTypes.AllStaticImagesQuery>(
     graphql`
       query AllStaticImages {
@@ -35,6 +33,12 @@ export default function useGetStaticImageData(
     const absolutePath = e.parent?.absolutePath || '';
     return absolutePath.toLowerCase().endsWith(filePath);
   });
+
+  if (node == null) {
+    const allImages = allImageSharp.nodes.map((e) => e.parent?.absolutePath);
+    console.error('Available images:', allImages);
+    throw new Error(`useGetStaticImageData could not find image '${filePath}'`);
+  }
 
   return node as any;
 }

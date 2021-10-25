@@ -56,7 +56,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     const value = createFilePath({ node, getNode });
 
     createNodeField({
-      name: `permalink`,
+      name: `permalink2`,
       node,
       value,
     });

@@ -1,22 +1,16 @@
 @import '../../styles/mixins';
 
-:global(.markdown) figure {
+.figure {
   @include margin-v(var(--post-element-margin-top), 0);
   margin-left: 0;
   margin-right: 0;
 }
 
-/*
-TODO figcaptions..
-.figure figcaption,
-.table_wrapper > table + figcaption {
+// TODO figcaptions for tables
+// .table_wrapper > table + figcaption
+.figcaption {
   @extend %post-margins;
-  font-size: $font-size-image-caption;
-  margin-top: $post-figure-caption-margin-top;
+  font-size: var(--font-size-image-caption);
+  margin-top: var(--post-figure-caption-margin-top);
   text-align: center;
-
-  & > p {
-    display: inline;
-  }
 }
-*/

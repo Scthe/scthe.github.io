@@ -20,7 +20,7 @@ const BlogImage: React.FC<Props> = ({ src, alt }) => {
   const imagePath = joinPaths(blogPostDir || '', src);
 
   const imgData = useGetStaticImageData(imagePath);
-  const image = getImage(imgData as any);
+  const image = imgData != null ? getImage(imgData as any) : undefined;
 
   const [imageloaded, setImageloaded] = useState(false);
   const onImgLoaded = useCallback(() => setImageloaded(true), []);
@@ -41,20 +41,27 @@ const BlogImage: React.FC<Props> = ({ src, alt }) => {
           opacity: imageloaded ? 0 : 1,
         }}
       ></span>
-      <img
-        {...image?.images.fallback}
-        alt={alt}
-        decoding="async"
-        loading="lazy"
-        width={image?.width}
-        height={image?.height}
-        className={cx(styles.image, styles.img)}
+      <div
+        className={styles.imgWrapper}
         style={{
-          backgroundColor: image?.backgroundColor,
           opacity: imageloaded ? 1 : 0,
         }}
-        onLoad={onImgLoaded}
-      />
+      >
+        <img
+          {...image?.images.fallback}
+          src={image?.images.fallback?.src || src}
+          alt={alt}
+          decoding="async"
+          loading="lazy"
+          width={image?.width}
+          height={image?.height}
+          className={styles.image}
+          style={{
+            backgroundColor: image?.backgroundColor,
+          }}
+          onLoad={onImgLoaded}
+        />
+      </div>
     </Zoom>
   );
 };

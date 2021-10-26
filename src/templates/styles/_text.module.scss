@@ -14,14 +14,10 @@ $blockquote-left-border: #ddd;
   // h2: major header ##
   // h3: minor header ###
   h2,
-  h3 {
-    @extend %post-margins;
-    @include margin-v(var(--post-header-margin-top), 0);
-  }
-
+  h3,
   h4 {
     @extend %post-margins;
-    @include margin-v(var(--post-p-margin-top), 0);
+    @include margin-v(var(--post-header-margin-top), 0);
   }
 
   // bold: **text**
@@ -68,4 +64,9 @@ $blockquote-left-border: #ddd;
       padding: 4px 10px 0 3px;
     }
   }
+}
+
+// katex formulas
+:global(.katex .newline) {
+  margin-bottom: 1em;
 }

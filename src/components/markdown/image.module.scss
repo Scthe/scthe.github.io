@@ -21,7 +21,7 @@
   transition: opacity 0.5s ease 0s;
 }
 
-.img {
+.imgWrapper {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -30,23 +30,3 @@
   opacity: 0;
   transition: opacity 0.5s ease 0s;
 }
-
-/*
-TODO medium-zoom
-.medium-zoom--opened {
-  .medium-zoom-overlay {
-    z-index: $z-index-image-popup;
-  }
-  .medium-zoom-image--opened {
-    z-index: $z-index-image-popup + 10;
-    background-color: var(--background-content);
-  }
-}
-
-@include dark-mode {
-  .medium-zoom-image--opened {
-    filter: $dark-mode-image-filter;
-    background-color: var(--background-image-dark);
-  }
-}
-*/

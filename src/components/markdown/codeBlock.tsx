@@ -15,6 +15,11 @@ interface Props {
 }
 
 const CodeBlock: React.FC<Props> = ({ className, children }) => {
+  if (className == null && process.env.NODE_ENV === 'development') {
+    console.warn('Unknown language for:', children);
+  }
+  className = className || '';
+
   const language = className.replace(/language-/, '') || '';
   return (
     <Highlight

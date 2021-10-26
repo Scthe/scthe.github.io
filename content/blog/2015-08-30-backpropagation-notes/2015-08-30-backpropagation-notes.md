@@ -3,11 +3,8 @@ title: "Math behind (convolutional) neural networks"
 permalink: "/blog/backpropagation-notes/"
 excerpt: "My notes containing neural network backpropagation equations. From chain rule to cost function, gradient descent and deltas. Complete with Convolutional Neural Networks as used for images."
 date: 2015-08-30 12:00:00
-tags: ['Artificial intelligence']
-image: "/assets/2015-08-30-backpropagation-notes/network.png"
+image: "/network.png"
 ---
-
-{% capture image_dir %}/assets/2015-08-30-backpropagation-notes{% endcapture %}
 
 
 This is an electronic version of my notes created during [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution) project. You can read more at: ["Neural networks: implementation tips"](/2015/08/23/neural-networks-implementation-tips.html).
@@ -18,19 +15,25 @@ This is an electronic version of my notes created during [super-resolution using
 
 > Do not skip this part. Whole article is just application of this rule and following graphic representation helps a lot.
 
-{% capture image_caption %}
-Example combination of functions f, f2 that we want to calculate partial derivatives from
-{% endcapture %}
-{% include lazyimage.html
-  image_src='chain-rule2.png'
-  width='586'
-  height='294'
-  alt='Function f applied to x produces y. Then another function f2 takes y and produces z.'
-%}
+
+<Figure>
+  <BlogImage
+    src="./chain-rule2.png"
+    alt="Function f applied to x produces y. Then another function f2 takes y and produces z."
+  />
+  <Figcaption>
+
+  Example combination of functions f, f2 that we want to calculate partial derivatives from
+
+  </Figcaption>
+</Figure>
+
 
 We have $$y=f(x)$$. Let say we also have some $${dz \over dy}$$ (requirement: *z* is function of *y*) and we know the function *f*. We can calculate $${dz \over dx}$$ using following formula:
 
-$${dz \over dx} = {dz \over dy} \cdot {dy \over dx}$$
+$$
+{dz \over dx} = {dz \over dy} \cdot {dy \over dx}
+$$
 
 Now look again at the picture above and locale each variable. What is $${dy \over dx}$$? It's just $$f'$$. Since we know *f* we should be able to provide $$f'$$. Now, having removed all math obstacles, let see how we can apply this to neural networks. First we are going to supply some nomenclature.
 
@@ -40,15 +43,18 @@ Now look again at the picture above and locale each variable. What is $${dy \ove
 
 ## Dictionary
 
-{% capture image_caption %}
+
+<Figure>
+  <BlogImage
+    src="./network.png"
+    alt="Neural network with 3 layers, weights, biases. Results in hypothesis h wrt. current weights and biases."
+  />
+  <Figcaption>
+
 Example of neural network
-{% endcapture %}
-{% include lazyimage.html
-  image_src='network.png'
-  width='700'
-  height='391'
-  alt='Neural network with 3 layers, weights, biases. Results in hypothesis h wrt. current weights and biases.'
-%}
+
+  </Figcaption>
+</Figure>
 
 
 <br/>
@@ -66,15 +72,18 @@ Example of neural network
 * $$\delta^{(l)}_j$$ - error term of j-th node of l-th layer
 * cost function *J* - how good the network's output maps to ground truth
 
-{% capture image_caption %}
-Relation between 2 nodes on successive layers
-{% endcapture %}
-{% include lazyimage.html
-  image_src='forward-1.png'
-  width='704'
-  height='205'
-  alt='Calulation of value of node from layer l+1. Multiply value from previous layer by weight, add bias and apply activation function.'
-%}
+
+<Figure>
+  <BlogImage
+    src="./forward-1.png"
+    alt="Calulation of value of node from layer l+1. Multiply value from previous layer by weight, add bias and apply activation function."
+  />
+  <Figcaption>
+
+Relation between 2 nodes on successive layers.
+
+  </Figcaption>
+</Figure>
 
 
 
@@ -82,9 +91,13 @@ Relation between 2 nodes on successive layers
 
 We are going to use the following formulas:
 
-$$x^{(l+1)}_j = \sum_{i=1}^{s_{l}}(W^{(l)}_{ji} y^l_i) + b^l_j$$
+$$
+x^{(l+1)}_j = \sum_{i=1}^{s_{l}}(W^{(l)}_{ji} y^l_i) + b^l_j
+$$
 
-$$ y^{(l+1)}_j = f_a(x^{(l+1)}_j)$$
+$$
+y^{(l+1)}_j = f_a(x^{(l+1)}_j)
+$$
 
 
 
@@ -93,7 +106,9 @@ $$ y^{(l+1)}_j = f_a(x^{(l+1)}_j)$$
 
 During reinforced learning it's critical to be able to judge the results of algorithm. Let's say that we have a sample *(Y,X)*, where *Y* is ground truth and *X* is input for our neural network. If we do forward propagation sequentially across all layers with some weights and biases we will receive hypothesis: $$h_{W,b}(X)$$. We define **cost function** as (one-half) squared error:
 
-\\[ J(W,b;Y,X) = \frac{1}{2} ( Y - h_{W,b}(X) )^2 \\]
+$$
+J(W,b;Y,X) = \frac{1}{2} ( Y - h_{W,b}(X) )^2
+$$
 
 In layman's terms we measure difference between what we expected and what the algorithm has given, we square it and take half. Taking half of the result will come handy when we will calculate the derivative. It is also popular to add weight decay term to this formula, but we will keep things simple.
 
@@ -104,15 +119,21 @@ In layman's terms we measure difference between what we expected and what the al
 
 Our goal is to minimize $$J(W,b)$$ and to do that we will use [gradient descent](https://en.wikipedia.org/wiki/Gradient_descent)(GD) algorithm. Requirements of GD: function F is both defined and differentiable at least in neighbourhood of some point *p*. If we have a gradient at *p* we know in which 'direction' we can move so that the function increases it's value. If we move in negative direction the opposite should be true: $$F(p) \geq F(p_{n+1})$$. For this to work we write GD as:
 
-\\[ p_{n+1} = p_n - \eta \nabla F(p_n) \\]
+$$
+p_{n+1} = p_n - \eta \nabla F(p_n)
+$$
 
 As You can see we subtract to move in direction that should give smaller $$F(p_{n+1})$$. The $$\eta$$ (greek letter eta) determines how fast we are getting closer to the local minimum. If $$\eta$$ is too big, we will constantly miss it, if it is too small we will have to repeat the process a lot. You may remember from the symbols table that $$\eta$$ represents hyperparameter called learning rate.
 
 We will update parameters with every epoch according to the following formulas:
 
-\\[ W^l_{ji} = W^l_{ji} - \eta {\partial \over \partial W^{(l)}_{ji}} J(W,b;Y,X) \\]
+$$
+W^l_{ji} = W^l_{ji} - \eta {\partial \over \partial W^{(l)}_{ji}} J(W,b;Y,X)
+$$
 
-\\[ b^l_{i} = b^l_{i} - \eta {\partial \over \partial b^{(l)}_{i}} J(W,b;Y,X) \\]
+$$
+b^l_{i} = b^l_{i} - \eta {\partial \over \partial b^{(l)}_{i}} J(W,b;Y,X)
+$$
 
 
 It's nothing more then applied gradient descent algorithm. The thing is that we have to update value for **every** parameter, for **every** layer in our network. We already have $$W^{(l)}_{ji}$$ and $$b^{(l)}_{i}$$ (these are the current values), $$\eta$$ is either a constant or we have some separate algorithm to calculate it. How to find $${\partial \over \partial W^{(l)}_{ji}} J(W,b;Y,X)$$ and $${\partial \over \partial b^{(l)}_{i}} J(W,b;Y,X)$$? The solution is to use the backpropagation algorithm.
@@ -134,7 +155,7 @@ $$ \delta^{(L)}_j
 = \frac{\partial}{\partial x^{(L)}_j} \frac{1}{2} (Y - h_{W,b}(X))^2 =\\
 = (h_{W,b}(X) - Y) \cdot {f_a}'(x^{(L)}_j) $$
 
-Do You see how $$\frac{\partial}{\partial x^{(L)}_j} J(W,b;Y,X)$$ expresses *responsibility* of j-th node for the error? The $$f_a`(x^{(L)}_j)$$ term comes from the $$\frac{\partial}{\partial x^{(L)}_j} h_{W,b}(X)$$ that we have to include - it is one of the rules of calculating derivatives. We can use this formula to calculate deltas for all nodes in last layer.
+Do You see how $$\frac{\partial}{\partial x^{(L)}_j} J(W,b;Y,X)$$ expresses *responsibility* of j-th node for the error? The $$f_a'(x^{(L)}_j)$$ term comes from the $$\frac{\partial}{\partial x^{(L)}_j} h_{W,b}(X)$$ that we have to include - it is one of the rules of calculating derivatives. We can use this formula to calculate deltas for all nodes in last layer.
 
 > It is important to see that we are calculating derivative w.r.t. $$x^{(L)}_j$$, not $$y^{(L)}_j$$.
 
@@ -145,15 +166,18 @@ Do You see how $$\frac{\partial}{\partial x^{(L)}_j} J(W,b;Y,X)$$ expresses *res
 
 Sadly, calculations of deltas for other layers is a little bit more complicated. Let's look again on the image of forward propagation between 2 nodes on successive layers:
 
-{% capture image_caption %}
+
+<Figure>
+  <BlogImage
+    src="./forward-1.png"
+    alt="Calulation of value of node from layer l+1. Multiply value from previous layer by weight, add bias and apply activation function."
+  />
+  <Figcaption>
+
 Relation between 2 nodes on successive layers. Please refer to dictionary for explanation of the symbols.
-{% endcapture %}
-{% include lazyimage.html
-  image_src='forward-1.png'
-  width='704'
-  height='205'
-  alt='Calulation of value of node from layer l+1. Multiply value from previous layer by weight, add bias and apply activation function.'
-%}
+
+  </Figcaption>
+</Figure>
 
 Let's assume that **l** is the layer before the last ($$l + 1 = L$$). We have just provided equations for $$\delta^{(L)}_j = \frac{\partial}{\partial x^{(L)}_j} J(W,b;Y,X)$$. After investigating the image above it turns out that we can use chain rule to provide formula for $$\delta^{(l)}_i$$. We are going to do this in several steps. First observation:
 
@@ -169,15 +193,17 @@ $$\frac{\partial}{\partial y^{(l)}_i} J(W,b;Y,X) =\\
   W^{(l)}_{ji} \cdot \delta^{(l+1)}_j ) $$
 
 
-{% capture image_caption %}
+<Figure>
+  <BlogImage
+    src="./network.png"
+    alt="Neural network with 3 layers, weights, biases. Results in hypothesis h wrt. current weights and biases."
+  />
+  <Figcaption>
+
 On previous image we focused only on 2 nodes as it makes easier to derive formulas. In reality, every node contributes to values of all nodes on next layer.
-{% endcapture %}
-{% include lazyimage.html
-  image_src='network.png'
-  width='700'
-  height='391'
-  alt='Neural network with 3 layers, weights, biases. Results in hypothesis h wrt. current weights and biases.'
-%}
+
+  </Figcaption>
+</Figure>
 
 
 Remember when I said that in deltas we were calculating derivative w.r.t. $$x^{(L)}_j$$, not $$y^{(L)}_j$$? This applies here too. We have to use chain rule once more:
@@ -197,15 +223,19 @@ If $$y^{(l)}=f_a(x^{(l)})$$ then $$\frac{\partial y^{(l)}_i}{\partial x^{(l)}_i}
 
 We have calculated deltas, now how does this help with parameters? Take a look once more on this image:
 
-{% capture image_caption %}
+
+<Figure>
+  <BlogImage
+    src="./forward-1.png"
+    alt="Calulation of value of node from layer l+1. Multiply value from previous layer by weight, add bias and apply activation function."
+  />
+  <Figcaption>
+
 Relation between 2 nodes on successive layers. Please refer to dictionary for explanation of the symbols.
-{% endcapture %}
-{% include lazyimage.html
-  image_src='forward-1.png'
-  width='704'
-  height='205'
-  alt='Calulation of value of node from layer l+1. Multiply value from previous layer by weight, add bias and apply activation function.'
-%}
+
+  </Figcaption>
+</Figure>
+
 
 This should be simple:
 
@@ -223,7 +253,7 @@ $$ {\partial \over \partial b^{(l)}_{j}} J(W,b;Y,X) =\\
 All this because $$x^{(l+1)}_j = \sum_{i=1}^{s_{l}}(W^{(l)}_{ji} y^l_i) + b^l_j$$. I will leave calculating derivative of $$\sum_{i=1}^{s_{l}}(W^{(l)}_{ji} y^l_i) + b^l_j$$ w.r.t each $$W^{(l)}_{ji}$$ and $$b^l_j$$ to the reader.
 
 
-> With deltas we had $$ \frac{\partial x^{(l+1)}_j}{\partial y^{(l)}_i} \cdot \delta^{(l+1)}_j $$ and now we have $$\frac{\partial x^{(l+1)}_j}{\partial W^{(l)}_{ji}} \cdot \delta^{(l+1)}_j $$. As You can see we use deltas in both of these expressions - that's why we have calculated them!
+> With deltas we had $\frac{\partial x^{(l+1)}_j}{\partial y^{(l)}_i} \cdot \delta^{(l+1)}_j$ and now we have $\frac{\partial x^{(l+1)}_j}{\partial W^{(l)}_{ji}} \cdot \delta^{(l+1)}_j$. As You can see we use deltas in both of these expressions - that's why we have calculated them!
 
 
 
@@ -248,19 +278,25 @@ $$ \frac{\partial}{\partial b_{j}^{(l)}} J(W,b) =\\
 
 1. Calculate deltas for each output unit (ones in last layer):
 
-    $$ \delta^{(L)}_j = (h_{W,b}(X) - Y) \cdot {f_a}'(x^{(L)}_j) $$
+    $$
+    \delta^{(L)}_j = (h_{W,b}(X) - Y) \cdot {f_a}'(x^{(L)}_j)
+    $$
 
 2. For each unit in other layers calculate deltas (do it layer by layer):
 
-    $$ \delta^{(l)}_i
+    $$\delta^{(l)}_i
     = {f_a}'(x^{(l)}_i) \cdot \sum_{j=1}^{s_{l+1}} (
     W^{(l)}_{ji} \cdot \delta^{(l+1)}_j )$$
 
 3. Calculate the derivatives for **all** weights and biases:
 
-$$ {\partial \over \partial W^{(l)}_{ji}} J(W,b;Y,X) = y^{(l)}_i\cdot \delta^{(l+1)}_j $$
+$$
+{\partial \over \partial W^{(l)}_{ji}} J(W,b;Y,X) = y^{(l)}_i\cdot \delta^{(l+1)}_j
+$$
 
-$$ {\partial \over \partial b^{(l)}_{j}} J(W,b;Y,X) = \delta^{(l+1)}_j $$
+$$
+{\partial \over \partial b^{(l)}_{j}} J(W,b;Y,X) = \delta^{(l+1)}_j
+$$
 
 
 Now it's time for part II.
@@ -275,15 +311,16 @@ Main difference between fully connected and convolutional neural networks is tha
 
 > TL;DR: You have a kernel (that actually consists of weights!) and You convolve it with pixels in top-left corner of image, then with pixels a little bit to the right (and so on), later repeat this in next row (and so on). Since we apply **same** kernel several times across the image, we effectively share kernel (therefore - weights).
 
-{% capture image_caption %}
+<Figure>
+
+  ![Weights in CNN create a kernel (that does not change during a single epoch) that is multiplied by previous layer output.](./cnn-all.gif)
+
+  <Figcaption>
+
 Weights sharing in CNN. For each node on next layer the kernel stays the same, but input units change
-{% endcapture %}
-{% include lazyimage.html
-  image_src='cnn-all.gif'
-  width='530'
-  height='385'
-  alt='Weights in CNN create a kernel (that does not change during a single epoch) that is multiplied by previous layer output.'
-%}
+
+  </Figcaption>
+</Figure>
 
 
 Another thing we are not going to talk about is pooling.
@@ -334,7 +371,9 @@ $$ x^{(l+1)}_{i,j,n} =
 \sum^{f^l}_a \sum^{f^l}_b \sum^{n^l}_k
   (W^{(l)}_{abnk} \cdot y^{(l)}_{(i+a),(j+b),k}) + b_{n}$$
 
-$$ y^{(l+1)}_{i,j,n} = f_a(x^{(l+1)}_{i,j,n}) $$
+$$
+y^{(l+1)}_{i,j,n} = f_a(x^{(l+1)}_{i,j,n})
+$$
 
 Value ranges:
 
@@ -351,7 +390,7 @@ $$ i \in [0, w^{(l+1)}_{img} ), \\
 
 Formula for deltas on last layer **stays the same**. As for everything else..
 
-During forward pass we had summations like: $$ \sum^{f^l}_a \sum^{f^l}_b \sum^{n^l}_k $$. As You may have guessed, during backpropagation we will have something similar:
+During forward pass we had summations like: $\sum^{f^l}_a \sum^{f^l}_b \sum^{n^l}_k$. As You may have guessed, during backpropagation we will have something similar:
 
 $$ \delta^{(l)}_{i,j,k} = \\
  {f_a}'(x^{(l)}_{i,j,k}) \cdot \sum^{f^l}_a \sum^{f^l}_b \sum^{n^{l+1}}_n (
@@ -365,9 +404,9 @@ Previously, when calculating $$\delta^{(l)}_i$$ we used:
 
 Turns out the only changes are the sums and indexes. Before, we summed over **all** nodes in next layer (it was 'fully-connected layer' after all), now we only interact with handful of nodes. Let's write what is what:
 
-* $${f_a}'(x^{(l)}_{i,j,k})$$ - derivative of activation function at current node
-* $$W^{(l)}_{abnk}$$ - propagation weight between $$ y^{(l)}_{i,j,k}$$ and $$x^{(l+1)}_{(i+a),(j+b),n} $$
-* $$\delta^{(l+1)}_{(i+a),(j+b),n} $$ - error term for $$x^{(l+1)}_{(i+a),(j+b),n} $$. Also, since $$w_{img}^{(l)} >= w_{img}^{(l+1)}$$ You have to do bounds check. For example, take nodes in bottom right corner of layer l: $$ y^{(l)}_{ w^{(l)}_{img}, h^{(l)}_{img}, -} $$. This particular node will be used during forward pass only **once** (per feature map in $$n^{l+1}$$).
+* ${f_a}'(x^{(l)}_{i,j,k})$ - derivative of activation function at current node
+* $W^{(l)}_{abnk}$ - propagation weight between $y^{(l)}_{i,j,k}$$ and $$x^{(l+1)}_{(i+a),(j+b),n}$
+* $\delta^{(l+1)}_{(i+a),(j+b),n}$ - error term for $x^{(l+1)}_{(i+a),(j+b),n}$. Also, since $w_{img}^{(l)} >= w_{img}^{(l+1)}$ You have to do bounds check. For example, take nodes in bottom right corner of layer l: $y^{(l)}_{ w^{(l)}_{img}, h^{(l)}_{img}, -}$. This particular node will be used during forward pass only **once** (per feature map in $n^{l+1}$).
 
 > Sometimes it is written as $$\delta^{(l+1)}_{(i-a),(j-b),n}$$. I'm not sure, but this may be a matter of indices. The minus since we have $$node^{(l+1)}$$ and we asking: 'which $$node^{(l)}$$ affected us with w[a,b,-,-]?'.
 

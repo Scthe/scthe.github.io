@@ -3,11 +3,8 @@ title: "Writing neural networks from scratch - implementation tips"
 permalink: "/blog/neural-networks-implementation-tips/"
 excerpt: "Tips for implementing neural networks from scratch. From identifying use cases and data generation to implementation, testing, debugging and profiling. Separate section dedicated to GPUs and unique problems for massively parallel devices."
 date: 2015-08-23 12:00:00
-tags: ['Artificial intelligence', 'GPU', 'Project']
-image: "/assets/2015-08-19-neural-networks-implementation-tips/result_cmp.jpg"
+image: "./result_cmp.jpg"
 ---
-
-{% capture image_dir %}/assets/2015-08-19-neural-networks-implementation-tips{% endcapture %}
 
 
 Judging by the number of new articles, neural networks were very popular in recent months. And not only because Google, Netflix, Adobe, Baidu, Facebook and countless others has been using them. There are many hobbyists playing with machine learning too. After seeing amazing examples of what is possible I decided to create my very own neural network. This article presents my findings. I hope You will find it useful.
@@ -35,18 +32,21 @@ Throughout this post, I will be referring to my latest project: [super-resolutio
 
 [Super-resolution](https://en.wikipedia.org/wiki/Superresolution "What is super-resolution?") in itself is quite simple problem: how to make image bigger without losing much *quality*. It's a popular question in computer vision, so there are quite a few methods to achieve such effect. I should point out that while there are infinitely many solutions, we -as humans- can instinctively determine if result is *better*. There are also special metrics (e.g. [PSNR](https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio) and [SSIM](https://en.wikipedia.org/wiki/Structural_similarity)) used for more systematic approach.
 
-{% capture image_caption %}
-From left to right: ground truth, scaling with bicubic interpolation, CNN results.
-{% endcapture %}
-{% include lazyimage.html
-  image_src='result_cmp.jpg'
-  width='1500'
-  height='500'
-  alt='Side by side 3 versions of same image: original, naive scaling, and my result'
-%}
+
+<Figure>
+  <BlogImage
+    src="./result_cmp.jpg"
+    alt="Side by side 3 versions of same image: original, naive scaling, and my result"
+  />
+  <Figcaption>
+
+  From left to right: ground truth, scaling with bicubic interpolation, CNN results.
+
+  </Figcaption>
+</Figure>
 
 
-My implementation was a simplified version of SRCNN. While number of layers and kernel sizes are still the same, due to performance constraints I've reduced number of feature maps for layers 1 & 2 by half. I also didn't have enough time to wait for \\( 10^8 \\) epochs for network to converge.
+My implementation was a simplified version of SRCNN. While number of layers and kernel sizes are still the same, due to performance constraints I've reduced number of feature maps for layers 1 & 2 by half. I also didn't have enough time to wait for $10^8$ epochs for network to converge.
 
 
 
@@ -76,11 +76,11 @@ Throughout the article I will give You some tips how to best approach all of the
 
 
 
-### Normal use case involves multiple images
+### Supporting batching
 
 During training You will operate on multiple samples, and -arguably- during normal usage this will also be the case. It is worth thinking how this aspect should be reflected in the design of the application. This is probably one of the most important architectural decisions You will make.
 
-Processing single sample at a time:
+Advantages of processing images one by one:
 
 * **much** easier to write
 * can lazily allocate memory
@@ -88,7 +88,7 @@ Processing single sample at a time:
 * easy to test
 
 
-Batches (each kernel operates on multiple images):
+When it comes to batching (each kernel operates on multiple images in a huge multigigabyte array):
 
 * much more optimal GPU usage - e.g. more blocks per multiprocessor mean that we can easier hide memory access latency
 * better performance - in my case it's 2x faster, but that's a low-end
@@ -97,20 +97,23 @@ Batches (each kernel operates on multiple images):
 * hard to debug
 * makes it easy to split epoch into mini-batches, which lowers the memory usage (more on that later)
 
-When I was converting from single-sample to batch approach I got it wrong the first time. There were quite a lot of interface changes and I made too many changes at once. Second time, when I knew which changes needed to be made it was quite easy. If You find yourself in similar position I recommend first tuning the API, then to switch the memory layout and only after that to execute kernels with all images at once. Turns out the last step can be done quite easily: You just need to add additional work dimension and in `global_work_size`, set it to number of images and to 1 in `local_work_size`. Other way is to add loop inside the kernels. This is probably even faster, since for multiple images You only load weights once.
+Converting the neural network to support batching is quite complicated. If You find yourself in similar position I recommend first tuning the API to work on an array (with a single image for now), then test. Then switch the memory layout on GPU to a single block and test. After that execute kernels with all images at once. Turns out the last step can be done quite easily: You just need to add additional work dimension and in `global_work_size`, set it to number of images and to 1 in `local_work_size`. Other way is to add loop inside the kernels. This is probably even faster, since for multiple images You only load weights once.
 
-{% capture code_text %}
+<Figure>
+
+```c
 uint sample_id = get_global_id(2);
 ...
 #define IMAGE_OFFSET_IN (sample_id * PREVIOUS_FILTER_COUNT * input_w * input_h)
 #define IMAGE_OFFSET_OUT (sample_id * CURRENT_FILTER_COUNT * out_size.x * out_size.y)
-{% endcapture %}
-{% capture code_caption %}
-Fragment of my forward kernel.
-{% endcapture %}
-{% include code_snippet.md lang='c' %}
+```
 
-> That many internal interface changes will break most tests. If You want to 'move fast and break things' You can save validation error values after each epoch to a file. As long as the values are roughly the same the program will still work correctly.
+  <Figcaption>
+
+Fragment of my forward kernel.
+
+  </Figcaption>
+</Figure>
 
 
 
@@ -134,15 +137,17 @@ If there is standard sample set for Your domain use it. Good example is [MNIST](
 There is also an excellent article written by Andrej Karpathy: [„What I learned from competing against a ConvNet on ImageNet”](https://karpathy.github.io/2014/09/02/what-i-learned-from-competing-against-a-convnet-on-imagenet/ "Article by Andrej Karpathy about data classifying and machine learning in general") that highlights some problems related to gathering samples. One solution is to use services like [Amazon Mechanical Turk](https://www.mturk.com/mturk/welcome) that allows to commision tasks that require human input.
 
 
-{% capture image_caption %}
-MNIST samples. Image taken from <cite>Michael Nielsen's "Neural Networks and Deep Learning"</cite>. Distributed under  [MIT Licence](https://github.com/mnielsen/neural-networks-and-deep-learning).
-{% endcapture %}
-{% include lazyimage.html
-  image_src='mnist_100_digits.png'
-  width='812'
-  height='612'
-  alt='Example samples from MNIST dataset for handwritten numbers'
-%}
+<Figure>
+  <BlogImage
+    src="mnist_100_digits.png"
+    alt="Example samples from MNIST dataset for handwritten numbers"
+  />
+  <Figcaption>
+
+  MNIST samples. Image taken from <cite>Michael Nielsen's "Neural Networks and Deep Learning"</cite>. Distributed under  [MIT Licence](https://github.com/mnielsen/neural-networks-and-deep-learning).
+
+  </Figcaption>
+</Figure>
 
 
 ### Tests
@@ -153,7 +158,10 @@ Tests are necessary to check if math is implemented correctly, but is not only r
 
 It is also profitable to think how we would design testing framework. Of course we could use standard frameworks, but creating our own is quite simple and may suit our requirements better. Our kernels are quite simple data transformations so making the test data-driven is a good choice. Take a look at [this file](https://github.com/Scthe/cnn-Super-Resolution/blob/master/test/data/test_cases.json) that defines all test cases for forward execution phase. By adding another entry I can easily create more tests, without even touching C++. Use scripts to generate test data e.g.:
 
-{% capture code_text %}
+
+<Figure>
+
+```python
 def convolution(x, y, spatial_size, values):
   for dx in range(spatial_size):
     for dy in range(spatial_size):
@@ -168,11 +176,14 @@ def forward(input,weights,bias,spatial_size,width,height):
         tmp += input_value * weights[dx,dy]
       output[y][x] += activation_func(tmp + bias)
   return  output
-{% endcapture %}
-{% capture code_caption %}
+```
+
+  <Figcaption>
+
 2D convolution. Feature maps left as an exercise for reader
-{% endcapture %}
-{% include code_snippet.md lang='python' %}
+
+  </Figcaption>
+</Figure>
 
 Since it is an offline tool the performance does not matter. Both R and MATLAB have convolution build-in, but it may require a little bit of juggling to convert Your data to suitable format.
 
@@ -183,25 +194,25 @@ Since it is an offline tool the performance does not matter. Both R and MATLAB h
 
 When looking through many open source projects I have a feeling that this step is just a personal preference. Many editors offer tools that can ease the task and it only takes a couple minutes, so why not? Anyway, I highly recommend to write down which kernel uses which buffers. It's probably the best description of system one could have.
 
-<figure class="table_wrapper">
+<Figure class="table_wrapper">
 
 | **Kernel**  | **Buffers** |
 | :------------ |:---------------|
-| forward | in: weights, biases, previous layer output <br/>out: layer output |
-| error [BLOCKING] | in: ground truth luma, algo output luma <br/>out: float|
-| \\(  \delta^L \\) | in: ground truth luma, algo output luma <br/>out: \\( \delta^L \\)|
-| \\(  \delta^l \\) | in: \\(  \delta^{l+1} \\), layer output\\(  ^{l} \\), weights\\(  ^{l} \\) <br/>out: \\(  \delta^l \\)|
-| backpropagation | in: \\(  \delta^{l} \\), layer output\\(  ^{l-1} \\) <br/>out: \\(  \nabla {weights}^{l}, \nabla {biases}^{l} \\)|
-| update parameters | in: \\( \nabla {weights}^{l}, \nabla {biases}^{l} \\) <br/>out: weights, biases <br/> inout: <br/> \\( prev \nabla {weights}^{l} \\) , <br/>  \\( prev \nabla {biases}^{l} \\)|
-| extract luma | in: 3 channel image <br/>out: single channel image |
-| swap luma | in: 3 channel image, new luma <br/>out: new 3 channel image |
-| sum [BLOCKING] | in: any buffer <br/>out: float |
-| subtract from all | inout: any buffer |
+| forward propagation | **in:** weights, biases, previous layer output <br/>**out:** layer output |
+| mean square error<br/>**BLOCKING** | **in:** ground truth luma, CNN output luma <br/>**out:** float|
+| $\delta^L$ | **in:** ground truth luma, CNN output luma <br/>**out:** $\delta^L$|
+| $\delta^l$ | **in:** $\delta^{l+1}$, layer output$^{l}$, weights$^{l}$ <br/>**out:** $\delta^l$
+| backpropagation | **in:** $\delta^{l}$, layer output$^{l-1}$ <br/>**out:** $\nabla {weights}^{l}$, $\nabla {biases}^{l}$|
+| update parameters | **in:** $\nabla {weights}^{l}$, $\nabla {biases}^{l}$ <br/>**out:** weights, biases <br/> **inout:** <br/> $prev \nabla {weights}^{l}$ , <br/> $prev \nabla {biases}^{l}$ |
+| extract luma | **in:** 3 channel image <br/>**out:** single channel image |
+| swap luma | **in:** 3 channel image, new luma <br/>**out:** new 3 channel image |
+| sum<br/>**BLOCKING** | **in:** buffer with numbers <br/>**out:** float |
+| subtract from all | **inout:** buffer with numbers |
 
-<figcaption>
+<Figcaption>
 My app
-</figcaption>
-</figure>
+</Figcaption>
+</Figure>
 
 
 
@@ -226,15 +237,18 @@ List of scripts that I've used (feel free to reuse them):
 * [schedule_training.py](https://github.com/Scthe/cnn-Super-Resolution/blob/master/schedule_training.py) – user can specify number of epochs or duration in minutes
 
 
-{% capture image_caption %}
+<Figure>
+  <BlogImage
+    src="weights1.png"
+    alt="Example visualization of convolutional neural network weights. Some features can be distinguished e.g. detected vertical lines etc."
+  />
+  <Figcaption>
+
 Drawing of weights for first layer. There are some gradients visible, but nothing interesting in particular (at least for now).
-{% endcapture %}
-{% include lazyimage.html
-  image_src='weights1.png'
-  width='658'
-  height='470'
-  alt='Example visualization of convolutional neural network weights. Some features can be distinguished e.g. detected vertical lines etc.'
-%}
+
+  </Figcaption>
+</Figure>
+
 
 It's also worth mentioning that You can hardcode some values into scripts and then change them without recompiling. It makes managing the configuration through separate folders very easy as You can just copy the scripts and switch the values.
 
@@ -242,15 +256,18 @@ It's also worth mentioning that You can hardcode some values into scripts and th
 
 I highly recommend to write separate scheduling script. Some basic functionality should include e.g. ability to specify for how long to train (both by number of epochs and by duration), stop/resume, logs and backup management. Logging itself can be implemented as redirecting from sysout to file (although this solution has a lot of disadvantages).
 
-{% capture image_caption %}
+
+<Figure>
+  <BlogImage
+    src="scheduling.jpg"
+    alt="Output of schedule_training.py script. Contains used program args, iteration count, estimated time. After each iteration it saves subresults to a file."
+  />
+  <Figcaption>
+
 Scheduling script example
-{% endcapture %}
-{% include lazyimage.html
-  image_src='scheduling.jpg'
-  width='752'
-  height='246'
-  alt='Output of schedule_training.py script. Contains used program args, iteration count, estimated time. After each iteration it saves subresults to a file.'
-%}
+
+  </Figcaption>
+</Figure>
 
 
 ### Separate parameters from hyperparameters
@@ -276,27 +293,32 @@ Also, [AWS](https://aws.amazon.com/ec2/instance-types/#gpu "GPU instances on AWS
 
 One of the most important thing about profiling code is IMO to make it simple. Having to configure and run external program is often too much hassle. Sure, to closely investigate a bottleneck some additional information may be required, but a lot can be shown just from comparing 2 timer values. Writing separate profiling script makes it also easy to generate reports.
 
-{% capture image_caption %}
-Quick and easy profiling. Run this program after each change to verify regressions.
-{% endcapture %}
-{% include lazyimage.html
-  image_src='profile_normal.jpg'
-  width='657'
-  height='107'
-  alt='Console output of profile.py. Shows total time spend in whole program'
-%}
 
+<Figure>
+  <BlogImage
+    src="profile_normal.jpg"
+    alt="Console output of profile.py. Shows total time spend in whole program"
+  />
+  <Figcaption>
+
+Quick and easy profiling. Run this program after each change to verify regressions.
+
+  </Figcaption>
+</Figure>
 
 
 #### Profiling OpenCL – simple way
 
 The simplest way is to measure time spent per kernel. Fortunately OpenCL provides us with [clGetEventProfilingInfo](https://www.khronos.org/registry/cl/sdk/1.1/docs/man/xhtml/clGetEventProfilingInfo.html) that allows us to inspect time counters. Call [clGetDeviceInfo](https://www.khronos.org/registry/cl/sdk/1.1/docs/man/xhtml/clGetDeviceInfo.html) with `CL_DEVICE_PROFILING_TIMER_RESOLUTION` to get timer resolution.
 
-**For clGetEventProfilingInfo to work You have to set `CL_QUEUE_PROFILING_ENABLE` flag during clCreateCommandQueue.**
+> For `clGetEventProfilingInfo` to work You have to set `CL_QUEUE_PROFILING_ENABLE` flag during `clCreateCommandQueue`.
 
 Code sample (it slows down execution a lot):
 
-{% capture code_text %}
+
+<Figure>
+
+```c
 cl_event kernel_ev;
 clEnqueueNDRangeKernel(..., &kernel_ev); // call kernel
 
@@ -307,22 +329,26 @@ if (is_profiling()) {
   clGetEventProfilingInfo(kernel_ev, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, NULL);
   execution_time[kernel_id] += end - start;
 }
-{% endcapture %}
-{% capture code_caption %}
+```
+
+  <Figcaption>
+
 After each kernel wait for it to finish and then retrieve the timestamps
-{% endcapture %}
-{% include code_snippet.md lang='c' %}
 
+  </Figcaption>
+</Figure>
 
-{% capture image_caption %}
+<Figure>
+  <BlogImage
+    src="./profile_kernels.jpg"
+    alt="Console output of profile.py with kernel option. Each line contains kernel name and time spend"
+  />
+  <Figcaption>
+
 Time spent per kernel. Compile-time macros are also provided
-{% endcapture %}
-{% include lazyimage.html
-  image_src='profile_kernels.jpg'
-  width='719'
-  height='372'
-  alt='Console output of profile.py with kernel option. Each line contains kernel name and time spend'
-%}
+
+  </Figcaption>
+</Figure>
 
 
 
@@ -331,7 +357,10 @@ Time spent per kernel. Compile-time macros are also provided
 
 James Price has written an excellent article on [getting nvvp to display OpenCL profile data](https://uob-hpc.github.io/2015/05/27/nvvp-import-opencl/ "Visualising OpenCL Timelines with NVVP"). All that is needed is to set COMPUTE_PROFILE environment variable. You can also provide config file.
 
-{% capture code_text %}
+
+<Figure>
+
+```c
 > set COMPUTE_PROFILE=1
 > set COMPUTE_PROFILE_CONFIG=nvvp.cfg
 > cat nvvp.cfg
@@ -346,12 +375,14 @@ James Price has written an excellent article on [getting nvvp to display OpenCL 
   regperthread
   memtransfersize
 > bin\cnn.exe train dry -c data\config.json --epochs 100 -i data\train_samples36
-{% endcapture %}
-{% capture code_caption %}
-You can create script from this
-{% endcapture %}
-{% include code_snippet.md lang='c' %}
+```
 
+  <Figcaption>
+
+You can create script from this
+
+  </Figcaption>
+</Figure>
 
 NVVP logs **every single kernel invocation**, so try to provide representative, yet short name for every kernel function.
 
@@ -366,17 +397,17 @@ Available information includes e.g.:
 Use [CodeXL](https://developer.amd.com/tools-and-sdks/opencl-zone/codexl/ "AMD CodeXL") for AMD devices.
 
 
-{% capture image_caption %}
+<Figure>
+  <BlogImage
+    src="./nvvp.jpg"
+    alt="Nvidia Visual Profiler showing timeline of executed kernels"
+  />
+  <Figcaption>
+
 Nvidia Visual Profiler timeline view. On the left side we can see images being loaded to VRAM. Single epoch has been marked - it took 1.156s.
-{% endcapture %}
-{% include lazyimage.html
-  image_src='nvvp.jpg'
-  width='1298'
-  height='609'
-  alt='Nvidia Visual Profiler showing timeline of executed kernels'
-%}
 
-
+  </Figcaption>
+</Figure>
 
 
 
@@ -409,7 +440,10 @@ And by hardcode I mean [provide them at compile time](https://www.khronos.org/re
 * arrays in kernels
 * better compiler optimizations (e.g. comparisons with constants)
 
-{% capture code_text %}
+
+<Figure>
+
+```c
 // kernel with NUM_1, NUM_2 compile time constants
 __kernel void main(...){
   float arr[NUM_1]; // this is legal
@@ -419,19 +453,24 @@ __kernel void main(...){
 
 // compile with:
 clBuildProgram(__cl_program, 1, __device_id, "-D NUM_1=5 -D NUM_2=6", nullptr, nullptr);
-{% endcapture %}
-{% capture code_caption %}
-*Providing additional constants during compile time*
-{% endcapture %}
-{% include code_snippet.md lang='c' %}
+```
 
+  <Figcaption>
+
+Providing additional constants during compile time
+
+  </Figcaption>
+</Figure>
 
 
 ### Kernel fusion
 
 There is an interesting publication ([J. Filipovič, M. Madzin, J. Fousek, L. Matyska: Optimizing CUDA Code By Kernel Fusion---Application on BLAS](https://arxiv.org/abs/1305.1183)) about combining multiple kernels into one. When multiple kernels share data, instead of having each one load and store values in global memory they execute as one (access to registers/local memory is orders of magnitude faster). One target of such optimization is activation function - it can be written as part of forward kernel:
 
-{% capture code_text %}
+
+<Figure>
+
+```c
 #ifdef ACTIVATION_RELU
   output_buffer[idx] = max(0.0f, output_val);
 #elif ACTIVATION_SIGMOID
@@ -439,11 +478,15 @@ There is an interesting publication ([J. Filipovič, M. Madzin, J. Fousek, L. Ma
 #else // raw value
   output_buffer[idx] = output_val;
 #endif
-{% endcapture %}
-{% capture code_caption %}
+```
+
+  <Figcaption>
+
 Inlined activation function
-{% endcapture %}
-{% include code_snippet.md lang='c' %}
+
+  </Figcaption>
+</Figure>
+
 
 Another case is to merge calculations of deltas and derivatives of activation function.
 
@@ -482,11 +525,9 @@ Of course the road from theory to application is quite long.
 Implementing neural network is quite long process. It is also an interesting learning experience. It does not teach You everything there is about machine learning, but gives a solid understanding how these things work.
 Sure there are always things that can be implemented better and another milliseconds to shave. I've also seen a couple of interesting publications about FFT in convolutions. But right now I don't think I'm going to experiment any further - the goal of this project was already achieved.
 
+<br/>
 
-{% capture image_caption %}{% endcapture %}
-{% include lazyimage.html
-  image_src='clBuildProgram_error.png'
-  width='696'
-  height='125'
-  alt='NVIDIA compiler error log showing just a unicode heart'
-%}
+<BlogImage
+  src="./clBuildProgram_error.png"
+  alt="NVIDIA compiler error log showing just a unicode heart"
+/>

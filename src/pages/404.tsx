@@ -6,7 +6,7 @@ import PageTitle from '../components/pageTitle';
 import * as linkStyles from '../templates/styles/_links.module.scss';
 
 /*
-// TODO `permalink: /404.html`
+// TODO add links to popular articles here
 
 // TODO GA:
 <script>
@@ -29,10 +29,12 @@ const NotFoundPage = () => {
         subtitle="Sorry, we can't find that page. It might be an old link or maybe it moved."
       />
 
-      <div style={{
-        textAlign: 'center',
-        marginTop: '2rem'
-      }}>
+      <div
+        style={{
+          textAlign: 'center',
+          marginTop: '2rem',
+        }}
+      >
         <Link to="/" aria-label="Home page" className={linkStyles.linkStyle}>
           Okay, go home
         </Link>

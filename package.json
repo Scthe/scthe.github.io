@@ -43,7 +43,8 @@
     "react-helmet": "^6.1.0",
     "react-medium-image-zoom": "^4.3.5",
     "rehype-katex": "^6.0.1",
-    "remark-math": "3.0.1"
+    "remark-math": "3.0.1",
+    "url-slug": "^3.0.2"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",

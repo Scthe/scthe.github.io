@@ -4,7 +4,9 @@ import { ArrayItemType } from '../utils';
 type NodeArray = GatsbyTypes.AllStaticImagesQuery['allImageSharp']['nodes'];
 type ReturnType = ArrayItemType<NodeArray>;
 
-export default function useGetStaticImageData(filePath: string): ReturnType {
+export default function useGetStaticImageData(
+  filePath: string,
+): ReturnType | undefined {
   const { allImageSharp } = useStaticQuery<GatsbyTypes.AllStaticImagesQuery>(
     graphql`
       query AllStaticImages {
@@ -34,7 +36,11 @@ export default function useGetStaticImageData(filePath: string): ReturnType {
 
   if (node == null) {
     const allImages = allImageSharp.nodes.map((e) => e.parent?.absolutePath);
-    console.error('Available images:', allImages);
+    // console.error(
+    // `useGetStaticImageData could not find image '${filePath}'. Available images:`,
+    // allImages,
+    // );
+    console.warn('Available images:', allImages);
     throw new Error(`useGetStaticImageData could not find image '${filePath}'`);
   }
 

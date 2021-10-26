@@ -16146,6 +16146,7 @@ __metadata:
     sass: ^1.43.3
     typescript: ^4.4.4
     typescript-plugin-css-modules: ^3.4.0
+    url-slug: ^3.0.2
   languageName: unknown
   linkType: soft
 
@@ -18509,6 +18510,13 @@ __metadata:
   dependencies:
     prepend-http: ^2.0.0
   checksum: 1040e357750451173132228036aff1fd04abbd43eac1fb3e4fca7495a078bcb8d33cb765fe71ad7e473d9c94d98fd67adca63bd2716c815a2da066198dd37217
+  languageName: node
+  linkType: hard
+
+"url-slug@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "url-slug@npm:3.0.2"
+  checksum: b7596a968277a0833c893a9ca2cd34cfed9b661b312c2ac51f0ac6e5889d27ebadb65ebcb74967f07505402b0ce826a6ad9a6be83ee99c4b3dc74c9ffbb535cd
   languageName: node
   linkType: hard
 

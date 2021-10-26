@@ -30,8 +30,13 @@ const COMPONENTS = {
   Figcaption: (props) => (
     <figcaption className={figureStyles.figcaption} {...props} />
   ),
+  // usually a noop, unless we detect it's a math block
   div: interceptBlockMath,
   span: interceptInlineMath,
+  // Raw images using ` ![Alt text](./cnn-all.gif)`
+  // TODO Use reduced-motion for gifs?
+  // eslint-disable-next-line jsx-a11y/alt-text
+  img: (props) => <img className={figureStyles.rawImages} {...props} />,
   // eslint-disable-next-line jsx-a11y/anchor-has-content
   a: (props) => <a className={linkStyles.linkStyle} {...props} />,
   BlogImage,

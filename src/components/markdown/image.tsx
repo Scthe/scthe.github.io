@@ -9,6 +9,7 @@ import useGetStaticImageData from '../../hooks/useGetStaticImageData';
 import useGetBlogPost from '../../hooks/useGetBlogPost';
 import * as styles from './image.module.scss';
 
+// TODO finish _to_migrate
 interface Props {
   src: string;
   alt: string;
@@ -22,6 +23,7 @@ const BlogImage: React.FC<Props> = ({ src, alt }) => {
   const imgData = useGetStaticImageData(imagePath);
   const image = imgData != null ? getImage(imgData as any) : undefined;
 
+  // TODO this does not always work
   const [imageloaded, setImageloaded] = useState(false);
   const onImgLoaded = useCallback(() => setImageloaded(true), []);
 

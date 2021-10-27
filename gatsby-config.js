@@ -1,24 +1,31 @@
 module.exports = {
   siteMetadata: {
     title: `Scthe's blog`,
+    description: `Mostly some programming stuff`,
+    siteUrl: `https://scthe.github.io`, // Also in robots.txt!
+    defaultImage: 'default_opengraph_image.jpg',
     author: {
       name: `Marcin Matuszczyk`,
       username: `Scthe`,
       githubAccount: 'https://github.com/Scthe',
     },
-    description: `Mostly some programming stuff`,
-    siteUrl: `https://scthe.github.io`,
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-sass`,
-    // 'gatsby-plugin-scss-typescript',
     `gatsby-plugin-image`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
         path: `${__dirname}/content/blog`,
         name: `blog`,
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        path: `${__dirname}/static/images`,
+        name: `static_images`,
       },
     },
     `gatsby-transformer-sharp`,
@@ -41,12 +48,6 @@ module.exports = {
         },
       },
     },
-    // {
-    //   resolve: `gatsby-plugin-google-analytics`,
-    //   options: {
-    //     trackingId: `ADD YOUR TRACKING ID HERE`,
-    //   },
-    // },
     {
       resolve: `gatsby-plugin-mdx`,
       options: {
@@ -54,7 +55,6 @@ module.exports = {
         remarkPlugins: [require('remark-math')],
         gatsbyRemarkPlugins: [
           {
-            // TODO remove
             resolve: `gatsby-remark-images`,
             options: {
               maxWidth: 870,
@@ -74,6 +74,20 @@ module.exports = {
         },
         emitPluginDocuments: {
           'src/__generated__/gatsby-plugin-documents.graphql': true,
+        },
+      },
+    },
+    `gatsby-plugin-advanced-sitemap`,
+    {
+      resolve: `gatsby-plugin-google-gtag`,
+      options: {
+        trackingIds: ['UA-66646958-1'],
+        gtagConfig: {
+          anonymize_ip: true,
+          cookie_expires: 0,
+        },
+        pluginConfig: {
+          head: false,
         },
       },
     },

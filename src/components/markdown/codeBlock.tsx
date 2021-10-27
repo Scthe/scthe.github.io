@@ -2,11 +2,12 @@ import Highlight, { defaultProps } from 'prism-react-renderer';
 import React from 'react';
 import cx from 'classnames';
 
+import { useMode } from '../../hooks/useMode';
 import * as styles from './codeblock.module.scss';
 import theme from './codeBlock.theme';
 
-// TODO <figure>, <figcaption>
-// TODO small hint about language in top right (with border radius), hides on code hover
+// TODO [P5] <figure>, <figcaption>
+// TODO [P5] small hint about language in top right (with border radius), hides on code hover
 
 export const CodeBlockWrapper: React.FC = (props) => <div {...props} />;
 
@@ -15,7 +16,8 @@ interface Props {
 }
 
 const CodeBlock: React.FC<Props> = ({ className, children }) => {
-  if (className == null && process.env.NODE_ENV === 'development') {
+  const mode = useMode();
+  if (className == null && mode === 'development') {
     console.warn('Unknown language for:', children);
   }
   className = className || '';

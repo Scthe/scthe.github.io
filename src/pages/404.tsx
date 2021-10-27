@@ -23,7 +23,12 @@ import * as linkStyles from '../templates/styles/_links.module.scss';
 
 const NotFoundPage = () => {
   return (
-    <Layout title="404: Page not found">
+    <Layout
+      title="404: Page not found"
+      description="404: Page not found"
+      type={{ type: 'website' }}
+      canonicalUrl="404"
+    >
       <PageTitle
         title="404: Page not found"
         subtitle="Sorry, we can't find that page. It might be an old link or maybe it moved."

@@ -6,8 +6,6 @@
   margin-right: 0;
 }
 
-// TODO figcaptions for tables
-// .table_wrapper > table + figcaption
 .figcaption {
   @extend %post-margins;
   font-size: var(--font-size-image-caption);

@@ -1,13 +1,12 @@
 import * as React from 'react';
+
+import Date from './date';
 import * as styles from './pageTitle.module.scss';
 
 interface Props {
   title: string;
   subtitle?: string;
-  date?: {
-    date: string;
-    isoDate: string;
-  };
+  date?: Date;
 }
 
 const PageTitle: React.FC<Props> = ({ title, subtitle, date }) => {
@@ -17,7 +16,7 @@ const PageTitle: React.FC<Props> = ({ title, subtitle, date }) => {
 
       {date != null && (
         <span className={styles.contentSubtitle}>
-          <time dateTime={date.isoDate}>{date.date}</time>
+          <Date date={date} />
         </span>
       )}
 

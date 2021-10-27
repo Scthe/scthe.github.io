@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { Link } from 'gatsby';
+
+import Date from './date';
 import * as styles from './postListItem.module.scss';
 
 export interface PostListItemProps {
   title: string;
-  date: string;
-  isoDate: string;
+  date: Date;
   permalink: string;
   excerpt: string;
 }
@@ -13,7 +14,6 @@ export interface PostListItemProps {
 const PostListItem: React.FC<PostListItemProps> = ({
   title,
   date,
-  isoDate,
   permalink,
   excerpt,
 }) => {
@@ -27,9 +27,7 @@ const PostListItem: React.FC<PostListItemProps> = ({
         </h2>
 
         <div className={styles.postItemMetaRow}>
-          <time className={styles.postItemDate} dateTime={isoDate}>
-            {date}
-          </time>
+          <Date className={styles.postItemDate} date={date} />
         </div>
       </header>
       <section>

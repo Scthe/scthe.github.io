@@ -45,7 +45,6 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   }
 
   // Define a template for blog post
-  const blogPost = path.resolve(`./src/templates/blog-post.js`);
   const allPosts = result.data.allMdx.nodes;
   const posts = filterDraftPosts(allPosts, includeDrafts);
   reportPublishedPosts(reporter, allPosts, posts);
@@ -58,7 +57,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     posts.forEach((post) => {
       actions.createPage({
         path: post.frontmatter.permalink,
-        component: blogPost,
+        component: path.resolve('./src/templates/blog-post.tsx'),
         context: {
           id: post.id,
         },

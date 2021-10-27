@@ -4,6 +4,7 @@ permalink: "/blog/neural-networks-implementation-tips/"
 excerpt: "Tips for implementing neural networks from scratch. From identifying use cases and data generation to implementation, testing, debugging and profiling. Separate section dedicated to GPUs and unique problems for massively parallel devices."
 date: 2015-08-23 12:00:00
 image: "./result_cmp.jpg"
+draft: false
 ---
 
 

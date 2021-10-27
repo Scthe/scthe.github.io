@@ -1,8 +1,23 @@
 const path = require(`path`);
 const { createFilePath } = require(`gatsby-source-filesystem`);
+const filterDraftPosts = require(`./src/utils/filterDraftPosts`);
+
+function reportPublishedPosts(reporter, allPosts, posts) {
+  if (allPosts.length === posts.length) {
+    reporter.info('All blog posts will be visible');
+  } else {
+    reporter.info(
+      `Only ${posts.length} out of ${allPosts.length} will be visible. Rest are drafts`,
+    );
+  }
+}
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
-  const { createPage } = actions;
+  const mode = process.env.NODE_ENV;
+  const includeDrafts = mode !== 'production';
+  reporter.info(
+    `Build mode=${mode}, will${includeDrafts ? '' : 'not'} include drafts`,
+  );
 
   // Get all markdown blog posts sorted by date
   const result = await graphql(
@@ -13,6 +28,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
             id
             frontmatter {
               permalink
+              draft
             }
           }
         }
@@ -30,7 +46,9 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   // Define a template for blog post
   const blogPost = path.resolve(`./src/templates/blog-post.js`);
-  const posts = result.data.allMdx.nodes;
+  const allPosts = result.data.allMdx.nodes;
+  const posts = filterDraftPosts(allPosts, includeDrafts);
+  reportPublishedPosts(reporter, allPosts, posts);
 
   // Create blog posts pages
   // But only if there's at least one markdown file found at "content/blog" (defined in gatsby-config.js)
@@ -38,7 +56,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   if (posts.length > 0) {
     posts.forEach((post) => {
-      createPage({
+      actions.createPage({
         path: post.frontmatter.permalink,
         component: blogPost,
         context: {

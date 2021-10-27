@@ -1,9 +1,10 @@
 ---
-title: "Image based lighting notes"
-permalink: "Image based lighting notes"
+title: "Implementing image based lighting"
+permalink: "/blog/implementing-image-based-lighting/"
 excerpt: "Image based lighting - equations + explanation"
 date: 2018-06-17 12:00:00
-tags: ['Rendering', 'PBR']
+image: "./result_cmp.jpg"
+draft: true
 ---
 
 {% capture image_dir %}/assets/2018-06-17-image-based-lighting{% endcapture %}
@@ -297,7 +298,9 @@ With 2 parameters (roughness, $$(l \cdot n)$$) and 2 outputs (a, b) we can creat
 <figure>
   <img src="{{image_dir}}/env_brdf_texture.png" alt=""/>
   <figcaption>
-Red channel is value of a, green channel is value of b. $$ L_{s_{DFG}} = lut.r * f_0 + lut.g $$
+
+Red channel is value of a, green channel is value of b. $L_{s_{DFG}} = lut.r * f_0 + lut.g$
+
   </figcaption>
 </figure>
 

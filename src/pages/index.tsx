@@ -4,12 +4,17 @@ import { PageProps, graphql } from 'gatsby';
 import Layout from '../components/layout';
 import PostList from '../components/postList';
 import PageTitle from '../components/pageTitle';
+import { useMode } from '../hooks/useMode';
+import filterDraftPosts from '../utils/filterDraftPosts';
 
 type DataProps = GatsbyTypes.BlogIndexQuery;
 
 const BlogIndex: React.FC<PageProps<DataProps>> = ({ data }) => {
   const siteTitle = data.site!.siteMetadata?.title || `Title`;
-  const posts = data.allMdx.nodes;
+
+  const mode = useMode();
+  let posts = data.allMdx.nodes;
+  posts = filterDraftPosts(posts, mode !== 'production');
 
   // TODO <Seo title="All articles" />;
   return (
@@ -45,6 +50,7 @@ export const pageQuery = graphql`
           excerpt
           date(formatString: "DD MMM YYYY")
           isoDate: date(formatString: "YYYY-MM-DDTHH:mm:ssZ")
+          draft
         }
       }
     }

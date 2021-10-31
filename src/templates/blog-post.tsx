@@ -25,6 +25,7 @@ import * as figureStyles from './styles/_figure.module.scss';
 
 type PT = any;
 
+// TODO [P5] table <caption>, row header etc.
 const COMPONENTS = {
   h2: (props: PT) => <Heading level="2" {...props} />,
   h3: (props: PT) => <Heading level="3" {...props} />,

@@ -43,6 +43,7 @@
 .postItemReadMoreLink {
   color: var(--color-accent-darken);
   font-weight: var(--font-weight-bold);
+  margin-left: 10px;
 
   &:hover {
     text-decoration: underline;

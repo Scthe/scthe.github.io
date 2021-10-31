@@ -16,7 +16,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   const mode = process.env.NODE_ENV;
   const includeDrafts = mode !== 'production';
   reporter.info(
-    `Build mode=${mode}, will${includeDrafts ? '' : 'not'} include drafts`,
+    `Build mode=${mode}, will${includeDrafts ? '' : ' not'} include drafts`,
   );
 
   // Get all markdown blog posts sorted by date

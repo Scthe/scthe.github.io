@@ -8,7 +8,7 @@ html {
   --color-subtitle: #656565;
   --color-strong: #303030;
 
-  background-color: #dadada;
+  background-color: var(--background-content);
   word-spacing: 105%;
 }
 

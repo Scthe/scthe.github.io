@@ -40,6 +40,9 @@ generated/*
 src/__generated__/*
 !src/__generated__/.keep
 
+# deploy
+.vercel
+
 # my
 references
 _references

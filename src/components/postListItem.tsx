@@ -37,7 +37,7 @@ const PostListItem: React.FC<PostListItemProps> = ({
       </section>
       <footer>
         <span className={styles.postItemReadMore}>
-          Continue reading&nbsp;
+          Continue reading
           <Link
             to={permalink}
             tabIndex={-1}
@@ -45,7 +45,7 @@ const PostListItem: React.FC<PostListItemProps> = ({
           >
             {title}
           </Link>
-          <span aria-hidden="true">&nbsp;&rarr;</span>
+          <span aria-hidden="true"> &rarr;</span>
         </span>
       </footer>
     </article>

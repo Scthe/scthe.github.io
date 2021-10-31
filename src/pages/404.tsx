@@ -1,27 +1,23 @@
 import { Link } from 'gatsby';
-import * as React from 'react';
+import React, { useEffect } from 'react';
 
+import { gaEvent } from '../utils';
 import Layout from '../components/layout';
 import PageTitle from '../components/pageTitle';
 import * as linkStyles from '../templates/styles/_links.module.scss';
 
-/*
-// TODO add links to popular articles here
-
-// TODO GA:
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    ga('send', {
-      hitType: 'event',
-      eventCategory: 'page-404',
-      eventAction: 'pageview',
-      eventLabel: window.location.href
-    });
-  });
-</script>
-*/
+// TODO [P5] add links to popular articles here
 
 const NotFoundPage = () => {
+  useEffect(() => {
+    gaEvent('page-404', {
+      event_category: 'page-404',
+      event_action: 'pageview',
+      event_label: window?.location?.href || '-',
+      referrer: window?.document?.referrer || '-',
+    });
+  }, []);
+
   return (
     <Layout
       title="404: Page not found"

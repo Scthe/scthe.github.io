@@ -2,7 +2,7 @@ module.exports = {
   siteMetadata: {
     title: `Scthe's blog`,
     description: `Mostly some programming stuff`,
-    siteUrl: `https://scthe.github.io`, // Also in robots.txt!
+    siteUrl: `https://www.sctheblog.com`, // Also in robots.txt!
     defaultImage: 'default_opengraph_image.jpg',
     author: {
       name: `Marcin Matuszczyk`,

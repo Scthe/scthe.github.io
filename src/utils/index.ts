@@ -1,4 +1,5 @@
 import { formatISO, format, parseISO } from 'date-fns';
+import { useMode } from '../hooks/useMode';
 
 export type ArrayItemType<T extends readonly unknown[]> =
   T extends readonly (infer R)[] ? R : never;
@@ -30,6 +31,17 @@ export const joinPaths = (...strs: string[]): string => {
     return removePrefix(e, '/');
   });
   return [removeSufix(start.trim(), '/'), ...parts].join('/');
+};
+
+export const gaEvent = (
+  eventName: string,
+  params: Gtag.ControlParams | Gtag.EventParams | Gtag.CustomParams,
+) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const mode = useMode();
+  if (mode === 'production') {
+    typeof window !== 'undefined' && window.gtag('event', eventName, params);
+  }
 };
 
 /// DATES

@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet';
 import { joinPaths, ensureSufix } from '../utils';
 import useSiteMeta from '../hooks/useSiteMeta';
 import useGetFile from '../hooks/useGetFile';
-import themeToggleScript from '../utils/themeToggleScript';
 import * as styles from './layout.module.scss';
 import TopNav from './topNav';
 import Seo, { SeoProps } from './seo';
@@ -13,11 +12,6 @@ import '../styles/normalize.module.css';
 import '../styles/variables.module.scss';
 import '../styles/global.module.scss';
 import '../styles/fonts.module.css';
-
-const THEME_TOGGLE_SCRIPT_EL = {
-  type: 'text/javascript',
-  innerHTML: themeToggleScript,
-};
 
 interface Props {
   title: string;
@@ -40,33 +34,29 @@ const Layout: React.FC<Props> = ({
     joinPaths(siteMeta.siteUrl || '', canonicalUrl),
     '/',
   );
+  title = title.includes(siteMeta.title || '')
+    ? title
+    : `${title} - ${siteMeta.title || ''}`;
   const imageBase = image || siteMeta.defaultImage!;
   const imagePublicUrl = useGetFile(imageBase).publicURL!;
   image = joinPaths(siteMeta.siteUrl || '', imagePublicUrl);
 
   return (
     <>
-      <Helmet
-        htmlAttributes={{ lang: 'en' }}
-        title={title}
-        script={[THEME_TOGGLE_SCRIPT_EL]}
-        meta={[
-          {
-            name: 'viewport',
-            content:
-              'width=device-width, minimum-scale=1, initial-scale=1, viewport-fit=cover',
-          },
-          { name: 'theme-color', content: '#fafafa' },
-          { name: 'mobile-web-app-capable', content: 'yes' },
-          { name: 'apple-mobile-web-app-capable', content: 'yes' },
-          { name: 'referrer', content: 'no-referrer-when-downgrade' },
-          { name: 'author', content: siteMeta.author?.name || '' },
-          { name: 'description', content: description },
-          { name: 'theme-color', content: '#fafafa' },
-        ]}
-      >
+      <Helmet htmlAttributes={{ lang: 'en' }} title={title}>
         <meta charSet="utf-8" />
         <link rel="canonical" href={canonicalUrl} />
+
+        <meta
+          name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, viewport-fit=cover"
+        />
+        <meta name="theme-color" content="#fafafa" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="referrer" content="no-referrer-when-downgrade" />
+        <meta name="author" content={siteMeta.author?.name || ''} />
+        <meta name="description" content={description} />
 
         {/* favicon */}
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
@@ -98,8 +88,6 @@ const Layout: React.FC<Props> = ({
           Reserved.
         </div>
       </footer>
-
-      {/* TODO include analytics.html */}
     </>
   );
 };

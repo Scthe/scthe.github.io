@@ -1,0 +1,10 @@
+@import '../../styles/mixins';
+
+// links in text (not anchor for paragraph)
+.linkStyle {
+  @include highlighter(var(--link-highlight));
+
+  color: inherit;
+  padding: 0 3px;
+  text-decoration: none;
+}

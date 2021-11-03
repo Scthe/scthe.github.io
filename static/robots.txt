@@ -1,0 +1,3 @@
+Sitemap: https://www.sctheblog.com/sitemap.xml
+User-agent: *
+Disallow:

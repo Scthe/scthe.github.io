@@ -1,0 +1,20 @@
+@import '../../styles/mixins';
+
+.figure {
+  @include margin-v(var(--post-element-margin-top), 0);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.figcaption {
+  @extend %post-margins;
+  font-size: var(--font-size-image-caption);
+  margin-top: var(--post-figure-caption-margin-top);
+  text-align: center;
+}
+
+.rawImages {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}

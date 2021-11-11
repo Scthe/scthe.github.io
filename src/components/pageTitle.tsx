@@ -15,14 +15,12 @@ const PageTitle: React.FC<Props> = ({ title, subtitle, date }) => {
       <h1 className={styles.contentTitle}>{title}</h1>
 
       {date != null && (
-        <span className={styles.contentSubtitle}>
+        <p className={styles.contentSubtitle}>
           <Date date={date} />
-        </span>
+        </p>
       )}
 
-      {subtitle != null && (
-        <span className={styles.contentSubtitle}>{subtitle}</span>
-      )}
+      {subtitle != null && <p className={styles.contentSubtitle}>{subtitle}</p>}
     </header>
   );
 };

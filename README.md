@@ -1,2 +1,2 @@
-Scthe's blog - [https://scthe.github.io/](https://scthe.github.io/)
+Scthe's blog - [https://www.sctheblog.com/](https://www.sctheblog.com/)
 ============

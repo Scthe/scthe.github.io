@@ -12,20 +12,24 @@ import {
   interceptBlockMath,
   interceptInlineMath,
 } from '../components/markdown/math';
+import MarkdownLink from '../components/markdown/link';
 
 import { parseDate } from '../utils';
 import { BlogPostContextProvider } from '../hooks/useGetBlogPost';
 import { useMode } from '../hooks/useMode';
 
 import './styles/_text.module.scss';
-import * as linkStyles from './styles/_links.module.scss';
 import './styles/_lists.module.scss';
 import './styles/_tables.module.scss';
 import * as figureStyles from './styles/_figure.module.scss';
 
 type PT = any;
 
+// TODO add table of contents like in https://atlassian.design/foundations/color (it even scrolls nicely)
+// TODO sentry
 // TODO [P5] table <caption>, row header etc.
+// TODO [P5] Use reduced-motion for gifs?
+
 const COMPONENTS = {
   h2: (props: PT) => <Heading level="2" {...props} />,
   h3: (props: PT) => <Heading level="3" {...props} />,
@@ -40,12 +44,10 @@ const COMPONENTS = {
   div: interceptBlockMath,
   span: interceptInlineMath,
   // Raw images using ` ![Alt text](./cnn-all.gif)`
-  // TODO [P5] Use reduced-motion for gifs?
   // eslint-disable-next-line jsx-a11y/alt-text
   img: (props: PT) => <img className={figureStyles.rawImages} {...props} />,
-  // eslint-disable-next-line jsx-a11y/anchor-has-content
-  a: (props: PT) => <a className={linkStyles.linkStyle} {...props} />,
   BlogImage,
+  a: (props: PT) => <MarkdownLink {...props} />,
 };
 
 type DataProps = GatsbyTypes.BlogPostBySlugQuery;

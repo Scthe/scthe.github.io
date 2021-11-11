@@ -1,10 +1,9 @@
-import { Link } from 'gatsby';
 import React, { useEffect } from 'react';
 
 import { gaEvent } from '../utils';
 import Layout from '../components/layout';
 import PageTitle from '../components/pageTitle';
-import * as linkStyles from '../templates/styles/_links.module.scss';
+import Link from '../components/markdown/link';
 
 // TODO [P5] add links to popular articles here
 
@@ -36,7 +35,7 @@ const NotFoundPage = () => {
           marginTop: '2rem',
         }}
       >
-        <Link to="/" aria-label="Home page" className={linkStyles.linkStyle}>
+        <Link href="/" aria-label="Home page">
           Okay, go home
         </Link>
       </div>

@@ -8,8 +8,9 @@ draft: false
 ---
 
 
-This is an electronic version of my notes created during [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution) project. You can read more at: ["Neural networks: implementation tips"](/2015/08/23/neural-networks-implementation-tips.html).
+In this article we will derive the basic math behind nerural networks. Leter we will adapt the equations for convolutional neural networks. I've done this by hand for my [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution) project, so that you don't have to.
 
+If you are looking for practical tips about implementing neural networks, you should check out my other article - ["Writing neural networks from scratch - implementation tips"](/blog/neural-networks-implementation-tips/).
 
 
 ## Chain rule
@@ -445,3 +446,5 @@ $$ {\partial \over \partial b^{(l)}_{n}} J(W,b;Y,X) = \\
 ## Summary
 
 Hopefully notes presented here helped You understand neural networks better. If You know how the equations were created You can adapt them to any use case.
+
+If you are looking for practical tips about implementing neural networks, you should check out my other article - ["Writing neural networks from scratch - implementation tips"](/blog/neural-networks-implementation-tips/).

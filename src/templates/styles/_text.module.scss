@@ -46,6 +46,7 @@ $blockquote-left-border: #ddd;
   }
 
   // inline code
+  li > code,
   p > code,
   p > blockquote > code {
     color: #19282b;

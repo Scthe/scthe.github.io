@@ -8,7 +8,7 @@ draft: false
 ---
 
 
-Judging by the number of new articles, neural networks were very popular in recent months. And not only because Google, Netflix, Adobe, Baidu, Facebook and countless others has been using them. There are many hobbyists playing with machine learning too. After seeing amazing examples of what is possible I decided to create my very own neural network. This article presents my findings. I hope You will find it useful.
+Judging by the number of new articles, neural networks were popular in recent months. And not only because Google, Netflix, Adobe, Baidu, Facebook and countless others has been using them. There are many hobbyists playing with machine learning too. After seeing amazing examples of what is possible I decided to create my own neural network. This article presents my findings. I hope You will find it useful.
 
 If you are also interested in derivation of neural network equations, I've also got you covered. Check out ["Math behind (convolutional) neural networks"](/blog/math-behind-neural-networks/).
 
@@ -253,7 +253,7 @@ Drawing of weights for first layer. There are some gradients visible, but nothin
 </Figure>
 
 
-It's also worth mentioning that You can hardcode some values into scripts and then change them without recompiling. It makes managing the configuration through separate folders very easy as You can just copy the scripts and switch the values.
+It's also worth mentioning that You can hardcode some values into scripts and then change them without recompiling. It makes managing the configuration through separate folders easy as You can just copy the scripts and switch the values.
 
 > Did You know that copying file in python is one-liner (`shutil.copy2(src_file_path, dest_file_path)`)? Use it as simple backup system.
 
@@ -494,7 +494,7 @@ Inlined activation function
 Another case is to merge calculations of deltas and derivatives of activation function.
 
 
-> From what I've observed simple kernels like that do not show up during profiling. I'd say fuse them anyway, since it decreases number of moving parts. For example calculating deltas for last layer (very simple kernel) consists of 2 memory reads, single write and handful of expressions. That takes only ~0.1% of overall calculation time.
+> From what I've observed simple kernels like that do not show up during profiling. I'd say fuse them anyway, since it decreases number of moving parts. For example calculating deltas for last layer (simplest kernel) consists of 2 memory reads, single write and handful of expressions. That takes only ~0.1% of overall calculation time.
 
 
 

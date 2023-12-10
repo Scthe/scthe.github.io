@@ -12,6 +12,16 @@ function reportPublishedPosts(reporter, allPosts, posts) {
   }
 }
 
+function reportInvalidPosts(reporter, posts) {
+  return posts.filter((post) => {
+    const isValid = !!post.frontmatter && !!post.frontmatter.permalink;
+    if (!isValid) {
+      reporter.warn(`Invalid post: ${JSON.stringify(post)}`);
+    }
+    return isValid;
+  });
+}
+
 exports.createPages = async ({ graphql, actions, reporter }) => {
   const mode = process.env.NODE_ENV;
   const includeDrafts = mode !== 'production';
@@ -46,7 +56,8 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
 
   // Define a template for blog post
   const allPosts = result.data.allMdx.nodes;
-  const posts = filterDraftPosts(allPosts, includeDrafts);
+  let posts = filterDraftPosts(allPosts, includeDrafts);
+  posts = reportInvalidPosts(reporter, posts);
   reportPublishedPosts(reporter, allPosts, posts);
 
   // Create blog posts pages

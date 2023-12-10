@@ -4,3 +4,6 @@ public
 
 _references
 src/__generated__
+
+# vscode was very persistent
+content/blog

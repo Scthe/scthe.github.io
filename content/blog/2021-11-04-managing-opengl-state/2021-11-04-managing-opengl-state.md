@@ -1,5 +1,5 @@
 ---
-title: "Basics of declarative OpenGL state management"
+title: "Declarative OpenGL state management"
 permalink: "/blog/opengl-state-management/"
 excerpt: "Some parts of OpenGL API reach as far back as the year 1992 and it shows. Let's look at how to manage basic OpenGL state in a more stateless way."
 date: 2021-11-11 12:00:00
@@ -24,7 +24,7 @@ If at any point you would like to see how such approach works in practice, check
   />
   <Figcaption>
 
-Possible OpenGL per-fragment operations. This is just a very small part of the pipeline for graphic APIs. Most of the steps are in some way configurable, which proves how complex state management can be. Original graphic from [OpenGL specification 4.6](https://www.khronos.org/registry/OpenGL/specs/gl/glspec46.core.pdf).
+Possible OpenGL per-fragment operations. This is just a small part of the pipeline for graphic APIs. Most of the steps are in some way configurable, which proves how complex state management can be. Original graphic from [OpenGL specification 4.6](https://www.khronos.org/registry/OpenGL/specs/gl/glspec46.core.pdf).
 
   </Figcaption>
 </Figure>
@@ -70,7 +70,7 @@ I've already mentioned the comparison operator. On one side we have the depth of
 * `GL_NEVER` - The depth test always fails. This actually can be used with `glStencilOp`, as we will soon see.
 
 * `GL_ALWAYS` - The depth test always passes. Can be used to render game UI, but disabling depth testing is probably an easier solution.
-* `GL_EQUAL` - Passes if values are the same. This is very useful for [z-prepass](https://interplayoflight.wordpress.com/2020/12/21/to-z-prepass-or-not-to-z-prepass/). In this optimization technique, we render the whole scene twice. First, with a no-op fragment shader, depth write on, and depth comparator `GL_LESS`. This is the cheapest way to produce a depth map. Early in the frame graph, we can use this depth texture to calculate additional effects like [Screen Space Ambient Occlusion(SSAO)](https://en.wikipedia.org/wiki/Screen_space_ambient_occlusion) or [Screen Space Reflection (SSR)](https://docs.blender.org/manual/en/latest/render/eevee/render_settings/screen_space_reflections.html). Later on, we rerender all meshes using same depth map and `GL_EQUAL`. This guarantees no fragment shader overdraw (which can be very expensive).
+* `GL_EQUAL` - Passes if values are the same. This is useful for [z-prepass](https://interplayoflight.wordpress.com/2020/12/21/to-z-prepass-or-not-to-z-prepass/). In this optimization technique, we render the whole scene twice. First, with a no-op fragment shader, depth write on, and depth comparator `GL_LESS`. This is the cheapest way to produce a depth map. Early in the frame graph, we can use this depth texture to calculate additional effects like [Screen Space Ambient Occlusion(SSAO)](https://en.wikipedia.org/wiki/Screen_space_ambient_occlusion) or [Screen Space Reflection (SSR)](https://docs.blender.org/manual/en/latest/render/eevee/render_settings/screen_space_reflections.html). Later on, we rerender all meshes using same depth map and `GL_EQUAL`. This guarantees no fragment shader overdraw (which can be expensive).
 * `GL_NOTEQUAL` - Passes if values are different. I don't think I have ever used this value.
 * `GL_LESS`/`GL_LEQUAL` - Passes if pixel's depth value is less (`GL_LESS`) or less-or-equal(`GL_LEQUAL`). The most common value for **not** reversed depth buffer.
 * `GL_GREATER`/`GL_GEQUAL` - Passes if pixel's depth value is greater (`GL_GREATER`) or greater-or-equal(`GL_GEQUAL`). The most common value for **reversed** depth buffer.
@@ -234,9 +234,9 @@ The first argument - `GLenum func` - is the comparison operator and can take the
 * `GL_ALWAYS` - Pixel will always pass the stencil test.
 
 * `GL_NEVER` - Pixel will always fail the stencil test. Can be used to set/reset the value of stencil buffer bits when combined with `glStencilOp`'s `GLenum sfail` argument.
-* `GL_LESS` - Pixel passes if `ref` < `current_stencil_value`. My alias: `IfRefIsLessThenCurrent`.
+* `GL_LESS` - Pixel passes if `ref` < `current_stencil_value`. My alias: `IfRefIsLessThanCurrent`.
 * `GL_LEQUAL` - Pixel passes if `ref` <= `current_stencil_value`. My alias: `IfRefIsLessOrEqualCurrent`.
-* `GL_GREATER` - Pixel passes if `ref` > `current_stencil_value`. My alias: `IfRefIsMoreThenCurrent`.
+* `GL_GREATER` - Pixel passes if `ref` > `current_stencil_value`. My alias: `IfRefIsMoreThanCurrent`.
 * `GL_GEQUAL` - Pixel passes if `ref` >= `current_stencil_value`. My alias: `IfRefIsMoreOrEqualCurrent`.
 * `GL_EQUAL` - Pixel passes if `ref` == `current_stencil_value`. My alias: `IfRefIsEqualCurrent`.
 * `GL_NOTEQUAL` - Pixel passes if `ref` != `current_stencil_value`. My alias: `IfRefIsNotEqualCurrent`.
@@ -307,9 +307,9 @@ Here is an example structure containing the most useful Stencil state:
 enum StencilTest {
   AlwaysPass = GL_ALWAYS,
   AlwaysFail = GL_NEVER,
-  IfRefIsLessThenCurrent = GL_LESS,
+  IfRefIsLessThanCurrent = GL_LESS,
   IfRefIsLessOrEqualCurrent = GL_LEQUAL,
-  IfRefIsMoreThenCurrent = GL_GREATER,
+  IfRefIsMoreThanCurrent = GL_GREATER,
   IfRefIsMoreOrEqualCurrent = GL_GEQUAL,
   IfRefIsEqualCurrent = GL_EQUAL,
   IfRefIsNotEqualCurrent = GL_NOTEQUAL,
@@ -445,7 +445,7 @@ To enable **backface culling** use `glEnable(GL_CULL_FACE)`, or `glDisable(GL_CU
 
 ### Per-channel write - [glColorMask](https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glColorMask.xhtml)
 
-Use `glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);` to decide if the color channel will be changed. Value `true` **allows writes**, while `false` will skip the color channel. It may be quite surprising that `glColorMask(false, false, false, false)` is sometimes used. It could be depth or stencil modification. In that pixel shader can also do a side-effect. This is commonly used in combination with shader-writable structures like [Shader Storage Buffer Object (SSBO)](https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object) used to implement e.g. order-independent transparency.
+Use `glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);` to decide if the color channel will be changed. Value `true` **allows writes**, while `false` will skip the color channel. It may be quite surprising that `glColorMask(false, false, false, false)` is sometimes used. e.g. we might only care about depth or stencil modification. Or pixel shader has side-effect. This is commonly used in combination with shader-writable structures like [Shader Storage Buffer Object (SSBO)](https://www.khronos.org/opengl/wiki/Shader_Storage_Buffer_Object) used to implement e.g. order-independent transparency.
 
 
 
@@ -453,7 +453,9 @@ Use `glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha
 
 ### Dithering
 
-Our monitors can only represent a limited number of values per channel. You are probably familiar with each channel represented as 8 bits (value range 0-255). In shaders, we do mathematical operations based on floats. Both 126.1 and 126.9 will be shown as value 126, even though the difference in numbers is quite big. If this happens over large surfaces, the results will be a jarring border between 2 areas.
+Our monitors can only represent a limited number of values per channel. You are probably familiar with each channel represented as 8 bits (value range 0-255). In shaders, we usually do mathematical operations based on floats. Both 126.1 and 126.9 will be shown as value 126, even though the difference in numbers is quite big. If this happens over large surfaces, the results will be a jarring border between 2 areas.
+
+<!-- TODO mark shadow fragment with red circle -->
 
 <Figure>
   <BlogImage
@@ -462,13 +464,13 @@ Our monitors can only represent a limited number of values per channel. You are 
   />
   <Figcaption>
 
-  Sintel's back is a huge smooth surface, the type that is very prone to dithering artifacts. Just look at the areas in the shadows! In the [demo](https://scthe.github.io/WebFX/dist/) you can test it yourself using the `Post FX -> Dither` slider.
+  Sintel's back is a huge smooth surface, the type that is prone to dithering artifacts. Just look at the areas in the shadows! In the [demo](https://scthe.github.io/WebFX/dist/) you can test it yourself using the `Post FX -> Dither` slider.
 
   </Figcaption>
 </Figure>
 
 
-The solution is simple - add **small** (much less than 1), unique random value to each pixel. This guarantees that only a few pixels next to each other will have the same color. This smoothens out the color transitions. This algorithm uses [Beyer Matrix](https://en.wikipedia.org/wiki/Ordered_dithering) and can be easily [implemented by hand](https://github.com/Scthe/WebFX/blob/master/src/shaders/_dither.glsl). Or we can use `glEnable(GL_DITHER)`.
+The solution is simple - add **small** (much less than 1), unique random value to each pixel. This guarantees that only a few pixels next to each other will have the same color. This smoothens out the color transitions. This algorithm uses [Bayer matrix](https://en.wikipedia.org/wiki/Ordered_dithering) and can be easily [implemented by hand](https://github.com/Scthe/WebFX/blob/master/src/shaders/_dither.glsl). Or we can use `glEnable(GL_DITHER)`.
 
 
 ### Blend
@@ -494,7 +496,7 @@ Now we are going to combine this knowledge into a single, easy-to-use abstractio
 
 ### State diffing
 
-Changing and querying OpenGL state can be expensive. We can save a bit of work by manually comparing the current state with the previous one. If they are the same, we can shave a few OpenGL calls. Just store the copy for future comparison after each change. All structures shown in this article are a simple [Plain Old Data (POD)](https://en.wikipedia.org/wiki/Passive_data_structure). Often, the compilator will generate a comparator for us. This, compared with sensible defaults, makes it very easy to manage the OpenGL state.
+Changing and querying OpenGL state can be expensive. We can save a bit of work by manually comparing the current state with the previous one. If they are the same, we can shave a few OpenGL calls. Just store the copy for future comparison after each change. All structures shown in this article are a simple [Plain Old Data (POD)](https://en.wikipedia.org/wiki/Passive_data_structure). Often, the compilator will generate a comparator for us. This, compared with sensible defaults, makes it easy to manage the OpenGL state.
 
 Just in case I would also add a flag to force the state update regardless of the changes. Useful if we want to get back to the known state after handing execution to 3rd party library like [imgui](https://github.com/ocornut/imgui) (which already cleans up after itself).
 

@@ -48,6 +48,7 @@ references
 _references
 node_modules
 *.code-workspace
+content/blog-drafts
 
 # gatsby migration
 __to_migrate/_site

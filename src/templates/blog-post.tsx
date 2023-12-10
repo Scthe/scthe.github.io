@@ -25,7 +25,10 @@ import * as figureStyles from './styles/_figure.module.scss';
 
 type PT = any;
 
-// TODO add table of contents like in https://atlassian.design/foundations/color (it even scrolls nicely)
+// TODO add table of contents like in https://atlassian.design/foundations/color (it even scrolls nicely) as <nav> with aria-label="Table of contents"
+// TODO "Published on:" text before date
+// TODO more internal links
+// TODO scroll to top
 // TODO sentry
 // TODO [P5] table <caption>, row header etc.
 // TODO [P5] Use reduced-motion for gifs?

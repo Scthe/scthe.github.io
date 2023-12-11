@@ -2,9 +2,9 @@
 /node_modules
 /.pnp
 .yarn/*
-!.yarn/releases
+# !.yarn/releases
 !.yarn/plugins
-.pnp.js
+.pnp.*
 
 # production
 /build

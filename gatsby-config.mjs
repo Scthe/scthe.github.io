@@ -1,4 +1,9 @@
-module.exports = {
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const config = {
   siteMetadata: {
     title: `Scthe's blog`,
     description: `Mostly some programming stuff`,
@@ -20,9 +25,10 @@ module.exports = {
         path: `${__dirname}/content/blog`,
         // path: `${__dirname}/content/blog/*/*.*`,
         ignore: [`**/\\.*`], // ignore if starts with dot /**/*
-        name: `blog`,
+        name: `pages`,
       },
     },
+    // add static images folder:
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -30,6 +36,7 @@ module.exports = {
         name: `static_images`,
       },
     },
+    // sharp: optimize images
     `gatsby-transformer-sharp`,
     {
       resolve: `gatsby-plugin-sharp`,
@@ -38,7 +45,7 @@ module.exports = {
           // https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image/
           formats: [`jpg`],
           placeholder: `blurred`,
-          quality: 50,
+          quality: 70,
           // breakpoints: [750, 1080, 1366, 1920],
           // backgroundColor: `transparent`,
           // tracedSVGOptions: {},
@@ -50,11 +57,18 @@ module.exports = {
         },
       },
     },
+    // mdx:
     {
       resolve: `gatsby-plugin-mdx`,
       options: {
         extensions: [`.md`, `.mdx`],
-        remarkPlugins: [require('remark-math')],
+        // https://www.gatsbyjs.com/plugins/gatsby-plugin-mdx/#updating-dependencies
+        // TODO math + syntax highlight
+        // remarkPlugins: [require('remark-math')],
+        mdxOptions: {
+          remarkPlugins: [],
+          rehypePlugins: [],
+        },
         gatsbyRemarkPlugins: [
           {
             resolve: `gatsby-remark-images`,
@@ -67,6 +81,7 @@ module.exports = {
         ],
       },
     },
+    // generate typings from graphql queries:
     {
       resolve: 'gatsby-plugin-typegen',
       options: {
@@ -79,7 +94,9 @@ module.exports = {
         },
       },
     },
+    // sitemap:
     `gatsby-plugin-advanced-sitemap`,
+    // gtag:
     {
       resolve: `gatsby-plugin-google-gtag`,
       options: {
@@ -93,5 +110,21 @@ module.exports = {
         },
       },
     },
+    {
+      resolve: `gatsby-transformer-remark`,
+      options: {
+        plugins: [
+          {
+            resolve: `gatsby-remark-katex`,
+            options: {
+              // Add any KaTeX options from https://github.com/KaTeX/KaTeX/blob/master/docs/options.md here
+              strict: `ignore`,
+            },
+          },
+        ],
+      },
+    },
   ],
 };
+
+export default config;

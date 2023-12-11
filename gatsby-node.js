@@ -30,21 +30,22 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   );
 
   // Get all markdown blog posts sorted by date
-  const result = await graphql(
-    `
-      {
-        allMdx {
-          nodes {
-            id
-            frontmatter {
-              permalink
-              draft
-            }
+  const result = await graphql(`
+    {
+      allMdx {
+        nodes {
+          id
+          frontmatter {
+            permalink
+            draft
+          }
+          internal {
+            contentFilePath
           }
         }
       }
-    `,
-  );
+    }
+  `);
 
   if (result.errors) {
     reporter.panicOnBuild(
@@ -63,12 +64,13 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   // Create blog posts pages
   // But only if there's at least one markdown file found at "content/blog" (defined in gatsby-config.js)
   // `context` is available in the template as a prop and as a variable in GraphQL
+  const postTemplate = path.resolve(`./src/templates/blog-post.tsx`);
 
   if (posts.length > 0) {
     posts.forEach((post) => {
       actions.createPage({
         path: post.frontmatter.permalink,
-        component: path.resolve('./src/templates/blog-post.tsx'),
+        component: `${postTemplate}?__contentFilePath=${post.internal.contentFilePath}`,
         context: {
           id: post.id,
         },

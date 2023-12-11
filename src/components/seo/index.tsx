@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { getYear } from 'date-fns';
 
 import useSiteMeta from '../../hooks/useSiteMeta';
-import { dateToXmlSchema } from '../../utils';
+import { dateToXmlSchema, maybeNull2Undefined } from '../../utils';
 import Facebook from './Facebook';
 import Twitter from './Twitter';
 import { LdJsonWebPage, LdJsonArticle } from './LdJson';
@@ -29,6 +29,8 @@ export interface SeoProps {
 const Seo: React.FC<SeoProps> = ({ title, description, image, url, type }) => {
   const siteMeta = useSiteMeta();
   const author = siteMeta.author?.name || '';
+  // fb's: article:author, article:publisher
+  const myPageUrl = maybeNull2Undefined(siteMeta.siteUrl);
 
   return (
     <>
@@ -52,8 +54,8 @@ const Seo: React.FC<SeoProps> = ({ title, description, image, url, type }) => {
       {type.type === 'article' && (
         <Helmet
           meta={[
-            { property: 'article:author', content: siteMeta.siteUrl },
-            { property: 'article:publisher', content: siteMeta.siteUrl },
+            { property: 'article:author', content: myPageUrl },
+            { property: 'article:publisher', content: myPageUrl },
             {
               property: 'article:published_time',
               content: dateToXmlSchema(type.datePublished),

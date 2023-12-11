@@ -1,5 +1,5 @@
 import { useStaticQuery, graphql } from 'gatsby';
-import { ArrayItemType } from '../utils';
+import { ArrayItemType, getAbsolutePath } from '../utils';
 
 type NodeArray = GatsbyTypes.AllStaticImagesQuery['allImageSharp']['nodes'];
 type ReturnType = ArrayItemType<NodeArray>;
@@ -30,12 +30,12 @@ export default function useGetStaticImageData(
   );
   filePath = filePath.toLowerCase();
   const node = allImageSharp.nodes.find((e) => {
-    const absolutePath = e.parent?.absolutePath || '';
+    const absolutePath = getAbsolutePath(e.parent) || '';
     return absolutePath.toLowerCase().endsWith(filePath);
   });
 
   if (node == null) {
-    const allImages = allImageSharp.nodes.map((e) => e.parent?.absolutePath);
+    const allImages = allImageSharp.nodes.map((e) => getAbsolutePath(e.parent));
     // console.error(
     // `useGetStaticImageData could not find image '${filePath}'. Available images:`,
     // allImages,

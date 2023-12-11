@@ -3,11 +3,9 @@ import { useStaticQuery, graphql } from 'gatsby';
 import { ArrayItemType } from '../utils';
 
 const BlogPostContext = React.createContext({});
+type Props = React.PropsWithChildren<{ id: string }>;
 
-export const BlogPostContextProvider: React.FC<{ id: string }> = ({
-  id,
-  children,
-}) => (
+export const BlogPostContextProvider: React.FC<Props> = ({ id, children }) => (
   <BlogPostContext.Provider value={id}>{children}</BlogPostContext.Provider>
 );
 
@@ -17,27 +15,25 @@ type ReturnType = ArrayItemType<NodeArray>;
 export default function useGetBlogPost(): ReturnType {
   const id = useContext(BlogPostContext);
 
-  const { allMdx } = useStaticQuery<GatsbyTypes.BlogPostsQuery>(
-    graphql`
-      query BlogPosts {
-        allMdx {
-          nodes {
-            id
-            parent {
-              ... on File {
-                name
-                absolutePath
-                relativeDirectory
-              }
+  const { allMdx } = useStaticQuery<GatsbyTypes.BlogPostsQuery>(graphql`
+    query BlogPosts {
+      allMdx {
+        nodes {
+          id
+          parent {
+            ... on File {
+              name
+              absolutePath
+              relativeDirectory
             }
-            frontmatter {
-              title
-            }
+          }
+          frontmatter {
+            title
           }
         }
       }
-    `,
-  );
+    }
+  `);
 
   const node = allMdx.nodes.find((e) => e.id === id);
 

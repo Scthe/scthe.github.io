@@ -13,13 +13,13 @@ import '../styles/variables.module.scss';
 import '../styles/global.module.scss';
 import '../styles/fonts.module.css';
 
-interface Props {
+type Props = React.PropsWithChildren<{
   title: string;
   description: string;
   canonicalUrl: string;
   image?: string;
   type: SeoProps['type'];
-}
+}>;
 
 const Layout: React.FC<Props> = ({
   title,

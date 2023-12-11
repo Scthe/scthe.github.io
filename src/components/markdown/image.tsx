@@ -4,7 +4,7 @@ import cx from 'classnames';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
-import { joinPaths } from '../../utils';
+import { getRelativeDirectory, joinPaths } from '../../utils';
 import useGetStaticImageData from '../../hooks/useGetStaticImageData';
 import useGetBlogPost from '../../hooks/useGetBlogPost';
 import * as styles from './image.module.scss';
@@ -16,7 +16,7 @@ interface Props {
 
 const BlogImage: React.FC<Props> = ({ src, alt }) => {
   const mdPage = useGetBlogPost();
-  const blogPostDir = mdPage?.parent?.relativeDirectory;
+  const blogPostDir = getRelativeDirectory(mdPage?.parent);
   const imagePath = joinPaths(blogPostDir || '', src);
 
   const imgData = useGetStaticImageData(imagePath);

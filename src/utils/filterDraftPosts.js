@@ -1,17 +1,17 @@
 /**
- * @template {readonly {readonly frontmatter?: {draft?: boolean} }} T
- * @param {readonly T[]} allPosts
+ * @template { readonly draft: boolean | null } Frontmatter
+ * @param {readonly { readonly frontmatter: Frontmatter | null }[]} allPosts
  * @param {boolean} includeDrafts
  * @return {T[]}
  */
 function filterDraftPosts(allPosts, includeDrafts) {
-  if (!includeDrafts) {
-    allPosts = allPosts.filter((e) => {
-      const isFinishedArticle = e.frontmatter?.draft === false;
-      return isFinishedArticle;
-    });
-  }
-  return allPosts;
+  return allPosts.filter((e) => {
+    if (e == null) {
+      return false;
+    }
+    const isFinishedArticle = e.frontmatter?.draft === false;
+    return isFinishedArticle || includeDrafts;
+  });
 }
 
 module.exports = filterDraftPosts;

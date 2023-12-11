@@ -44,6 +44,26 @@ export const gaEvent = (
   }
 };
 
+export const getAbsolutePath = (
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  parent: { readonly absolutePath: string } | {} | null,
+): string | null => {
+  return parent && 'absolutePath' in parent ? parent.absolutePath : null;
+};
+
+export const getRelativeDirectory = (
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  parent: { readonly relativeDirectory: string } | {} | null,
+): string | null => {
+  return parent && 'relativeDirectory' in parent
+    ? parent.relativeDirectory
+    : null;
+};
+
+export const maybeNull2Undefined = <T>(x: T | null): T | undefined => {
+  return x != null ? x : undefined;
+};
+
 /// DATES
 
 export const parseDate = (date: string): Date => parseISO(date);

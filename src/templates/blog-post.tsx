@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { graphql, PageProps } from 'gatsby';
-import { MDXRenderer } from 'gatsby-plugin-mdx';
 import { MDXProvider } from '@mdx-js/react';
 
 import Layout from '../components/layout';
@@ -16,7 +15,7 @@ import MarkdownLink from '../components/markdown/link';
 
 import { parseDate } from '../utils';
 import { BlogPostContextProvider } from '../hooks/useGetBlogPost';
-import { useMode } from '../hooks/useMode';
+import { BuildMode, useMode } from '../hooks/useMode';
 
 import './styles/_text.module.scss';
 import './styles/_lists.module.scss';
@@ -54,43 +53,56 @@ const COMPONENTS = {
 };
 
 type DataProps = GatsbyTypes.BlogPostBySlugQuery;
-type PostType = DataProps['mdx'];
+type Frontmatter = NonNullable<NonNullable<DataProps['mdx']>['frontmatter']>;
+type FrontmatterKeys = keyof NonNullable<Frontmatter>; // required by TS
+type RequiredFrontmatter = {
+  [K in FrontmatterKeys]: NonNullable<Frontmatter[K]>;
+};
+
 interface PageTemplateContext {
   id: string;
 }
 
-function checkFrontmatter(data: PostType) {
-  if (data?.frontmatter == null) {
+function checkFrontmatter(
+  mode: BuildMode,
+  fm: Frontmatter | null,
+): RequiredFrontmatter {
+  if (fm == null) {
     throw new Error('[BlogPost.template] No frontmatter found');
   }
-  const fm = data.frontmatter;
-  const check = (k: keyof typeof fm) => {
-    if (fm[k] == null) {
+
+  const check = (k: keyof Frontmatter) => {
+    if (mode === 'development' && fm[k] == null) {
       console.error(
         `[BlogPost.template] Frontmatter does not contain '${k}'`,
         fm,
       );
     }
   };
+
   check('title');
   check('permalink');
   check('excerpt');
   check('image');
   check('isoDate');
   check('draft');
+
+  return fm as any;
 }
 
 const BlogPostTemplate: React.FC<PageProps<DataProps, PageTemplateContext>> = ({
   data,
   pageContext,
+  children,
+  ...rest
 }) => {
   const mode = useMode();
+  console.log('data', data);
+  console.log('pageContext', pageContext);
+  console.log('rest', rest);
 
   const post = data.mdx!;
-  if (mode === 'development') {
-    checkFrontmatter(post);
-  }
-  const fm = post.frontmatter!;
+  const fm = checkFrontmatter(mode, post.frontmatter);
   const date = parseDate(fm.isoDate!);
 
   return (
@@ -109,9 +121,7 @@ const BlogPostTemplate: React.FC<PageProps<DataProps, PageTemplateContext>> = ({
         <PageTitle title={fm.title} date={date} />
 
         <div className="markdown">
-          <MDXProvider components={COMPONENTS}>
-            <MDXRenderer>{post.body}</MDXRenderer>
-          </MDXProvider>
+          <MDXProvider components={COMPONENTS}>{children}</MDXProvider>
         </div>
       </Layout>
     </BlogPostContextProvider>
@@ -124,7 +134,7 @@ export const pageQuery = graphql`
   query BlogPostBySlug($id: String!) {
     mdx(id: { eq: $id }) {
       id
-      body
+      #body
       frontmatter {
         title
         permalink

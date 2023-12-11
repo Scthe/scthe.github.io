@@ -17,8 +17,8 @@ const BlogIndex: React.FC<PageProps<DataProps>> = ({ data }) => {
   const description = siteMeta?.description || 'Mostly some programming stuff';
 
   const mode = useMode();
-  let posts = data.allMdx.nodes;
-  posts = filterDraftPosts(posts, mode !== 'production');
+  const posts = data.allMdx.nodes;
+  const posts2 = filterDraftPosts(posts, mode !== 'production');
 
   return (
     <Layout
@@ -29,7 +29,7 @@ const BlogIndex: React.FC<PageProps<DataProps>> = ({ data }) => {
     >
       <PageTitle title="All articles" />
       <PostList
-        posts={posts.map((post) => ({
+        posts={posts2.map((post) => ({
           date: parseDate(post.frontmatter!.isoDate!),
           title: post.frontmatter!.title!,
           excerpt: post.frontmatter!.excerpt!,
@@ -44,7 +44,7 @@ export default BlogIndex;
 
 export const pageQuery = graphql`
   query BlogIndex {
-    allMdx(sort: { fields: frontmatter___date, order: DESC }) {
+    allMdx(sort: { frontmatter: { date: DESC } }) {
       nodes {
         frontmatter {
           title

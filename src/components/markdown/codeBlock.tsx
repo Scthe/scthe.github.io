@@ -1,4 +1,4 @@
-import Highlight, { defaultProps } from 'prism-react-renderer';
+import { Highlight } from 'prism-react-renderer';
 import React from 'react';
 import cx from 'classnames';
 
@@ -11,12 +11,20 @@ import theme from './codeBlock.theme';
 
 export const CodeBlockWrapper: React.FC = (props) => <div {...props} />;
 
-interface Props {
+type Props = React.PropsWithChildren<{
   className: string;
-}
+}>;
+
+const isInlineCode = (children: React.ReactNode) =>
+  typeof children === 'string' && !children.includes('\n');
 
 const CodeBlock: React.FC<Props> = ({ className, children }) => {
   const mode = useMode();
+
+  if (isInlineCode(children)) {
+    return <code>{children}</code>;
+  }
+
   if (className == null && mode === 'development') {
     console.warn('Unknown language for:', children);
   }
@@ -24,12 +32,7 @@ const CodeBlock: React.FC<Props> = ({ className, children }) => {
 
   const language = className.replace(/language-/, '') || '';
   return (
-    <Highlight
-      {...defaultProps}
-      code={children as any}
-      language={language as any}
-      theme={theme}
-    >
+    <Highlight code={children as any} language={language as any} theme={theme}>
       {({ className, tokens, getLineProps, getTokenProps }) => (
         <pre className={cx(className, styles.highlight)}>
           {tokens.map((line, i) => (

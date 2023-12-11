@@ -1,5 +1,7 @@
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -62,12 +64,9 @@ const config = {
       resolve: `gatsby-plugin-mdx`,
       options: {
         extensions: [`.md`, `.mdx`],
-        // https://www.gatsbyjs.com/plugins/gatsby-plugin-mdx/#updating-dependencies
-        // TODO math + syntax highlight
-        // remarkPlugins: [require('remark-math')],
         mdxOptions: {
-          remarkPlugins: [],
-          rehypePlugins: [],
+          remarkPlugins: [remarkMath],
+          rehypePlugins: [[rehypeKatex, { strict: 'ignore' }]],
         },
         gatsbyRemarkPlugins: [
           {
@@ -108,20 +107,6 @@ const config = {
         pluginConfig: {
           head: false,
         },
-      },
-    },
-    {
-      resolve: `gatsby-transformer-remark`,
-      options: {
-        plugins: [
-          {
-            resolve: `gatsby-remark-katex`,
-            options: {
-              // Add any KaTeX options from https://github.com/KaTeX/KaTeX/blob/master/docs/options.md here
-              strict: `ignore`,
-            },
-          },
-        ],
       },
     },
   ],

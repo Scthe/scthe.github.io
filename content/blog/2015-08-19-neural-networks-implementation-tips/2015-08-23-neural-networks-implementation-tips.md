@@ -197,7 +197,7 @@ Since it is an offline tool the performance does not matter. Both R and MATLAB h
 
 When looking through many open source projects I have a feeling that this step is just a personal preference. Many editors offer tools that can ease the task and it only takes a couple minutes, so why not? Anyway, I highly recommend to write down which kernel uses which buffers. It's probably the best description of system one could have.
 
-<Figure class="table_wrapper">
+<Figure className="table_wrapper">
 
 | **Kernel**  | **Buffers** |
 | :------------ |:---------------|

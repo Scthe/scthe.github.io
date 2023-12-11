@@ -2,9 +2,9 @@ import * as React from 'react';
 import { convert } from 'url-slug';
 import * as styles from './heading.module.scss';
 
-interface Props {
+type Props = React.PropsWithChildren<{
   level: '2' | '3';
-}
+}>;
 
 const Heading: React.FC<Props> = ({ level, children }) => {
   const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;

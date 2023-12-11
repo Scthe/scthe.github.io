@@ -7,11 +7,8 @@ import PageTitle from '../components/pageTitle';
 import Heading from '../components/markdown/heading';
 import BlogImage from '../components/markdown/image';
 import CodeBlock, { CodeBlockWrapper } from '../components/markdown/codeBlock';
-import {
-  interceptBlockMath,
-  interceptInlineMath,
-} from '../components/markdown/math';
 import MarkdownLink from '../components/markdown/link';
+import { Figure, Figcaption, RawImage } from '../components/markdown/figure';
 
 import { parseDate } from '../utils';
 import { BlogPostContextProvider } from '../hooks/useGetBlogPost';
@@ -20,7 +17,8 @@ import { BuildMode, useMode } from '../hooks/useMode';
 import './styles/_text.module.scss';
 import './styles/_lists.module.scss';
 import './styles/_tables.module.scss';
-import * as figureStyles from './styles/_figure.module.scss';
+
+require(`katex/dist/katex.min.css`);
 
 type PT = any;
 
@@ -35,21 +33,13 @@ type PT = any;
 const COMPONENTS = {
   h2: (props: PT) => <Heading level="2" {...props} />,
   h3: (props: PT) => <Heading level="3" {...props} />,
-  pre: (props: PT) => <CodeBlockWrapper {...props} />,
-  code: (props: PT) => <CodeBlock {...props} />,
-  Figure: (props: PT) => <figure className={figureStyles.figure} {...props} />,
-  // figcaption requires blank lines before and after!!!
-  Figcaption: (props: PT) => (
-    <figcaption className={figureStyles.figcaption} {...props} />
-  ),
-  // usually a noop, unless we detect it's a math block
-  div: interceptBlockMath,
-  span: interceptInlineMath,
-  // Raw images using ` ![Alt text](./cnn-all.gif)`
-  // eslint-disable-next-line jsx-a11y/alt-text
-  img: (props: PT) => <img className={figureStyles.rawImages} {...props} />,
+  pre: CodeBlockWrapper,
+  code: CodeBlock,
+  Figure,
+  Figcaption,
+  img: RawImage,
   BlogImage,
-  a: (props: PT) => <MarkdownLink {...props} />,
+  a: MarkdownLink,
 };
 
 type DataProps = GatsbyTypes.BlogPostBySlugQuery;
@@ -94,12 +84,8 @@ const BlogPostTemplate: React.FC<PageProps<DataProps, PageTemplateContext>> = ({
   data,
   pageContext,
   children,
-  ...rest
 }) => {
   const mode = useMode();
-  console.log('data', data);
-  console.log('pageContext', pageContext);
-  console.log('rest', rest);
 
   const post = data.mdx!;
   const fm = checkFrontmatter(mode, post.frontmatter);

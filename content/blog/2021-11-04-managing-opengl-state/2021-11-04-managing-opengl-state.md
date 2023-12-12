@@ -234,10 +234,10 @@ The first argument - `GLenum func` - is the comparison operator and can take the
 * `GL_ALWAYS` - Pixel will always pass the stencil test.
 
 * `GL_NEVER` - Pixel will always fail the stencil test. Can be used to set/reset the value of stencil buffer bits when combined with `glStencilOp`'s `GLenum sfail` argument.
-* `GL_LESS` - Pixel passes if `ref` < `current_stencil_value`. My alias: `IfRefIsLessThanCurrent`.
-* `GL_LEQUAL` - Pixel passes if `ref` <= `current_stencil_value`. My alias: `IfRefIsLessOrEqualCurrent`.
-* `GL_GREATER` - Pixel passes if `ref` > `current_stencil_value`. My alias: `IfRefIsMoreThanCurrent`.
-* `GL_GEQUAL` - Pixel passes if `ref` >= `current_stencil_value`. My alias: `IfRefIsMoreOrEqualCurrent`.
+* `GL_LESS` - Pixel passes if `ref` &lt; `current_stencil_value`. My alias: `IfRefIsLessThanCurrent`.
+* `GL_LEQUAL` - Pixel passes if `ref` &le; `current_stencil_value`. My alias: `IfRefIsLessOrEqualCurrent`.
+* `GL_GREATER` - Pixel passes if `ref` &gt; `current_stencil_value`. My alias: `IfRefIsMoreThanCurrent`.
+* `GL_GEQUAL` - Pixel passes if `ref` &ge; `current_stencil_value`. My alias: `IfRefIsMoreOrEqualCurrent`.
 * `GL_EQUAL` - Pixel passes if `ref` == `current_stencil_value`. My alias: `IfRefIsEqualCurrent`.
 * `GL_NOTEQUAL` - Pixel passes if `ref` != `current_stencil_value`. My alias: `IfRefIsNotEqualCurrent`.
 
@@ -455,7 +455,6 @@ Use `glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha
 
 Our monitors can only represent a limited number of values per channel. You are probably familiar with each channel represented as 8 bits (value range 0-255). In shaders, we usually do mathematical operations based on floats. Both 126.1 and 126.9 will be shown as value 126, even though the difference in numbers is quite big. If this happens over large surfaces, the results will be a jarring border between 2 areas.
 
-<!-- TODO mark shadow fragment with red circle -->
 
 <Figure>
   <BlogImage

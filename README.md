@@ -14,3 +14,7 @@
    1. `yarn install`
 4. `yarn dlx @yarnpkg/sdks vscode` - one time only
 5. `yarn start` - dev server
+
+### Problems with fast-refresh
+
+I hate Gatsby. Open `src\templates\blog-post.tsx` and press `ctrl+s` to reconnect hmr.

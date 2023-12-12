@@ -2,6 +2,7 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import remarkGfm from 'remark-gfm';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -20,14 +21,12 @@ const config = {
   plugins: [
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-sass`,
-    `gatsby-plugin-image`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
         path: `${__dirname}/content/blog`,
-        // path: `${__dirname}/content/blog/*/*.*`,
         ignore: [`**/\\.*`], // ignore if starts with dot /**/*
-        name: `pages`,
+        name: `blog`,
       },
     },
     // add static images folder:
@@ -45,7 +44,7 @@ const config = {
       options: {
         defaults: {
           // https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image/
-          formats: [`jpg`],
+          formats: ['auto'],
           placeholder: `blurred`,
           quality: 70,
           // breakpoints: [750, 1080, 1366, 1920],
@@ -65,8 +64,10 @@ const config = {
       options: {
         extensions: [`.md`, `.mdx`],
         mdxOptions: {
-          remarkPlugins: [remarkMath],
-          rehypePlugins: [[rehypeKatex, { strict: 'ignore' }]],
+          remarkPlugins: [remarkMath, remarkGfm],
+          rehypePlugins: [
+            [rehypeKatex, { strict: 'ignore', throwOnError: false }],
+          ],
         },
         gatsbyRemarkPlugins: [
           {

@@ -42,7 +42,6 @@ const BlogImage: React.FC<Props> = ({ src, alt }) => {
       <span
         className={cx(styles.image, styles.placeholder)}
         style={{
-          backgroundColor: image?.backgroundColor,
           backgroundImage: `url("${image?.placeholder?.fallback}")`,
           width: image?.width,
           aspectRatio: `${image?.width} / ${image?.height}`,
@@ -60,7 +59,6 @@ const BlogImage: React.FC<Props> = ({ src, alt }) => {
           height={image?.height}
           className={cx(styles.image, styles.finalImage)}
           style={{
-            backgroundColor: image?.backgroundColor,
             opacity: imageloaded ? 1 : 0.01,
           }}
           onLoad={onImgLoaded}

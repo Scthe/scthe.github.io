@@ -107,7 +107,7 @@ const BlogPostTemplate: React.FC<PageProps<DataProps, PageTemplateContext>> = ({
         <PageTitle title={fm.title} date={date} />
 
         <div className="markdown">
-          <MDXProvider components={COMPONENTS}>{children}</MDXProvider>
+          <MDXProvider components={COMPONENTS as any}>{children}</MDXProvider>
         </div>
       </Layout>
     </BlogPostContextProvider>

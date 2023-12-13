@@ -8,7 +8,7 @@ draft: false
 ---
 
 
-This article presents how to set up RenderDoc debugging for Vulkan app. Our goal is to:
+This article presents how to set up RenderDoc debugging for the Vulkan app. Our goal is to:
 
 - Assign labels to Vulkan objects like `VkBuffers` or `VkImages`,
 - Mark the graphic/compute passes in the `Event Browser` window with readable names,
@@ -105,7 +105,7 @@ Error dialog for `VK_ERROR_DEVICE_LOST` prevents switching to the `Errors and Wa
 
  This (a bit long) example demonstrates that sometimes the errors can be simple. Unfortunately, `VK_ERROR_DEVICE_LOST` as an error code is not particularly enlightening. Especially if it happens in `vkQueueSubmit`.
 
-Apart from RenderDocs' `Errors and Warnings` window, you could try Vulkan's validation layers. All [Vulkan SDKs](https://www.lunarg.com/vulkan-sdk/) contain the `vkconfig` executable. It allows you to switch validation layers on/off independently from the source code. If this fails, either comment out parts of the app or try older commits. [NVIDIA Nsight Aftermath SDK](https://developer.nvidia.com/nsight-aftermath) is a tool that *could* be helpful (I've never tried it). Unfortunately, [Radeon™ GPU Detective ](https://gpuopen.com/radeon-gpu-detective/) seems to be DirectX 12 only. [Hardcore Vulkan debugging – Digging deep on Linux + AMDGPU by Hans-Kristian Arntzen](https://themaister.net/blog/2023/08/20/hardcore-vulkan-debugging-digging-deep-on-linux-amdgpu/) has more tips. E.g. using [VK_AMD_buffer_marker](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_AMD_buffer_marker.html) or [VK_NV_device_diagnostic_checkpoints](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_NV_device_diagnostic_checkpoints.html) to check markers before last executed command.
+Apart from RenderDocs' `Errors and Warnings` window, you could try Vulkan's validation layers. All [Vulkan SDKs](https://www.lunarg.com/vulkan-sdk/) contain the `vkconfig` executable. It allows you to switch validation layers on/off independently from the source code. If this fails, either comment out parts of the app or try older commits. [NVIDIA Nsight Aftermath SDK](https://developer.nvidia.com/nsight-aftermath) is a tool that *could* be helpful (I've never tried it). Unfortunately, [Radeon™ GPU Detective ](https://gpuopen.com/radeon-gpu-detective/) seems to be DirectX 12 only. [Hardcore Vulkan debugging – Digging deep on Linux + AMDGPU by Hans-Kristian Arntzen](https://themaister.net/blog/2023/08/20/hardcore-vulkan-debugging-digging-deep-on-linux-amdgpu/) has more tips. E.g. using [VK_AMD_buffer_marker](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_AMD_buffer_marker.html) or [VK_NV_device_diagnostic_checkpoints](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_NV_device_diagnostic_checkpoints.html) to check markers before the last executed command.
 
 
 
@@ -254,12 +254,12 @@ Some of the passes and resources from Rust Vulkan TressFX.
 
 ## Debugging GLSL shaders in RenderDoc
 
-The standard way to use shaders in Vulkan is to compile GLSL file into SPIR-V using e.g. `glslc.exe -O -fshader-stage=frag "src/shaders/texture.frag.glsl" -o "src/shaders-compiled/texture.frag.spv"`. Then we read the `.spv` file from C++/Rust and set the `pCode` pointer in [VkShaderModuleCreateInfo](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkShaderModuleCreateInfo.html). The `.spv` file is binary. This means that RenderDoc will not be able to reconstruct the original `.glsl` text. Instead, we can use [VK_KHR_shader_non_semantic_info](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_shader_non_semantic_info.html) device extension to add special metadata. It embeds raw `.glsl` text into `.spv` file.
+The standard way to use shaders in Vulkan is to compile GLSL file into SPIR-V using e.g. `glslc.exe -O -fshader-stage=frag "src/shaders/texture.frag.glsl" -o "src/shaders-compiled/texture.frag.spv"`. Then we read the `.spv` file from C++/Rust and set the `pCode` pointer in [VkShaderModuleCreateInfo](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkShaderModuleCreateInfo.html). The `.spv` file is binary. This means that RenderDoc will not be able to reconstruct the original `.glsl` text. Instead, we can use [VK_KHR_shader_non_semantic_info](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_shader_non_semantic_info.html) device extension to add special metadata. It embeds raw `.glsl` text into a `.spv` file.
 
 
 ### Embedding GLSL text into `.spv` file
 
-Use `glslangValidator` to insert `.glsl` text into `.spv` file. It comes preinstalled with [Vulkan SDK](https://vulkan.lunarg.com/sdk/home):
+Use `glslangValidator` to insert `.glsl` text into a `.spv` file. It comes preinstalled with [Vulkan SDK](https://vulkan.lunarg.com/sdk/home):
 
 ```sh
 glslangValidator.exe -e main -gVS -V -o "src/shaders-compiled/texture.frag.spv" "src/shaders/texture.frag.glsl"
@@ -269,7 +269,7 @@ Let's explain the flags (I've also added `--help` text if you want more 'formal'
 
 - `-e main` ("specify 'name' as the entry-point function name"). Name of the main function from `src/shaders/texture.frag.glsl`.
 - `-gVS` ("generate nonsemantic shader debug information with source"). Add metadata into `.spv` - this is exactly what we want.
-- `-V` ("create SPIR-V binary, under Vulkan semantics"). It informs the compiler that we are embedding GLSL file (compatible with [GL_KHR_vulkan_glsl](https://github.com/KhronosGroup/GLSL/blob/master/extensions/khr/GL_KHR_vulkan_glsl.txt)) as opposed to HLSL etc.
+- `-V` ("create SPIR-V binary, under Vulkan semantics"). It informs the compiler that we are using GLSL (compatible with [GL_KHR_vulkan_glsl](https://github.com/KhronosGroup/GLSL/blob/master/extensions/khr/GL_KHR_vulkan_glsl.txt)) as opposed to HLSL etc.
 - `-o "src/shaders-compiled/texture.frag.spv"`. Output `.spv` file.
 - `src/shaders/texture.frag.glsl`. Input `.glsl` file.
 
@@ -279,7 +279,7 @@ This command replaces `glslc.exe`. If you then look into the final `.spv` file, 
 <Figure>
   <BlogImage
     src="./spv_with_glsl.png"
-    alt="Binary .spv file (lots of `NUL`) opened in text editor. Raw GLSL text visible at the start of the file."
+    alt="Binary .spv file (lots of `NUL`) opened in the text editor. Raw GLSL text visible at the start of the file."
   />
   <Figcaption>
 
@@ -332,11 +332,11 @@ Depending on the type of the shader, there are different ways to start the debug
 <Figure>
   <BlogImage
     src="./shader_debug_session.png"
-    alt="Fragment shader GLSL loaded in RenderDoc. Uniform buffers, local variables and callstack are easily accessible."
+    alt="Fragment shader GLSL loaded in RenderDoc. Uniform buffers, local variables and call stack are easily accessible."
   />
   <Figcaption>
 
-Debugging fragment shader. `F10` moves a single step forward while `shift-F10` moves 1 step backward. You can inspect uniform buffers content, local variables and add watches. It even has the callstack.
+Debugging fragment shader. `F10` moves a single step forward while `shift-F10` moves 1 step backward. You can inspect uniform buffers content, local variables and add watches. It even has the call stack.
 
   </Figcaption>
 </Figure>
@@ -346,7 +346,7 @@ Debugging fragment shader. `F10` moves a single step forward while `shift-F10` m
 
 ## Summary
 
-Vulkan is quite complex. One way to fight this complexity is with better debugging tools. The API deals with opaque GPU state. It's complicated for programmers that used to the transparency of the CPU. In this article, we've enhanced RenderDoc debug experience so that:
+Vulkan is quite complex. One way to fight this complexity is with better debugging tools. The API deals with opaque GPU state. It's complicated for programmers that are used to the transparency of the CPU. In this article, we've enhanced RenderDoc debug experience so that:
 
 - we can identify every object by name, 
 - we can search the events that happened during the frame,

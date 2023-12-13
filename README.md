@@ -1,5 +1,11 @@
 # Scthe's blog - [https://www.sctheblog.com/](https://www.sctheblog.com/)
 
+### Run
+
+1. `$yarn install`
+1. `$yarn start`
+1. Accessible at: [http://localhost:8080](), [http://localhost:8080/\_\_\_graphql]()
+
 ### Upgrade node, yarn, gatsby etc.
 
 1. Install node and yarn

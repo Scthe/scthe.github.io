@@ -1,7 +1,7 @@
 ---
 title: "Vulkan resources"
 permalink: "/blog/vulkan-resources/"
-excerpt: "Explanation of memory allocation in Vulkan. Walkthrough VBuffer and VkImage options and usages."
+excerpt: "Explanation of memory allocation in Vulkan. How to use AMD's Vulkan Memory Allocator library. Exploring different parameters for VBuffer and VkImage."
 date: 2023-12-17 12:00:00
 image: "./layout-preinitialized-required.png"
 draft: false
@@ -9,48 +9,54 @@ draft: false
 
 
 
-In this article we will look at two most basic resources that you will use in Vulkan: [VkBuffer](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkBuffer.html) and [VkImage](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImage.html). We will start with AMD's Vulkan Memory Allocator. It's a library used to simplify managing memory allocations. It still offers enough features to make meaningful decissions. We will see how to upload the to the GPU and make it efficient. As we will see, a lot of choices are based on the usage patterns. Finally, `VkImage` can be used as framebuffer attachment, 3D object texture or a sampled image (raw data). Each scenario has different requirements and constraints. We will also explain image tiling and layouts.
+In this article we will look at two most basic resources that you will use in Vulkan: [VkBuffer](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkBuffer.html) and [VkImage](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImage.html). But first, we will start with AMD's Vulkan Memory Allocator. It's a library used to simplify memory allocations. Yet, it still offers enough features to make meaningful decisions. We will see how to upload the data to the GPU and make it performant. As we will see, a lot of choices depend on the usage patterns. Finally, `VkImage` can be used as a framebuffer attachment, 3D object texture, or a sampled image (raw data). Each scenario has different requirements and constraints. We will also explain image tiling and layouts.
 
-This article heavily build on the previous [Vulkan synchronization](/blog/vulkan-synchronization/). Read it to understand concepts like pipeline barriers, memory dependencies, frames in flight, etc.
+This article builds on the previous [Vulkan synchronization](/blog/vulkan-synchronization/). Read it to understand concepts like pipeline barriers, memory dependencies, frames in flight, etc.
 
 
 
 ## Using AMD's VulkanMemoryAllocator
 
 
-To create `VmaAllocator` use [vmaCreateAllocator()](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__init.html#ga200692051ddb34240248234f5f4c17bb). Basic allocator requires just a `VkInstance`, `VkPhysicalDevice` and `VkDevice`. There are also:
+To create a `VmaAllocator`, use [vmaCreateAllocator()](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__init.html#ga200692051ddb34240248234f5f4c17bb). The basic allocator requires a `VkInstance`, `VkPhysicalDevice`, and `VkDevice`. There are also:
 
 * `uint32_t vulkanApiVersion`. Same Vulkan version you have provided to `vkCreateInstance()`.
 * `VmaAllocatorCreateFlags flags`. Used to allow VMA to use [specified](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__init.html#ga4f87c9100d154a65a4ad495f7763cf7c), memory-related [device extensions](/blog/vulkan-initialization/).
-* `VkDeviceSize preferredLargeHeapBlockSize`. VMA allocates memory in blocks. Set preferred block size. Usually leave at default 256 MB.
-* `VkAllocationCallbacks* pAllocationCallbacks`. Allows you to intercept all allocations and assign the **CPU**(!) memory yourself. I don't think it's possible to use this field to allocate GPU memory. Still it's probably nice for debug.
+* `VkDeviceSize preferredLargeHeapBlockSize`. VMA allocates memory in blocks. Set preferred block size. Usually leave the default 256 MB.
+* `VkAllocationCallbacks* pAllocationCallbacks`. Allows you to intercept all allocations and assign the **CPU**(!) memory yourself. I don't think it's possible to use this field to allocate GPU memory. Still, it's nice for debugging.
 * `VmaDeviceMemoryCallbacks* pDeviceMemoryCallbacks`. [Callbacks](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/struct_vma_device_memory_callbacks.html) for `pfnAllocate()` and `pfnFree()`. Both functions return `void` and are only for logging purposes.
-* `VkDeviceSize* pHeapSizeLimit`. Array of `VkPhysicalDeviceMemoryProperties::memoryHeapCount` values that limit the maximum number of bytes allocated from each heap. Allocation may fail with `VK_ERROR_OUT_OF_DEVICE_MEMORY` if there is no memory avialable on selected heap. Usually leave `NULL`.
+* `VkDeviceSize* pHeapSizeLimit`. An array of `VkPhysicalDeviceMemoryProperties::memoryHeapCount` values that limit the maximum number of bytes allocated from each heap. The allocation may fail with `VK_ERROR_OUT_OF_DEVICE_MEMORY` if there is no memory available on the selected heap. Usually leave the default `NULL`.
 * `VkExternalMemoryHandleTypeFlagsKHR* pTypeExternalMemoryHandleTypes`. Used with Vulkan's [VkExportMemoryAllocateInfoKHR](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkExportMemoryAllocateInfoKHR.html).
 
-The received `VmaAllocator` object is used to allocate memory using following functions:
+Use the received `VmaAllocator` object to allocate memory using the following functions:
 
 * [vmaCreateBuffer()](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__alloc.html#gac72ee55598617e8eecca384e746bab51). Takes `VmaAllocator`, `VkBufferCreateInfo` and `VmaAllocationCreateInfo` as parameters.
 * [vmaCreateImage()](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__alloc.html#ga02a94f25679275851a53e82eacbcfc73). Takes `VmaAllocator`, `VkImageCreateInfo` and `VmaAllocationCreateInfo` as parameters.
 
-We will investigate `VkBufferCreateInfo` and `VkImageCreateInfo` in more details later in this article. AMD has a separate [VMA docs page](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/choosing_memory_type.html) explaining `AllocationCreateInfo`. Fields like `memory_type_bits`, [pool](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/custom_memory_pools.html) and `priority` can be safely ignored. `pUserData` can be used to add custom data to an allocation. Used to track memory leaks. The `VmaMemoryUsage`, `VmaAllocationCreateFlags` and `VkMemoryPropertyFlags` fields is where most of the decisions are made.
+We will investigate `VkBufferCreateInfo` and `VkImageCreateInfo` in more detail later in this article. AMD has a separate [VMA docs page](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/choosing_memory_type.html) explaining `AllocationCreateInfo`. Fields like `memory_type_bits`, [pool](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/custom_memory_pools.html), and `priority` can be safely ignored. Use `pUserData` to add custom data to an allocation (e.g. track memory leaks). The `VmaMemoryUsage`, `VmaAllocationCreateFlags`, and `VkMemoryPropertyFlags` fields are where most of the decisions are made.
 
 
 
 ### VmaAllocationCreateInfo: VmaMemoryUsage
 
-Since VMA version 3.0.0 [VMA_MEMORY_USAGE_*](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__alloc.html#gaa5846affa1e9da3800e3e78fae2305cc) has only 3 values: `VMA_MEMORY_USAGE_AUTO` (AMD strongly suggests to use this option), `VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE` (GPU memory) and `VMA_MEMORY_USAGE_AUTO_PREFER_HOST` (CPU memory). This values are mostly a hints, as `VmaAllocationCreateFlagBits` have a huge impact too - mainly if the buffer is mappable (to easier write from CPU).
+Since VMA version 3.0.0, [VMA_MEMORY_USAGE_*](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__alloc.html#gaa5846affa1e9da3800e3e78fae2305cc) has only 3 values:
 
-> There is also `VMA_MEMORY_USAGE_GPU_LAZILY_ALLOCATED` but documentation says it's mostly for mobile devices. I assume it's an option for tiled renderers when attachment values do not have to be written into persisted memory. Instead, next subpass would just use them as 'local' values. But that's just my guess.
+* `VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE` - GPU memory,
+* `VMA_MEMORY_USAGE_AUTO_PREFER_HOST` - CPU memory,
+* `VMA_MEMORY_USAGE_AUTO` - decided by VMA.
+
+AMD suggests always using `VMA_MEMORY_USAGE_AUTO`. These values are mostly hints. `VmaAllocationCreateFlagBits` have a huge impact on the outcome too. E.g. if the buffer is mappable (to write from CPU).
+
+> There is also `VMA_MEMORY_USAGE_GPU_LAZILY_ALLOCATED` but documentation says it's largely for mobile devices. I assume it's an option for tiled renderers when attachment texels do not have to be written into persisted memory. Next **subpass** would use a value from a register/L1 cache instead.
 
 
 
 ### VmaAllocationCreateInfo: VmaAllocationCreateFlags
 
-There are many options for [flags](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__alloc.html#gad9889c10c798b040d59c92f257cae597). Most of them refer to specific use case. Most common are:
+There are many options for [flags](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__alloc.html#gad9889c10c798b040d59c92f257cae597). Most of them refer to specific use cases. The most common are:
 
-* `VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT`. Used for image attachments that due to their size prefer own memory block.
-* `VMA_ALLOCATION_CREATE_MAPPED_BIT`. Persistently mapped memory. According to documentation, there are usually 2 possibilities:
+* `VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT`. Used for image attachments that due to their size prefer their own memory block.
+* `VMA_ALLOCATION_CREATE_MAPPED_BIT`. Persistently mapped memory. According to the documentation, there are usually 2 possibilities:
     * sequential access:
         * `VmaAllocationCreateInfo.flags`: `VMA_ALLOCATION_CREATE_MAPPED_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT`,
         * `VmaAllocationCreateInfo.required_flags`: `VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT`,
@@ -58,45 +64,45 @@ There are many options for [flags](https://gpuopen-librariesandsdks.github.io/Vu
         * `VmaAllocationCreateInfo.flags`: `VMA_ALLOCATION_CREATE_MAPPED_BIT | VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT`,
         * `VmaAllocationCreateInfo.required_flags`: `VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT`.
 
-Flags for persistently mapped memory might seem convoluted. Usually, to write the memory from the CPU you will use sequential access. In practice not all mentioned flags seem to be required. Even AMD does not manually set `required_flags` (see below). There are a few other flags that specify e.g. what to do if device runs out of memory.
+Flags for persistently mapped memory might seem convoluted. Usually, to write the memory from the CPU, you will use sequential access. In practice, not all mentioned flags seem to be required. Even AMD does not set `required_flags` (see below). There are a few other flags that specify e.g. what to do if the device runs out of memory etc.
 
 
 
 ### VmaAllocationCreateInfo: `required_flags` and `preferred_flags`
 
-`required_flags` force certain behaviour and should be avoided - especially if you already specified `flags`. `preferred_flags` are just hints. Usually `VMA` can deduce optimal values for both of this fields by itself based on `flags`. The values are based on Vulkan's [VkMemoryPropertyFlagBits](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkMemoryPropertyFlagBits.html):
+You should avoid `required_flags` as they force certain behavior. Especially if you already specified `flags`. `preferred_flags` are just hints. `VMA` can deduce optimal values for `required_flags` and `preferred_flags` based on `flags`. The values are based on Vulkan's [VkMemoryPropertyFlagBits](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkMemoryPropertyFlagBits.html):
 
-* `VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT`. Memory should be allocated on GPU, and is usually not accessible from CPU. Preferred for:
+* `VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT`. Memory should be allocated on the GPU. It's usually not easily accessible from the CPU. Preferred for:
     * image attachments,
     * compute buffers,
     * static 3D object's textures and buffers,
-    * basically everything that rarely changes and favours fast access.
-* `VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT`. Make memory visible from host.
-* `VK_MEMORY_PROPERTY_HOST_COHERENT_BIT`. Alleviates need to call `vkFlushMappedMemoryRanges` or `vkInvalidateMappedMemoryRanges` after each CPU write to mapped memory (so assures [avalability](/blog/vulkan-synchronization)). Does not guarantee `visibility`.
-* `VK_MEMORY_PROPERTY_HOST_CACHED_BIT`. Create cache version of the memory on the host for faster access. I'm not sure how this flag works with `VK_MEMORY_PROPERTY_HOST_COHERENT_BIT`. If I wanted both, I would set them in `preferred_flags`. There is [stackoverflow thread](https://stackoverflow.com/questions/45017121/are-host-cached-bit-and-host-coherent-bit-contradicting-each-other) where someone else noticed this issue.
+    * everything that rarely changes and favors fast access.
+* `VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT`. Make memory visible from the host.
+* `VK_MEMORY_PROPERTY_HOST_COHERENT_BIT`. Alleviates need to call `vkFlushMappedMemoryRanges()` or `vkInvalidateMappedMemoryRanges()` after each CPU writes to the mapped memory. Assures [availability](/blog/vulkan-synchronization). Does not guarantee `visibility`.
+* `VK_MEMORY_PROPERTY_HOST_CACHED_BIT`. Create a cached version of the memory on the host for faster access. I'm not sure how this flag works with `VK_MEMORY_PROPERTY_HOST_COHERENT_BIT`. If I wanted both, I would set them in `preferred_flags`. There is a [StackOverflow thread](https://stackoverflow.com/questions/45017121/are-host-cached-bit-and-host-coherent-bit-contradicting-each-other) where someone else noticed this issue.
 
-Both `required_flags` and `preferred_flags` are masks, so you can `OR` the bits. Popular libarary ["gpu-allocator" by Traverse-Research](https://github.com/Traverse-Research/gpu-allocator) differentiates following use cases to determine `preferred_flags`:
+Both `required_flags` and `preferred_flags` are masks, so you can `OR` the bits. Popular library ["gpu-allocator" by Traverse-Research](https://github.com/Traverse-Research/gpu-allocator) differentiates the following use cases to determine `preferred_flags`:
 
-* `MemoryLocation::GpuOnly` (`VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT`),
-* `MemoryLocation::CpuToGpu` (`VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT`). Coherent host visible memory is ideal for mapped memory. All modern GPU have about 256MB acessible from CPU with very little performace penalty (`VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT`). This is known as `Base Address Register (BAR)`.
-* `MemoryLocation::GpuToCpu` (`VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT`). Fast read access from CPU to cached memory.
+* `MemoryLocation::GpuOnly`: `VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT`,
+* `MemoryLocation::CpuToGpu`: `VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT`. Coherent, host-visible memory is ideal for mapped memory. All modern GPUs have about 256MB accessible from the CPU with little performance penalty. This is known as the `Base Address Register (BAR)`.
+* `MemoryLocation::GpuToCpu`: `VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT`. Fast read access from CPU to cached memory.
 
 
-Worth mentioning that if we only set `VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT` the memory can be allocated on the host (CPU), so GPU reads would require PCI-express bus transfer.
+It's worth mentioning that if we only set `VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT` the memory *can* be allocated on the host (CPU). The GPU reads would require PCI-express bus transfer.
 
-> For more information about `Base Address Register (BAR)` and `Smart Access Memory (SAM)` I recommend Adam Sawicki's ["Vulkan Memory Types on PC and How to Use Them"](https://asawicki.info/news_1740_vulkan_memory_types_on_pc_and_how_to_use_them). He works for AMD and is one of the VMA creators.
+> For more information about `Base Address Register (BAR)` and `Smart Access Memory (SAM)`, I recommend Adam Sawicki's ["Vulkan Memory Types on PC and How to Use Them"](https://asawicki.info/news_1740_vulkan_memory_types_on_pc_and_how_to_use_them). He works for AMD and is one of the VMA creators.
 
 
 
 ### VMA allocations in practice
 
-Fortunately, VMA documentation comes with [usage samples](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/usage_patterns.html). We can notice that `VmaAllocationCreateInfo.usage` is always `VMA_MEMORY_USAGE_AUTO` and no `required_flags`/`preferred_flags` are set. This means that only `flags` are used to determine the final memory allocation placement:
+VMA documentation comes with [usage samples](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/usage_patterns.html). Notice that `VmaAllocationCreateInfo.usage` is always `VMA_MEMORY_USAGE_AUTO`. No `required_flags` or `preferred_flags` are set. Only `flags` are used to determine the final memory allocation placement. AMD discerns the following use cases:
 
-* `VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT`. Heavly used, GPU-only resources. Like image attachments, compute buffers, static 3D object's textures and buffers. You can query for [VkMemoryDedicatedRequirementsKHR](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkMemoryDedicatedRequirementsKHR.html). This only acts as a hint to a driver.
-* `VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT`. Temporary staging buffer that CPU will write to. It's content will be then copied to GPU-only resource. For all we know, this temporary allocation may end up either in CPU's RAM or GPU's `Base Address Register`. This pattern is needed as memory allocated with `VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT` may have to sacrifice performance in order for CPU to write to it. It disables certain optimization that the driver might normally do.
-* `VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT`. Mapped memory when you want to read on CPU values from GPU.
+* `VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT`. Often used, GPU-allocated resources. Image attachments, compute buffers, static 3D object textures and buffers, etc. You can query for [VkMemoryDedicatedRequirementsKHR](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkMemoryDedicatedRequirementsKHR.html). This acts only as a hint to a driver.
+* `VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT`. Temporary staging buffer that the CPU will write to. Its content will be then copied to a high-performance GPU memory. For all we know, this temporary allocation may end up either in the CPU's RAM or GPU's `Base Address Register`. This pattern is needed as memory allocated with `VMA_ALLOCATION_CREATE_MAPPED_BIT` may have to sacrifice performance in order for the CPU to write to it. It disables certain optimization that the driver might do.
+* `VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT`. Mapped memory when you want to read the GPU's memory from the CPU.
 
-This documentation contains section dedicated to uniform buffers. They are often written from CPU at least once per frame, but are directly read from GPU. You can the have usage as `VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE` and flags as `VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT`. Our goal is to place it in the previously mentioned `Base Address Register`. Alternatively, `VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT` has similar semantic.
+AMD's documentation contains a section dedicated to uniform buffers. They are usually written from the CPU at least once per frame. The GPU will only read them (unless you use the compute shader's load/store). The usage should be `VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE` and flags `VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT`. Our goal is to allocate the buffer in the before-mentioned `Base Address Register`. Or, `VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT` has similar semantics.
 
 
 
@@ -104,9 +110,14 @@ This documentation contains section dedicated to uniform buffers. They are often
 
 > You need to provide either `VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT` or `VMA_ALLOCATION_CREATE_HOST_ACCESS_RANDOM_BIT` in `flags` during allocation to be able to map the memory!
 
-There are 2 common strategies to mapping memory in Vulkan: 1) map and unmap it at every use, or 2) do persistent mapping (map it once after allocation and unmap only when resource is deleted). Usually persistent mapping is preferred as `vkMapMemory()` can be expensive on some drivers. With VMA it's allowed to map memory multiple times as the library does the reference counting for us. This is **not** allowed in pure Vulkan. I can recommend Kyle Halladay's [Comparing Uniform Data Transfer Methods in Vulkan](https://kylehalladay.com/blog/tutorial/vulkan/2017/08/13/Vulkan-Uniform-Buffers.html) if you are wondering which approach is fastest.
+There are 2 common strategies for mapping memory in Vulkan:
 
-Persistent mapping in VMA requires `VMA_ALLOCATION_CREATE_MAPPED_BIT`. Both `vmaCreateBuffer()` and `vmaCreateImage()` fill `VmaAllocationInfo.pMappedData` to which we can `memcpy()`. In Rust we have following code:
+1. Map and unmap it at every use.
+2. Persistent mapping. Map it once after allocation and unmap only when the resource is deleted. 
+ 
+Persistent mapping is preferred as `vkMapMemory()` can be expensive on some drivers. With VMA, you can map the same allocation multiple times. The library does the reference counting for us. This is **not** allowed in pure Vulkan. I recommend Kyle Halladay's ["Comparing Uniform Data Transfer Methods in Vulkan"](https://kylehalladay.com/blog/tutorial/vulkan/2017/08/13/Vulkan-Uniform-Buffers.html) if you are wondering which approach is the fastest.
+
+Persistent mapping in VMA requires `VMA_ALLOCATION_CREATE_MAPPED_BIT`. Both `vmaCreateBuffer()` and `vmaCreateImage()` fill `VmaAllocationInfo.pMappedData` to which we can `memcpy()`. In Rust, we have the following code:
 
 
 ```rust
@@ -145,19 +156,19 @@ fn write_to_mapped(
 }
 ```
 
-It does not matter if we are writing to memory allocated for `VkBuffer` or `VkImage`. For `VkBuffer` I would recommend to align memory to `vec4`. For `VkImage` check that image format of data is same as the one in `VkImage`. E.g. if you read from the hard drive an image that does not have alpha channel and write it to `vk::Format::R8G8B8A8_SRGB` you will receive garbage. The tiling **has** to be `vk::ImageTiling::LINEAR`. If you write bytes to venor/driver dependent `vk::ImageTiling::OPTIMAL` you will receive garbage. Yet, during runtime, it's recommended to use only `VkImages` with `vk::ImageTiling::OPTIMAL`. This means that you have to create an intermediary scratch buffer used only as a copy destination (from CPU) and then as a copy data source (data copied to final, optimal `VkImage`).
+It does not matter if the mapped memory is allocated for `VkBuffer` or `VkImage`. For `VkBuffer`, I recommend aligning memory to `vec4`. For `VkImage`, check that the texel format is the same between the CPU data and `VkImage`. If you read from the hard drive an image that does not have an alpha channel and write it to `vk::Format::R8G8B8A8_SRGB`, you will receive garbage. The tiling **has** to be `vk::ImageTiling::LINEAR`. If you write bytes to vendor/driver dependent `vk::ImageTiling::OPTIMAL`, you will receive garbage. Yet, during runtime, it's recommended to use only `VkImages` with `vk::ImageTiling::OPTIMAL`. This means that you have to create an intermediary scratch buffer. It's used first as a copy destination (from CPU) and then as a copy data source (data copied to final, optimal `VkImage`).
 
 
 ### Other VMA functionalities
 
-While basic VMA usage is intuitive, I recommend to skim the docs. Other functionalites include:
+While basic VMA usage is intuitive, I recommend skimming the rest of the docs. Other functionalities include:
 
 * [defragmentation](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/defragmentation.html), 
 * [corruption detection](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/debugging_memory_usage.html), 
 * [custom memory pools](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/custom_memory_pools.html),
-* [resource aliasing ](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/resource_aliasing.html).
+* [resource aliasing](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/resource_aliasing.html).
 
-The docs are very clear and have just enough examples. That's rare and worth pointing out.
+The docs are clear and have enough examples. That's rare and worth pointing out.
 
 
 
@@ -166,7 +177,7 @@ The docs are very clear and have just enough examples. That's rare and worth poi
 ## VkBuffer
 
 
-[VkBuffer](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkBuffer.html) represents continous array of bytes. Here is short example code to create and allocate `VkBuffer` using [ash](https://github.com/ash-rs/ash) and [vma](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator):
+[VkBuffer](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkBuffer.html) represents a continuous array of bytes. Here is a short example code to create and allocate `VkBuffer` using [ash](https://github.com/ash-rs/ash) and [VMA](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator):
 
 
 ```rust
@@ -189,26 +200,26 @@ let (buffer, allocation) = unsafe {
 };
 ```
 
-In raw Vulkan you would use [vkCreateBuffer()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateBuffer.html) with [VkBufferCreateInfo](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkBufferCreateInfo.html). After that, use [vkAllocateMemory()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkAllocateMemory.html) and [vkBindBufferMemory()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkBindBufferMemory.html) to assign memory to the buffer. With VMA, use [vmaCreateBuffer()](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__alloc.html#gac72ee55598617e8eecca384e746bab51) (takes `VkBufferCreateInfo` and `AllocationCreateInfo` as parameters). In C++ also requires pointers to `VkBuffer*`, `VmaAllocation*` and `VmaAllocationInfo*` structs that will be filled with result data. In Rust, the this is returned as a tuple `(ash::vk::Buffer, vma::Allocation)`. Since we've already dicusssed `AllocationCreateInfo`, let's look at `VkBuffer` creation parameters.
+In raw Vulkan, you would use [vkCreateBuffer()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateBuffer.html) with [VkBufferCreateInfo](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkBufferCreateInfo.html). After that, use [vkAllocateMemory()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkAllocateMemory.html) and [vkBindBufferMemory()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkBindBufferMemory.html) to assign memory to the buffer. With VMA, use [vmaCreateBuffer()](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__alloc.html#gac72ee55598617e8eecca384e746bab51) (takes `VkBufferCreateInfo` and `AllocationCreateInfo` as parameters). In C++, add pointers to `VkBuffer*`, `VmaAllocation*`, and `VmaAllocationInfo*` structs that will be filled with the result data. In Rust, this is returned as a tuple `(ash::vk::Buffer, vma::Allocation)`. Since we've already discussed `AllocationCreateInfo`, let's look at `VkBuffer` creation parameters.
 
-At first glance [VkBufferCreateInfo](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkBufferCreateInfo.html) may seem complicated. For basic usage, following properties can be ignored:
+At first glance, [VkBufferCreateInfo](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkBufferCreateInfo.html) may seem complicated. For basic usage, the following properties can be ignored:
 
-* [VkBufferCreateFlags flags](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkBufferCreateFlagBits.html). Just nothing interesting there.
-* [VkSharingMode sharingMode](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkSharingMode.html). Usually `EXCLUSIVE` unless you need to use the buffer on multiple `queue families`.
-* `uint32_t* queue_family_indices`. You've selected a `queue family` after calling [vkGetPhysicalDeviceQueueFamilyProperties](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkGetPhysicalDeviceQueueFamilyProperties.html), provide it here too. You can also ignore this setting due to `EXCLUSIVE` sharing mode.
+* [VkBufferCreateFlags flags](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkBufferCreateFlagBits.html). Nothing interesting there.
+* [VkSharingMode sharingMode](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkSharingMode.html). Usually `EXCLUSIVE`. Unless you need to use the buffer on multiple `queue families`.
+* `uint32_t* queue_family_indices`. You've selected a `queue family` after calling [vkGetPhysicalDeviceQueueFamilyProperties()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkGetPhysicalDeviceQueueFamilyProperties.html). Can be ignored with `EXCLUSIVE` sharing mode.
 
-> In [Vulkan initialization](/blog/vulkan-initialization/) we selected 1 `queue family` and created 1 `VkQueue` object. If you have many `queue families` the situation is more complicated. Remember that even for a single `queue family` we can have many `queues`.
+> In [Vulkan initialization](/blog/vulkan-initialization/), we selected 1 `queue family` and created 1 `VkQueue` object. If you have many `queue families` the situation is more complicated. Remember that you can have many `queues` for a single `queue family`.
 
-Last 2 parameters in `VkBufferCreateInfo` are `size` (in bytes) and `VkBufferUsageFlags usage`. Usage refers to if it's an index, vertex, uniform, storage (SSBO) buffer, etc. This field is a mask, which means that we can provide many usages for a single buffer. This is especially important if we want to use transfer operations. To fill the buffer from the CPU, you need to set `usage` to `VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_*`.  Unfortunately, GPU memory region that is visible and writeable from CPU usually has some drawbacks. 
+The last 2 parameters in `VkBufferCreateInfo` are `size` (in bytes) and `VkBufferUsageFlags usage`. Usage refers to if it's an index, vertex, uniform, storage (SSBO) buffer, etc. This field is a mask. You can provide many usages for a single buffer. This is especially important to use with transfer operations. To fill the buffer from the CPU, set `usage` to `VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_*`.
 
-> Uniform buffers objects (UBO) are read-only, while Shader Storage Buffer Objects (SSBO) can be both read and updated. In other words, UBO can be written only by host (CPU), while SSBO by both host and during shader execution. This can affect allocation properties that you assign.
+> On GPU, Uniform buffer objects (UBO) are read-only. Shader Storage Buffer Objects (SSBO) can be both read and updated. In other words, UBO can be written only by the host (CPU), while SSBO by both the host and during shader execution. This can affect allocation properties.
 
-> It's easy to forget to set proper `VkBufferUsageFlags`. The validation layer will inform you about this the moment the buffer is used in an unexpected way. As you can see, `VkBufferCreateInfo` is really quite simple.
+> It's easy to forget to set proper `VkBufferUsageFlags`. The validation layer will inform you about this the moment the buffer is used in an unexpected way. Turns out, `VkBufferCreateInfo` is quite simple.
 
 
 ### Using temporary buffers to upload data
 
-As mentioned previously, not all memory allocated with `VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT` is created equal. If this memory is also mapped to CPU, it may have worse preformance. But what if we have static data that 1) is written from CPU,  2) never changes, and 3) is read only from GPU? Good example are vertex and index buffers. The answer is to have a temporary buffer that serves as a middle man for data transfer. This buffer is deleted right after the copy operation.
+As mentioned before, not all memory allocated with `VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT` is created equal. If this memory is also mapped to the CPU, it may have worse performance. But what if we have static data that 1) is written once from the CPU,  2) never changes, and 3) is read-only from the GPU? Good examples are vertex and index buffers for static 3D objects. The answer is to have a temporary buffer that serves as a middleman for the data transfer. This buffer is deleted right after the copy operation. Here is a sample Rust code to create such `VkBuffer`:
 
 ```rust
   pub fn create_buffer_from_data(
@@ -216,7 +227,7 @@ As mentioned previously, not all memory allocated with `VK_MEMORY_PROPERTY_DEVIC
     with_setup_cb: &impl WithSetupCmdBuffer,
     bytes: &[u8],
     usage: vk::BufferUsageFlags,
-  ) -> Self {
+  ) -> (vk::Buffer, vma::Allocation) {
     let size = bytes.len();
     // create mapped temporary buffer using some util fn
     let mut (tmp_buf, tmp_buf_alloc) = allocate_buffer(
@@ -253,7 +264,7 @@ As mentioned previously, not all memory allocated with `VK_MEMORY_PROPERTY_DEVIC
   }
 ```
 
-First we allocate presistently mapped temporary buffer that we will use as 1) transfer destination (from CPU) and 2) transfer source (to final buffer). We write our data into it. Create the final buffer on GPU and with special `vk::BufferUsageFlags::TRANSFER_DST` usage flag. To copy data between the buffers we need to use [vkCmdCopyBuffer](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdCopyBuffer.html). Unfortunately, since it is a Vulkan command, it requires a command buffer. Vulkan applications often create special command buffer for setup operations like this. You can find one in [EmbarkStudios' kajiya](https://github.com/EmbarkStudios/kajiya/blob/d373f76b8a2bff2023c8f92b911731f8eb49c6a9/crates/lib/kajiya-backend/src/vulkan/device.rs#L554). In `Rust-Vulkan-TressFX` I've created trait `WithSetupCmdBuffer` that requires `fn with_setup_cb(&self, callback: impl FnOnce(&ash::Device, vk::CommandBuffer));`. It is [implemented](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/master/src/vk_ctx/vk_ctx.rs#L124) by `VkCtx`, which is my version of kajiya's `Device`. The rest of the implementation is contained in [execute_setup_cmd_buf](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/master/src/vk_utils/setup_cmd_buf.rs#L8) that takes care of `vkBeginCommandBuffer()`, `vkEndCommandBuffer()` and `vkQueueSubmit()`. It should also cover synchronization, as we will destroy the temporary buffer right after transfer is finished.
+First, we allocate a persistently mapped temporary buffer. We will use it as 1) transfer destination (from CPU), and 2) transfer source (to final buffer). We write our data into it. Then, create the final buffer on GPU with the `vk::BufferUsageFlags::TRANSFER_DST` usage flag. Use [vkCmdCopyBuffer()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdCopyBuffer.html) to copy the data between buffers. Unfortunately, since it is a Vulkan command, it requires a command buffer. Vulkan applications often create a special command buffer for setup operations like this. You can find one in [EmbarkStudios' kajiya](https://github.com/EmbarkStudios/kajiya/blob/d373f76b8a2bff2023c8f92b911731f8eb49c6a9/crates/lib/kajiya-backend/src/vulkan/device.rs#L554). In `Rust-Vulkan-TressFX`, I've created trait `WithSetupCmdBuffer` that requires `fn with_setup_cb(&self, callback: impl FnOnce(&ash::Device, vk::CommandBuffer));`. It is [implemented](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/vk_ctx/vk_ctx.rs#L124) by `VkCtx`, which is my version of kajiya's `Device`. The rest of the implementation is contained in [execute_setup_cmd_buf()](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/vk_utils/setup_cmd_buf.rs#L8). It takes care of `vkBeginCommandBuffer()`, `vkEndCommandBuffer()`, and `vkQueueSubmit()`. It should also cover synchronization, as we will destroy the temporary buffer right after the transfer operation finishes.
 
 
 
@@ -271,25 +282,25 @@ uniform GlobalConfigUniformBuffer {
 }
 ```
 
-How can a CPU write to the GPU-placed buffer so that all values are received correctly? The biggest problem is always alignment. If the first member of the UBO structure were `vec3`, what would be the byte offset of the second member? In OpenGL this type of problems [lead to huge headache](https://www.khronos.org/opengl/wiki/Interface_Block_(GLSL)#Memory_layout). I strongly recommend to always round up values to `vec4` (instead of `vec3`). At the very least, make sure that if you have members of type `float`, they are declared 4 right after one another. I've also had a few issues with mixing in random `int`s between other members. You can [preview uniform values in RenderDoc](/blog/debugging-vulkan-using-renderdoc/).
+How can a CPU write to the GPU-allocated buffer so that all values are received correctly? The biggest problem is always alignment. If the first member of the UBO structure were `vec3`, what would be the byte offset of the second member? In OpenGL, this type of problem [leads to a huge headache](https://www.khronos.org/opengl/wiki/Interface_Block_(GLSL)#Memory_layout). I recommend always rounding up values to `vec4` (instead of `vec3`). At the very least, make sure that if you have members of type `float`, they are declared in groups of 4. I've also had a few issues with mixing in random `int`s between other fields. You can [preview uniform values in RenderDoc](/blog/debugging-vulkan-using-renderdoc/).
 
 
 
 <Figure>
   <BlogImage
     src="./opengl_wiki_buffer_layouts.png"
-    alt="Description for diferent GLSL blocks memory layouts. Warning to never use vec3 in std140 has a red border."
+    alt="Description for different GLSL blocks memory layouts. Warning to never use vec3 in std140 has a red border."
   />
   <Figcaption>
 
-GLSL blocks memory layouts are complicated. If you ever used them, you probably know why I've added red border to the warning. Screen from OpenGL wiki [Memory_layout](https://www.khronos.org/opengl/wiki/Interface_Block_(GLSL)#Memory_layout).
+GLSL blocks memory layouts are complicated. If you ever used them, you know why I've added a red border to the warning. Screen from OpenGL wiki [Memory_layout](https://www.khronos.org/opengl/wiki/Interface_Block_(GLSL)#Memory_layout).
 
   </Figcaption>
 </Figure>
 
 
 
-Here is how the same uniform block is expressed in Rust:
+Here is how to express the same uniform block in Rust:
 
 ```rust
 use bytemuck;
@@ -310,7 +321,7 @@ impl GlobalConfigUBO {
   /// Pack into the struct.
   /// Encapsulates all the alignments etc.
   pub fn new(
-    cam_pos: Vec3, // vec3 warning!
+    cam_pos: Vec3, // vec3! Careful!
     vp_size: Vec2,
     near_far: Vec2,
     view_mat: Mat4,
@@ -337,65 +348,67 @@ impl GlobalConfigUBO {
 
 Examples from my Rust-Vulkan-TressFX project:
 
-* `GlobalConfigUniformBuffer` UBO that contains all global data (camera position, viewport size, settings from UI, etc.):
-  * [GLSL shader uniform](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/master/assets/shaders/_config_ubo.glsl)
-  * [Rust GlobalConfigUBO](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/master/src/render_graph/_shared/global_config_ubo.rs)
+* `GlobalConfigUniformBuffer`. UBO that contains all global data (camera position, viewport size, settings from UI, etc.):
+  * [GLSL shader block](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/assets/shaders/_config_ubo.glsl)
+  * [Rust GlobalConfigUBO](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/render_graph/_shared/global_config_ubo.rs)
 * Forward rendering, per-object UBO:
-  * [GLSL shader uniform](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/master/assets/shaders/_forward_model_ubo.glsl)
-  * [Rust ForwardModelUBO](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/master/src/render_graph/_shared/forward_model_ubo.rs)
-* `TfxParamsUniformBuffer`, UBO that contains hair material data
-  * [GLSL shader uniform](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/master/assets/shaders/tfx_render/_tfx_params_ubo.glsl)
-  * [Rust TfxParamsUBO](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/master/src/render_graph/_shared/tfx_params_ubo.rs)
+  * [GLSL shader block](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/assets/shaders/_forward_model_ubo.glsl)
+  * [Rust ForwardModelUBO](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/render_graph/_shared/forward_model_ubo.rs)
+* `TfxParamsUniformBuffer`. UBO that contains hair material data
+  * [GLSL shader block](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/assets/shaders/tfx_render/_tfx_params_ubo.glsl)
+  * [Rust TfxParamsUBO](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/render_graph/_shared/tfx_params_ubo.rs)
 
 
-In the [next article](#) we will see how to actually bind the `VkBuffer` objects to GLSL descriptors.
+In the [next article](#), we will see how to actually bind the `VkBuffer` objects to GLSL descriptors.
 
 
 
 
 ## VkImage
 
-Creating [VkImage]((https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImage.html)) takes a familiar shape to any other Vulkan object. We call `vkCreateImage()` with `VkImageCreateInfo` struct. Then we call same 2 functions as we have used with `VkBuffers` ([vkAllocateMemory()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkAllocateMemory.html), [vkBindBufferMemory()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkBindBufferMemory.html)) to allocate and bind the memory.
+Creating [VkImage]((https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImage.html)) takes a familiar shape to any other Vulkan object. We call `vkCreateImage()` with `VkImageCreateInfo` struct. Then, call the same 2 functions as we have used with `VkBuffers` ([vkAllocateMemory()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkAllocateMemory.html), [vkBindBufferMemory()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkBindBufferMemory.html)) to allocate and bind the memory.
 
-With VMA, we just provide `VkImageCreateInfo` and `vma::AllocationCreateInfo` to [vmaCreateImage()](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__alloc.html#ga02a94f25679275851a53e82eacbcfc73).
+With VMA, we provide `VkImageCreateInfo` and `vma::AllocationCreateInfo` to [vmaCreateImage()](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__alloc.html#ga02a94f25679275851a53e82eacbcfc73).
 
-Unfortunately, to understand `VkImageCreateInfo`, we have to walk through a few other concepts before.
+Unfortunately, to understand `VkImageCreateInfo`, we have to experience a few other concepts before.
 
 
 
 ### Miscellaneous `VkImageCreateInfo` parameters
 
-Let's start with the fields that require little explanation. If you've used and graphic API before, you are probably familiar with `mipLevels`, multipsampling. As with `VkBuffer`, we can also specify `VkSharingMode` and `queue_family_indices`. Here are such 'miscellaneous' fields:
+Let's start with the fields that need little explanation. If you've used any graphic API before, you are familiar with `mipLevels` and multisampling. As with `VkBuffer`, we can also specify `VkSharingMode` and `queue_family_indices`. Here are such 'miscellaneous' fields:
 
 * [VkImageCreateFlags flags](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageCreateFlagBits.html). Nothing terribly useful, although `VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT` is mandatory for cubemaps.
-* [uint32_t mipLevels](https://en.wikipedia.org/wiki/Mipmap). Used to declare mipmaps. Alexander Overvoorde's Vulkan Tutorial has entire [chapter dedicated to adding mipmaps](https://vulkan-tutorial.com/Generating_Mipmaps). 
-* [VkSampleCountFlagBits samples](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkSampleCountFlagBits.html). Used for [multisample anti-aliasing](https://en.wikipedia.org/wiki/Multisample_anti-aliasing). Alexander Overvoorde's Vulkan Tutorial has entire [chapter dedicated to multisampling](https://vulkan-tutorial.com/Multisampling). Unfortunately it's not as simple as just setting a `samples` flag. This information is also required when defining `VkRenderPass` attachments. The multisampling resolve is declared in subpass definition: [VkSubpassDescription.pResolveAttachments](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkSubpassDescription.html).
-* [VkSharingMode sharingMode](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkSharingMode.html). Usually `EXCLUSIVE` unless you need to use the image on multiple queue families,
-* `uint32_t* queue_family_indices`. You've selected a queue family after calling [vkGetPhysicalDeviceQueueFamilyProperties()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkGetPhysicalDeviceQueueFamilyProperties.html), provide it here too. You can also ignore this setting due to `EXCLUSIVE` sharing mode.
+* [uint32_t mipLevels](https://en.wikipedia.org/wiki/Mipmap). Used to declare mipmaps. Alexander Overvoorde's Vulkan Tutorial has an entire [chapter dedicated to adding mipmaps](https://vulkan-tutorial.com/Generating_Mipmaps). 
+* [VkSampleCountFlagBits samples](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkSampleCountFlagBits.html). Used for [multisample anti-aliasing](https://en.wikipedia.org/wiki/Multisample_anti-aliasing). Alexander Overvoorde's Vulkan Tutorial has an entire [chapter dedicated to multisampling](https://vulkan-tutorial.com/Multisampling). Unfortunately, it's not as simple as just setting a `samples` flag. This information is also required when defining `VkRenderPass` attachments. The multisampling resolve is declared in the subpass definition: [VkSubpassDescription.pResolveAttachments](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkSubpassDescription.html).
+* [VkSharingMode sharingMode](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkSharingMode.html). Usually `EXCLUSIVE`. Unless you need to use the `VkImage` on multiple `queue families`.
+* `uint32_t* queue_family_indices`. You've selected a `queue family` after calling [vkGetPhysicalDeviceQueueFamilyProperties()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkGetPhysicalDeviceQueueFamilyProperties.html). Can be ignored with `EXCLUSIVE` sharing mode.
+
+
 
 
 
 
 ### Image texel count: `imageType`, `extent`, `arrayLayers`
 
-When you think of an image you usually imagine a 2D collection of pixels. In Vulkan, an image can have a following [VkImageTypes](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageType.html):
+When you think of an image, you usually imagine a 2D collection of pixels. In Vulkan, an image can have the following [VkImageTypes](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageType.html):
 
 * 1D - a single row,
 * 2D - width and height,
-* 3D - width, height and depth (imagine voxels in 3D space).
+* 3D - width, height, and depth (imagine voxels in 3D space).
  
-Dimensions are provided in [VkExtent3D](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkExtent3D.html) struct. Unused dimensions should be set to 1. The extent declares the size of mipmap at level 0.
+Dimensions are provided in [VkExtent3D](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkExtent3D.html) struct. Unused dimensions should be set to 1. The extent declares the size of the mipmap at level 0.
 
-Array layers allow to embed many images inside a single `VkImage`. Imagine Minecraft, where different blocks have different material (like wood, stone, gold or glass). Each material has a texture of same size. Instead of having separate `VkImage` for each material type, we can create a single `VkImage` with array layers. Each layer contains texture data for 1 material. In shader we use GLSL's `vec4 texture(sampler2DArray sampler, vec3 P);` to select which layer to sample. At least 1 layer is always required.
+Array layers allow embedding many images inside a single `VkImage`. Imagine Minecraft, where different blocks have different materials (like wood, stone, gold, or glass). Each material has a texture of the same size. Instead of having separate `VkImages` for each material type, we can create a single `VkImage` with array layers. Each layer contains texture data for 1 material. In the shader, we use GLSL's `vec4 texture(sampler2DArray sampler, vec3 P);` to select which layer to sample. At least 1 layer is always required.
 
 Let's look at an example cubemap declaration:
 
 * `flags` is `VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT`,
 * `imageType` is `VK_IMAGE_TYPE_2D`,
 * `extent` is `{ cubeMap.width, cubeMap.height, 1 }`,
-* `arrayLayers` has to be 6 - one for each side. Cubemap is an image with 6 different 2D layers.
+* `arrayLayers` has to be 6 - one for each side. A cubemap is an image with 6 different 2D layers.
 
-Full cubemap example can be found in [Sascha Willems' Vulkan examples](https://github.com/SaschaWillems/Vulkan/blob/3c0f3e18cdee7aa67e5e9198b76a24985bb49391/examples/texturecubemap/texturecubemap.cpp#L160) repo. It requires e.g. special `VkImageView` with `imageType=VK_IMAGE_VIEW_TYPE_CUBE`.
+Check the full cubemap example in [Sascha Willems' Vulkan examples](https://github.com/SaschaWillems/Vulkan/blob/3c0f3e18cdee7aa67e5e9198b76a24985bb49391/examples/texturecubemap/texturecubemap.cpp#L160) repository. It requires e.g. special `VkImageView` with `imageType=VK_IMAGE_VIEW_TYPE_CUBE`.
 
 
 > Remember that [VkImageMemoryBarrier2](/blog/vulkan-synchronization/) contains [VkImageSubresourceRange](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageSubresourceRange.html) which also specifies affected layers and mipmaps.
@@ -404,34 +417,34 @@ Full cubemap example can be found in [Sascha Willems' Vulkan examples](https://g
 
 ### Image format and usage
 
-`VkImageCreateInfo's` [format](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkFormat.html) describes format and type of each texel. The format has a following pattern: first, it lists all channels with number of bits (e.g. `R8G8B8A8`), then how the bits are interpreted (so called [numeric format](https://registry.khronos.org/vulkan/specs/1.3/html/vkspec.html#_identification_of_formats) e.g. `SINT` for signed int, `UINT` for unsigned int). Examples:
+`VkImageCreateInfo's` [format](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkFormat.html) describes the format and type of each texel. The enum naming has a certain pattern. First, it lists all channels with the number of bits (e.g. `R8G8B8A8`). Then, how the bits are interpreted. This is a [numeric format](https://registry.khronos.org/vulkan/specs/1.3/html/vkspec.html#_identification_of_formats) e.g. `SINT` for signed int, `UINT` for unsigned int. Examples:
 
 * `VK_FORMAT_R8G8B8A8_UINT`. Has 4 channels, 8 bits per channel. Each byte is Rust's `u8` (0..=255).
 * `VK_FORMAT_R8G8B8_SINT`. Has 3 channels, 8 bits per channel. Each byte is Rust's `i8` (-128..=127).
 * `VK_FORMAT_R8G8_SNORM`. Has 2 channels, 8 bits per channel. Each component is a signed normalized value in the range [-1, 1].
-* `VK_FORMAT_R5G6B5_UNORM_PACK16 `. Has 3 channels, red and blue channels have 5 bits, green has 6 bits (whole texel color information packed into 16 bits).
-* `VK_FORMAT_B8G8R8_SRGB`. Has 3 channels, 8 bits per channel. Each component is an unsigned normalized value in range [0, 1] representing values using sRGB nonlinear encoding.
-* `VK_FORMAT_D16_UNORM_S8_UINT`. It's a depth/stencil format where depth takes 16 bits and stencil 8 bits. In reality, depth/stencil formats in Vulkan [do not need to be stored in the exact number of bits or component ordering incicated by the enum](https://registry.khronos.org/vulkan/specs/1.3/html/vkspec.html#formats-depth-stencil).
-* `VK_FORMAT_D32_SFLOAT`. Depth only format using single `f32`. According to validation layers, NVIDIA does not like it.
+* `VK_FORMAT_R5G6B5_UNORM_PACK16 `. Has 3 channels, red and blue channels have 5 bits, while green has 6 bits. Whole texel color information packed into 16 bits.
+* `VK_FORMAT_B8G8R8_SRGB`. Has 3 channels, 8 bits per channel. Each component is an unsigned normalized value in the range [0, 1] representing values using sRGB nonlinear encoding.
+* `VK_FORMAT_D16_UNORM_S8_UINT`. It's a depth/stencil format where depth takes 16 bits and stencil 8 bits. In reality, depth/stencil formats in Vulkan [do not need to be stored in the exact number of bits or component ordering indicated by the enum](https://registry.khronos.org/vulkan/specs/1.3/html/vkspec.html#formats-depth-stencil).
+* `VK_FORMAT_D32_SFLOAT`. Depth-only format using single `f32`. According to validation layers, NVIDIA does not like it.
 
-[Fixed-point data conversions](https://registry.khronos.org/vulkan/specs/1.3/html/vkspec.html#fundamentals-fixedconv) are described in Vulkan spec. For example, if a component is stored as normalized unsigned 8 bits ("unsigned normalized fixed-point integers") has value 100, then it can be read as float as such: $$f=\frac{100}{2^8-1}~=0.39$$.
+[Fixed-point data conversions](https://registry.khronos.org/vulkan/specs/1.3/html/vkspec.html#fundamentals-fixedconv) are described in Vulkan spec. For example, if a component stored as a normalized unsigned 8 bits ("unsigned normalized fixed-point integers") has a value of 100, then it can be read as float as such: $$f=\frac{100}{2^8-1}~=0.39$$.
 
 There are also other formats like [compressed](https://learn.microsoft.com/en-us/windows/win32/direct3d10/d3d10-graphics-programming-guide-resources-block-compression) `VK_FORMAT_BC1_RGB_UNORM_BLOCK` etc.
 
-Not all formats are supported for all usages. You can query this using [vkGetPhysicalDeviceFormatProperties()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkGetPhysicalDeviceFormatProperties.html). After providing a `VkFormat` you will receive information if it's e.g. usable as a color attachment or a sampled image.
+Not all formats are supported for all usages. You can query this using [vkGetPhysicalDeviceFormatProperties()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkGetPhysicalDeviceFormatProperties.html). After providing a `VkFormat` you will receive information if it's e.g. usable as a color attachment or sampled image.
 
 
 
 ### Image tiling and usage
 
-The naive way of storing texel data is one row after another (row major order). While simple to implement, it's also very inefficient for almost any real use case. If you needed to blur 2x2 quad, it would be very hard to manage cache. In Vulkan you an set this arrangement using `VK_IMAGE_TILING_LINEAR`. I can come up with only 2 reasons to use it:
+The naive way of storing texel data is one row after another (row-major order). While simple to implement, it's also inefficient for almost any real use case. If you needed to blur a 2x2 quad, it would be hard to manage the cache. In Vulkan, you set this arrangement using `VK_IMAGE_TILING_LINEAR`. I can come up with only 2 reasons to use it:
 
-* you are transfering data from or to CPU, where linear tiling is offered by any image library,
-* you have yet to implement better solution.
+* you are transferring data from or to CPU, where linear tiling is offered by any image library,
+* you have yet to implement a better solution.
  
-In practice, images with `VK_IMAGE_TILING_LINEAR` will still work as normal. There are some restrictions. It has to be 2D image, with 1 miplevel, 1 layer, 1 sample and format has to be color. Vulkan specification restricts usages to `VK_IMAGE_USAGE_TRANSFER_SRC_BIT` and `VK_IMAGE_USAGE_TRANSFER_DST_BIT`, but I had not major problems when I used linear tiling as a quick, **temporary** solution. This may vary depending on IHV and driver version.
+In practice, images with `VK_IMAGE_TILING_LINEAR` will still work as normal. There are some restrictions. It has to be a 2D image, with 1 miplevel, 1 layer, 1 sample, and the format has to be color. Vulkan specification restricts usages to `VK_IMAGE_USAGE_TRANSFER_SRC_BIT` and `VK_IMAGE_USAGE_TRANSFER_DST_BIT`. Yet I had no major problems when I used linear tiling as a quick, **temporary** solution for other usages. This may vary depending on the IHV and driver version.
 
-The only alternative is `VK_IMAGE_TILING_OPTIMAL`. With this option, the actual in-memory representation is driver and usage dependent. You will not be able to directly transfer data from CPU to such image. `VK_IMAGE_TILING_OPTIMAL` **should** be used for **any** image in the app. The representation may depend on predeclared [usage](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageUsageFlagBits.html) e.g.
+The only alternative is `VK_IMAGE_TILING_OPTIMAL`. With this option, the actual in-memory representation is driver and usage-dependent. You will not be able to copy data from the CPU to such an image. `VK_IMAGE_TILING_OPTIMAL` **should** be used for **every** `VkImage` in the app. The in-memory representation may depend on predeclared [usage](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageUsageFlagBits.html) e.g.
 
 * `VK_IMAGE_USAGE_SAMPLED_BIT` - for sampling in shaders,
 * `VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT` - color attachment,
@@ -441,7 +454,7 @@ The only alternative is `VK_IMAGE_TILING_OPTIMAL`. With this option, the actual 
   
 There are a few other possible [usages](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageUsageFlagBits.html). This field is a mask, you can `OR` different values. Missing `usage` flags will be communicated by Vulkan validation layers.
 
-You may ask, if we cannot write from CPU to an image with `VK_IMAGE_TILING_OPTIMAL` tiling, how are we to upload 3D object's textures? The answer is same as for `VkBuffers` - by using temporary staging image that has `VK_IMAGE_TILING_LINEAR`. It's also common to use staging **buffer** instead.
+You may ask, if we cannot write from CPU to an image with `VK_IMAGE_TILING_OPTIMAL` tiling, how are we to upload 3D object's textures? The answer is the same as for `VkBuffers`. Use a temporary staging image that has `VK_IMAGE_TILING_LINEAR`. It's also common to use a staging buffer instead.
 
 
 ```rust
@@ -508,49 +521,51 @@ You may ask, if we cannot write from CPU to an image with `VK_IMAGE_TILING_OPTIM
   }
 ```
 
-A bit verbose, but you only have to write it once. If you compare this with [code for uploading buffers](#), you may notice it's very similar. Only one concept left to explore - image layouts.
+A bit verbose, but you only have to write it once. If you compare this with [code for uploading buffers](#), you may notice it's similar. Only one concept left to explore - image layouts.
 
 
 
 ### Image layouts
 
-When explaining tiling, I said that driver may choose best memory representation given usages. This may also happen on-the-fly. It's up to driver to decide to (de-)compress or rearange data. For example, certain layouts may result in less bandwith pressure (familar term for anyone dealing with deferred renderer). Before each image usage we should do `image layout transition` to [appropriate layout](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageLayout.html) e.g.:
+When explaining tiling, I said that the driver may choose the best memory representation given usages. This may also happen on the fly. It's up to the driver to decide to (de-)compress or rearrange data. For example, certain layouts may result in less bandwidth pressure. Before each image usage, we should do an `image layout transition` to the [appropriate layout](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageLayout.html) e.g.:
 
 * `VK_IMAGE_LAYOUT_GENERAL`. Supports all types of device access. Use it if you do not want to deal with image layouts. [Sascha Willems on stackoverflow](https://stackoverflow.com/a/37033604).
-* `VK_IMAGE_LAYOUT_PREINITIALIZED`. One the 2 allowed initial value for images (the other is `VK_IMAGE_LAYOUT_UNDEFINED`). This will be communicated by Vulkan validation layers.
-* `VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL`/`VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL`. We have already used them in previous section.
+* `VK_IMAGE_LAYOUT_PREINITIALIZED`. One of the 2 allowed initial values for images (the other is `VK_IMAGE_LAYOUT_UNDEFINED`). This will be communicated by Vulkan validation layers.
+* `VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL`/`VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL`. We have already used them in the previous section.
 * `VK_IMAGE_LAYOUT_PRESENT_SRC_KHR`. Required for swapchain images. If you only write to swapchain images (and never read them), you can do the layout transition once, at the start of the app.
-* `VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL`. Used when sampling color image in shader. This includes both images loaded from hard drive and ones written to by previous render passess (when the image was used as framebuffer attachment).
-* `VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL`. Sampling depth/stencil image in shader. You can also use `VkImageView` to select if you want to sample either depth or stencil. [VK_KHR_separate_depth_stencil_layouts](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_separate_depth_stencil_layouts.html) (promoted to core Vulkan 1.2) explains the intentions. Usually depth buffer is not linear so the values may depend on the perspective projection matrix. 
-* `VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL`. Sampling depth image in shader. Usually depth buffer is not linear so the values may depend on the perspective projection matrix.
-* `VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL`. Writing to as a color attachment. Image is part of a framebuffer.
-* `VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL`. Writing to as a depth/stencil attachment (so format is e.g. `VK_FORMAT_D16_UNORM_S8_UINT`). Image is part of a framebuffer. Used even if we do not write depth/stencil, just use it for depth/stencil test.
-* `VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL`. Writing to as a **depth only** attachment (so format is e.g. `VK_FORMAT_D32_SFLOAT`). Image is part of a framebuffer. Used even if we do not write depth/stencil, just use it for depth test.
+* `VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL`. Used when sampling color images in the shader. This includes both images loaded from the hard drive and ones written to by the previous render passes (when the image was used as a framebuffer attachment).
+* `VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL`. Sampling depth/stencil image in shader. You can also use `VkImageView` to select if you want to sample either depth or stencil. [VK_KHR_separate_depth_stencil_layouts](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_separate_depth_stencil_layouts.html) (promoted to core Vulkan 1.2) explains the intentions. Usually, the depth buffer is not linear. The values may depend on the perspective projection matrix. 
+* `VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL`. Sampling depth image in shader. Usually, the depth buffer is not linear. The values may depend on the perspective projection matrix.
+* `VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL`. Writing as a color attachment. The image is part of a framebuffer.
+* `VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL`. Writing as a depth/stencil attachment (so the format is e.g. `VK_FORMAT_D16_UNORM_S8_UINT`). The image is part of a framebuffer. This layout is also required if an image is used only for depth/stencil test (no write).
+* `VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL`. Writing as a **depth-only** attachment (e.g. `VK_FORMAT_D32_SFLOAT`). The image is part of a framebuffer. This layout is also required if an image is used only for depth tests (no write).
+* `VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL`. Can replace any of `VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL`, `VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL`, `VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL`.
+* `VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL`. Can replace any of `VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL`, `VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL`, `VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL`.
 
-There are many other layouts that are used not as often. There are also `VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL` (can replace any of `VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL`, `VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL`, `VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL`) and `VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL` (can replace any of `VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL`, `VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL`, `VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL`).
+There are many other niche layouts.
 
-To do the `image layout transition` you need to submit [vkCmdPipelineBarrier2](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdPipelineBarrier2KHR.html) command with appropriate [VkImageMemoryBarrier2](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageMemoryBarrier2.html) in dependencies. Now it's a good time for a [quick refresher on Vulkan synchronization](/blog/vulkan-synchronization/) as you need to specify:
+To do the `image layout transition` you need to submit the [vkCmdPipelineBarrier2()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdPipelineBarrier2KHR.html) command with the appropriate [VkImageMemoryBarrier2](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageMemoryBarrier2.html). Now it's a good time for a [quick refresher on Vulkan synchronization](/blog/vulkan-synchronization/) as you need to specify:
 
 * `srcStageMask`, `srcAccessMask` - previous access scope,
 * `dstStageMask`, `dstAccessMask` - next access scope,
 * `oldLayout`, `newLayout` - layout change,
-* `image` and the [affected region](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageSubresourceRange.html) - e.g. mipmaps, layers etc.,
+* `image` and the [affected region](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageSubresourceRange.html) - e.g. mipmaps, layers, etc.,
 * queue family transfer - or set both `srcQueueFamilyIndex` and `dstQueueFamilyIndex` to `vk::QUEUE_FAMILY_IGNORED`.
 
-As you can see, doing `image layout transition` requires global frame knowledge. Each pass has to know not only how it **will** use certain image, but also what **was** the last access. This may be tricky if you wanted to do layout transition as part of [render pass subpass](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkRenderPassCreateInfo.html). Of course, if you do not care about previous content, you can always use `VK_IMAGE_LAYOUT_UNDEFINED`. This may [prohibit certain optimizations](https://arm-software.github.io/vulkan_best_practice_for_mobile_developers/samples/performance/layout_transitions/layout_transitions_tutorial.html). Another obvious solution is to use [render graphs](https://www.gdcvault.com/play/1024612/FrameGraph-Extensible-Rendering-Architecture-in) but that affects **entire** renderer architecture. 
+As you can see, doing `image layout transition` requires global frame knowledge. Each pass has to know not only how **it** will use a certain image, but also what **was** the last access. This may be tricky if you want to do the layout transition as a part of the [render pass subpass](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkRenderPassCreateInfo.html). If you do not care about previous content, you can always use `VK_IMAGE_LAYOUT_UNDEFINED`. While prohibited by Vulkan specification(!), even [ARM lists this as a potential solution](https://arm-software.github.io/vulkan_best_practice_for_mobile_developers/samples/performance/layout_transitions/layout_transitions_tutorial.html). Another solution is to use [render graphs](https://www.gdcvault.com/play/1024612/FrameGraph-Extensible-Rendering-Architecture-in), but that affects the **entire** renderer architecture. 
 
-Let's look at 4 most common use cases for a **color** image that is either **used as render target** or **sampled in a fragment shader** (in a different pass).
+Let's look at the 4 most common use cases for a **color** image that is either **used as a render target** or **sampled in a fragment shader** (in a different pass).
 
-* `read-after-read`. Both passes sample the image. The first pass already did the layout transition, so for 2nd pass it's a noop.
-* `write-after-read`. The first pass samples the image and 2nd renders to it. If you refer to [my synchronization article](/blog/vulkan-synchronization/) you notice that it's an `execution dependency` (`VkAccessFlagBits2` are optional). Required values for `VkImageMemoryBarrier2`:
+* `read-after-read`. Both passes sample the image. The first pass already did the layout transition, so for the 2nd pass, it's a noop.
+* `write-after-read`. The first pass samples the image and the 2nd renders to it. If you refer to [my synchronization article](/blog/vulkan-synchronization/), you notice that it's an `execution dependency` (`VkAccessFlagBits2` are optional). Required values for `VkImageMemoryBarrier2`:
     * previous access scope: `VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT`,
     * next access scope: `VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT`,
     * layout change: `VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL` -> `VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL`,
-* `read-after-write`. The first pass renders to image. The second pass samples from it. This is a `memory dependency`. Required values for `VkImageMemoryBarrier2`:
+* `read-after-write`. The first pass renders to the image. The second pass samples from it. This is a `memory dependency`. Required values for `VkImageMemoryBarrier2`:
     * previous access scope: (`VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT`, `VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT`),
     * next access scope (for fragment shader): (`VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT`, `VK_ACCESS_2_SHADER_SAMPLED_READ_BIT`),
     * layout change: `VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL` -> `VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL`,
-* `write-after-write`. Both the first and second pass render to same image. This is a `memory dependency`. While there is no need to change image layout, we need to wait for first write to finish, before we override it. Required values for `VkImageMemoryBarrier2`:
+* `write-after-write`. Both the first and second pass render to the same image. This is a `memory dependency`. While there is no need to change the image layout, we need to wait for the first write to finish before we override it. Required values for `VkImageMemoryBarrier2`:
     * both access scopes: (`VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT`, `VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT`),
     * layout change: both are `VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL`,
 
@@ -558,7 +573,7 @@ Let's look at 4 most common use cases for a **color** image that is either **use
 > If this is overwhelming, you can always use one of the [libraries that simplify synchronization](/blog/vulkan-synchronization/). E.g. [simple_vulkan_synchronization](https://github.com/Tobski/simple_vulkan_synchronization) or [vk-sync-rs](https://github.com/h3r2tic/vk-sync-rs).
 
 
-Now we know what image layouts are. Yet if we were to create an image right now, we would receive following validation layer error:
+Now we know what image layouts are. Yet if we were to create an image right now, we would receive the following validation layer error:
 
 <Figure>
   <BlogImage
@@ -573,13 +588,13 @@ Not all values are allowed in `VkImageCreateInfo.initialLayout`.
 </Figure>
 
 
-Turns out, not all layouts can be set in `VkImageCreateInfo.initialLayout`. When you create an image you have to [choose between VK_IMAGE_LAYOUT_UNDEFINED or VK_IMAGE_LAYOUT_PREINITIALIZED](https://vulkan.lunarg.com/doc/view/1.3.261.1/windows/1.3-extensions/vkspec.html#VUID-VkImageCreateInfo-initialLayout-00993). In [VkImageLayout docs](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageLayout.html) look for magical statement: "This layout can be used as the initialLayout member of VkImageCreateInfo.". You can set different layout right after the image is created. 
+Turns out, not all layouts can be set in `VkImageCreateInfo.initialLayout`. When you create an image you have to [choose between VK_IMAGE_LAYOUT_UNDEFINED or VK_IMAGE_LAYOUT_PREINITIALIZED](https://vulkan.lunarg.com/doc/view/1.3.261.1/windows/1.3-extensions/vkspec.html#VUID-VkImageCreateInfo-initialLayout-00993). In [VkImageLayout docs](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageLayout.html) look for a magical statement: "This layout can be used as the initialLayout member of VkImageCreateInfo.". You can set a different layout right after the image is created. 
 
 
 
 ### Finishing image allocation
 
-Now that we understand more about Vulkan images, let's create a run-of-the-mill image that is suitable as RGBA color attachment that can also be sampled in shaders:
+Now that we understand more about Vulkan `VkImage`, let's create a run-of-the-mill image that is suitable as an RGBA color attachment that can also be sampled in shaders:
 
 ```rust
 let create_info = vk::ImageCreateInfo::builder()
@@ -609,7 +624,7 @@ let (image, allocation) = unsafe {
 
 We did not need to set any `flags` (default `0` in Ash, you should set it manually in C/C++) or `queueFamilyIndexCount` (ignored anyway due to `vk::SharingMode::EXCLUSIVE`).
 
-After creating the image, you should also consider setting the **actual** initial layout. `VK_IMAGE_LAYOUT_UNDEFINED` or `VK_IMAGE_LAYOUT_PREINITIALIZED` are used only during initialization and can be quite awkward to handle in the rest of the code. You can use (by now very familiar) `with_setup_cb` pattern for this. This approach can also be found in Sascha Willems's [VulkanTexture.cpp](https://github.com/SaschaWillems/Vulkan/blob/a467d941599a2cef5bd0eff696999bca8d75ee23/base/VulkanTexture.cpp#L204).
+After creating an image, you should also consider setting the **actual** initial layout. `VK_IMAGE_LAYOUT_UNDEFINED` or `VK_IMAGE_LAYOUT_PREINITIALIZED` are used only during initialization. This can be quite awkward to handle in the rest of the code. Use the `with_setup_cb` pattern to fix this. Such a solution can also be found in Sascha Willems's [VulkanTexture.cpp](https://github.com/SaschaWillems/Vulkan/blob/a467d941599a2cef5bd0eff696999bca8d75ee23/base/VulkanTexture.cpp#L204).
 
 
 
@@ -617,59 +632,63 @@ After creating the image, you should also consider setting the **actual** initia
 ### Image views
 
 
-In Vulkan, you will rarely refer to raw `VkImage`. Instead, `VkImageView` is much more common. It adds another layer of semantic on top of the `VkImage`. E.g. it allows to interpret the data as `VK_IMAGE_VIEW_TYPE_CUBE` or `VK_IMAGE_VIEW_TYPE_2D_ARRAY`. You might remember similar distinction for [GLSL samplers](https://www.khronos.org/opengl/wiki/Sampler_(GLSL)) with `samplerCube`, `sampler2DArray` etc. Call [vkCreateImageView()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateImageView.html) with filled `VkImageViewCreateInfo`:
+In Vulkan, you will rarely refer to raw `VkImage`. `VkImageView` is much more common instead. It adds another layer of semantics on top of the `VkImage`. For e.g. it allows to interpret the data as `VK_IMAGE_VIEW_TYPE_CUBE` or `VK_IMAGE_VIEW_TYPE_2D_ARRAY`. You might remember a similar distinction for [GLSL samplers](https://www.khronos.org/opengl/wiki/Sampler_(GLSL)) with `samplerCube`, `sampler2DArray`, etc. Call [vkCreateImageView()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateImageView.html) with filled `VkImageViewCreateInfo`:
 
 
 * `VkImage image`. Base image.
-* `VkFormat format`. Same as for base image
-* `VkImageViewType viewType`. [Interpret](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageViewType.html) `VkImage` as e.g. cubemap or an array of 2D images (similar distinction is required in GLSL shaders).
-* `VkImageSubresourceRange subresourceRange`. [Select](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageSubresourceRange.html) mipmaps and layers. `VkImageAspectFlags` is a mask so it's possible to `OR` many values. This is required for depth/stencil [attachment in framebuffer](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkFramebufferCreateInfo.html). On the other hand, if you want to sample only depth or only stencil from shader code, you can create an image view from the same image, but with only `VK_IMAGE_ASPECT_DEPTH_BIT` or only `VK_IMAGE_ASPECT_STENCIL_BIT`.
+* `VkFormat format`. Same as for the base image.
+* `VkImageViewType viewType`. [Interpret](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageViewType.html) `VkImage` as e.g. cubemap or an array of 2D images. A similar distinction is required in GLSL shaders.
+* `VkImageSubresourceRange subresourceRange`. [Select](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageSubresourceRange.html) mipmaps and layers. `VkImageAspectFlags` is a mask so it's possible to `OR` many values. Required for depth/stencil [attachment in framebuffer](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkFramebufferCreateInfo.html) (`VK_IMAGE_ASPECT_DEPTH_BIT  | VK_IMAGE_ASPECT_STENCIL_BIT`). If you want to sample only depth or only stencil from shader code, create a separate image view from the same image. This time, with only `VK_IMAGE_ASPECT_DEPTH_BIT` or only `VK_IMAGE_ASPECT_STENCIL_BIT`.
 * `VkImageViewCreateFlags flags`. [Ignore](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageViewCreateFlagBits.html).
-* `VkComponentMapping components`. [Channel swizzling/replacing](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkComponentMapping.html). Usually just set to `VK_COMPONENT_SWIZZLE_IDENTITY` for each channel. Since identity has value of `0`, in Rust we can just skip this field thanks to Ash's [Default](https://rust-unofficial.github.io/patterns/idioms/default.html). Not so much in C/C++.
+* `VkComponentMapping components`. [Channel swizzling/replacing](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkComponentMapping.html). Usually set to `VK_COMPONENT_SWIZZLE_IDENTITY` for each channel. Since identity has a value of `0`, in Rust we can skip this field thanks to Ash's [Default](https://rust-unofficial.github.io/patterns/idioms/default.html). Not so much in C/C++.
 
-`VkImageViews` are used (among other things) during:
+Use `VkImageViews` during (among other things):
 
-* [frambuffer creation](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkFramebufferCreateInfo.html),
-* assigning values to sampler uniforms. In [VkWriteDescriptorSet](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkWriteDescriptorSet.html) there is [pImageInfo](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkDescriptorImageInfo.html) field.
+* [framebuffer creation](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkFramebufferCreateInfo.html),
+* assigning values to sampler uniforms. There is a [pImageInfo](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkDescriptorImageInfo.html) field in [VkWriteDescriptorSet](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkWriteDescriptorSet.html).
 
 
 
 
 ## Tracking memory leaks
 
-If you try to [destroy](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkDestroyInstance.html) Vulkan instance before freeing all objects, you will receive VMA error.
+If you try to exit the Vulkan app before freeing all objects, you will receive a VMA error.
 
 
 <Figure>
   <BlogImage
     src="./memory_leak.jpg"
-    alt="VMA printed error: 'Some allocations were not freed before destruction of this memory block!'. Below vkDestroyDevice() error about not destroyed VK_OBJECT_TYPE_SAMPLER."
+    alt="VMA printed error: 'Some allocations were not freed before destruction of this memory block!'. Below vkDestroyDevice() error about not destroying VK_OBJECT_TYPE_SAMPLER."
   />
   <Figcaption>
 
-Trying to [destroy Vulkan Memory Allocator](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__init.html#gaa8d164061c88f22fb1fd3c8f3534bc1d) before freeing the allocated memory. Calling `vkDestroyDevice()` before calling `vkDestroy*()` on Vulkan objects will also print an error.
+Trying to [destroy the Vulkan Memory Allocator](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__init.html#gaa8d164061c88f22fb1fd3c8f3534bc1d) before freeing the allocated memory. Calling `vkDestroyDevice()` before calling `vkDestroy*()` on Vulkan objects will also print an error.
 
   </Figcaption>
 </Figure>
 
-There are quite a few ways to handle down memory leaks:
+There are quite a few ways to handle memory leaks:
 
-* Have a list of all allocated `VkBuffers` and `VkImages`. When app closes, deallocate all objects in the list. Objects can be grouped by lifetime e.g. always present or only for a single level. This is similar to C++ allocators.
-* Track and deallocate all objects by hand. Very granular. I assume you either use C++ destructors-like or Rust's Drop system. While this approach is tedious, it's also very granular.
-* Some 3rd party tools allow you to list all created objects. You want to trigger the capture after you deallocated all objects (at least ones you know of), but before `vkDestroyDevice()`/`vmaDestroyAllocator()`. This easily done if you do this from the code through tool's SDK.
-* [VK_EXT_memory_budget](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_EXT_memory_budget.html) device extension to query current memory statistics.
-  * VMA also has similiar functionality [already build in](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/statistics.html). `vmaBuildStatsString()` produces JSON dump.
+* Have a list of all allocated `VkBuffers` and `VkImages`. When the app closes, deallocate all objects in the list. Group objects by the lifetime e.g. always persistent or ones just for a single level. A similar approach to C++ allocators.
+* Track and deallocate all objects by hand when needed. While this approach is tedious, it's also granular. VMA offers defragmentation to support this solution.
+* Some 3rd party tools allow you to list all created objects. You want to trigger the capture after you have deallocated all objects (at least ones you know of), but before calling `vkDestroyDevice()`/`vmaDestroyAllocator()`. This can be done from the code through the tool's SDK.
+* Use [VK_EXT_memory_budget](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_EXT_memory_budget.html) device extension to query current memory statistics.
+  * VMA also has similar functionality [already built in](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/statistics.html). `vmaBuildStatsString()` produces JSON dump.
 * (VMA) Use `VmaAllocatorCreateInfo.pDeviceMemoryCallbacks` and log allocation/deallocation pairs.
-* (VMA) Use `VmaAllocationInfo.pName`/`vmaSetAllocationName()`  to assign a custom data or name to each VMA allocation. Read more in VMA docs: ["Allocation names and user data"](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/allocation_annotation.html).
+* (VMA) Use `VmaAllocationInfo.pName`/`vmaSetAllocationName()` to assign custom data or name to each VMA allocation. Read more in VMA docs: ["Allocation names and user data"](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/allocation_annotation.html).
 
 
-All Vulkan objects that were created with `vkCreate*()` have a corresponding `vkDestroy*()`. In Rust/ash this is often part of [Drop](https://doc.rust-lang.org/reference/destructors.html) trait. Let say you have a struct (often called `Device` or `VkContext`) that holds `vma::Allocator`, `ash::Device`, `ash::Instance`, `ash::Entry`. The `Drop()` functions will be called in [order the fields are defined](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/vk_ctx/vk_ctx.rs#L16). Vulkan messages are much cleared if you [assign custom labels](/blog/debugging-vulkan-using-renderdoc/) to objects.
+All Vulkan objects that are created with `vkCreate*()` have a corresponding `vkDestroy*()`. In Rust/ash, this is often part of the [Drop](https://doc.rust-lang.org/reference/destructors.html) trait. Let's say you have a struct (often called `Device` or `VkContext`) that holds `vma::Allocator`, `ash::Device`, `ash::Instance`, `ash::Entry`. The `Drop()` functions are in [order the fields are defined](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/vk_ctx/vk_ctx.rs#L16).
+
+> Vulkan messages are easier to understand if you [assign custom labels](/blog/debugging-vulkan-using-renderdoc/) to objects.
 
 
 
 ## Summary
 
-`TODO`
+After [Vulkan initialization](/blog/vulkan-initialization/) and [Vulkan synchronization](/blog/vulkan-synchronization/), we have finally started writing the application code. No longer do we follow the API or deal with theoretical concepts. We have seen how to allocate resources in high-performance memory regions. How to transfer data from the CPU efficiently. To achieve this, we used either temporary buffers (transfer once) or mapped memory (transfer often). From now on, we will avoid `vec3` in uniform buffers. For `VkImage`, we checked how to deal with different dimensions and sizes. `VK_FORMAT_*` enums no longer hold any secrets. We optimized `VkImages` according to the usage. Not only based on the statically declared `VK_IMAGE_USAGE_*`, but also layout transitions before every use. Finally, we investigated `VkImageViews` and finished with a few tips on tracking memory leaks.
+
+In the [Vulkan frame](#), we will finish this series of articles. Running compute shaders and graphic passes are the bread and butter of graphic programming. Knowing Vulkan synchronization, with `VkBuffers` and `VkImages` at hand, we are finally ready to draw some triangles.
 
 
 ## References

@@ -3,7 +3,7 @@ title: "Debugging Vulkan using RenderDoc"
 permalink: "/blog/debugging-vulkan-using-renderdoc/"
 excerpt: "Learn how to debug Vulkan using RenderDoc. Add labels to objects and passess. Debug GLSL code as if it was run on CPU."
 date: 2023-12-09 12:00:00
-image: "/sintel_debug.jpg"
+image: "./sintel_debug.jpg"
 draft: false
 ---
 

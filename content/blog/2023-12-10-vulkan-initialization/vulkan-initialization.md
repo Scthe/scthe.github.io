@@ -1,7 +1,7 @@
 ---
 title: "Vulkan initialization"
 permalink: "/blog/vulkan-initialization/"
-excerpt: "Walkthrough of Vulkan initialization steps. Create VkInstance and VkSurfaceKHR, pick GPU device, prepare swapchain and more."
+excerpt: "Walkthrough of Vulkan initialization steps. Create VkInstance and VkSurfaceKHR, pick the GPU device, prepare the swapchain, and more."
 date: 2023-12-10 12:00:00
 image: "./alpha_composite_example.jpg"
 draft: false
@@ -10,6 +10,7 @@ draft: false
 
 Vulkan is infamous for being both complex and verbose. This is the first article in the series meant to explain all the complexity. Ideal readers should at least skim the [Vulkan-tutorial](https://vulkan-tutorial.com/) beforehand. I'm not going to provide snippets to copy and paste to assemble the whole program. Instead, we will walk through every API function that we call. We will discuss what is its purpose, and what every parameter represents. I hope it will allow you to make more conscious choices when writing the code.
 
+<CrossPostLink permalink="vulkan-synchronization" paragraph="Offscreen framebufers"> some text!</CrossPostLink>
 
 > I'm using Rust and [Ash](https://github.com/ash-rs/ash), but I assume C++ developers will not have much problem following the code. `VK_FORMAT_B8G8R8A8_UNORM` becomes `vk::Format::B8G8R8A8_UNORM`. All functions are `snake_case` and are usually invoked on an `ash::Device` object instead of being global.
 
@@ -274,7 +275,7 @@ Color space decides how the display engine will [*interpret* the values](https:/
   />
   <Figcaption>
 
-Images for `B8G8R8A8_UNORM` with gamma 2.2 and `B8G8R8A8_SRGB` without gamma correction are similar. `*_SRGB` format automatically applies gamma correction. The image with `B8G8R8A8_SRGB` and gamma correction is very bright. The gamma correction is applied twice. The image for `B8G8R8A8_UNORM` without gamma correction is dark. It shows raw linear-space values.
+Images for `B8G8R8A8_UNORM` with gamma 2.2 and `B8G8R8A8_SRGB` without gamma correction are similar. `*_SRGB` format automatically applies gamma correction. The image with `B8G8R8A8_SRGB` and gamma correction is bright. The gamma correction is applied twice. The image for `B8G8R8A8_UNORM` without gamma correction is dark. It shows raw linear-space values.
 
   </Figcaption>
 </Figure>

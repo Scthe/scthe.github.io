@@ -3,7 +3,7 @@ title: "Math behind (convolutional) neural networks"
 permalink: "/blog/math-behind-neural-networks/"
 excerpt: "My notes containing neural network backpropagation equations. From chain rule to cost function, gradient descent and deltas. Complete with Convolutional Neural Networks as used for images."
 date: 2015-08-30 12:00:00
-image: "/network.png"
+image: "./network.png"
 draft: false
 ---
 

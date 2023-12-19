@@ -3,7 +3,7 @@ title: "Declarative OpenGL state management"
 permalink: "/blog/opengl-state-management/"
 excerpt: "Some parts of OpenGL API reach as far back as the year 1992 and it shows. Let's look at how to manage basic OpenGL state in a more stateless way."
 date: 2021-11-11 12:00:00
-image: "/opengl-state-management.jpg"
+image: "./opengl-state-management.jpg"
 draft: false
 ---
 

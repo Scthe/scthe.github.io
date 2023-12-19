@@ -4,7 +4,13 @@
 
 1. `yarn install`
 1. `yarn start`
-1. Accessible at: [http://localhost:8080](), [http://localhost:8080/\_\_\_graphql]()
+1. Accessible at: [http://localhost:8080](http://localhost:8080), [http://localhost:8080/\_\_\_graphql](http://localhost:8080/___graphql)
+
+### Problems with ???
+
+- `yarn gatsby clean`
+
+I hate Gatsby.
 
 ### Problems with fast-refresh
 
@@ -44,3 +50,9 @@ Vercel's Gatsby integration throws errors on git push hook: `Field "image" of ty
    1. `yarn install`
 4. `yarn dlx @yarnpkg/sdks vscode` - one time only
 5. `yarn start` - dev server
+
+## Misc
+
+### Why use `useStaticQuery()` everywhere? Why not query for single object using variables?
+
+`useStaticQuery()` can be used from everywhere. Other types of queries have some constraints.

@@ -6,8 +6,7 @@ import PostList from '../components/postList';
 import PageTitle from '../components/pageTitle';
 import { useMode } from '../hooks/useMode';
 import useSiteMeta from '../hooks/useSiteMeta';
-import { parseDate } from '../utils';
-import filterDraftPosts from '../utils/filterDraftPosts';
+import { filterDraftPostsTS, getAbsolutePath, parseDate } from '../utils';
 
 type DataProps = GatsbyTypes.BlogIndexQuery;
 
@@ -18,7 +17,7 @@ const BlogIndex: React.FC<PageProps<DataProps>> = ({ data }) => {
 
   const mode = useMode();
   const posts = data.allMdx.nodes;
-  const posts2 = filterDraftPosts(posts, mode !== 'production');
+  const posts2 = filterDraftPostsTS(posts, mode !== 'production');
 
   return (
     <Layout
@@ -34,6 +33,7 @@ const BlogIndex: React.FC<PageProps<DataProps>> = ({ data }) => {
           title: post.frontmatter!.title!,
           excerpt: post.frontmatter!.excerpt!,
           permalink: post.frontmatter!.permalink!,
+          absolutePath: getAbsolutePath(post!.parent) || '',
         }))}
       />
     </Layout>
@@ -52,6 +52,11 @@ export const pageQuery = graphql`
           excerpt
           isoDate: date(formatString: "YYYY-MM-DDTHH:mm:ssZ")
           draft
+        }
+        parent {
+          ... on File {
+            absolutePath
+          }
         }
       }
     }

@@ -38,13 +38,13 @@ export default function useGetBlogPost(): ReturnType {
   const node = allMdx.nodes.find((e) => e.id === id);
 
   if (node == null) {
-    const allImages = allMdx.nodes.map((e) => ({
+    const allPosts = allMdx.nodes.map((e) => ({
       id: e.id,
       title: e.frontmatter?.title,
     }));
-    console.error('Available blog posts:', allImages);
+    console.warn('Available blog posts:', allPosts);
     throw new Error(`useGetBlogPost could not find blog post id='${id}'`);
   }
 
-  return node as any;
+  return node;
 }

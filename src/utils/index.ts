@@ -1,5 +1,6 @@
 import { formatISO, format, parseISO } from 'date-fns';
 import { useMode } from '../hooks/useMode';
+import filterDraftPosts from './filterDraftPosts';
 
 export type ArrayItemType<T extends readonly unknown[]> =
   T extends readonly (infer R)[] ? R : never;
@@ -63,6 +64,17 @@ export const getRelativeDirectory = (
 export const maybeNull2Undefined = <T>(x: T | null): T | undefined => {
   return x != null ? x : undefined;
 };
+
+type DraftablePostFm = { readonly draft: boolean | null };
+type DraftablePost = { readonly frontmatter: DraftablePostFm | null };
+
+/** Typesafe `filterDraftPosts()` */
+export function filterDraftPostsTS<T extends DraftablePost>(
+  a0: readonly T[],
+  a1: boolean,
+): T[] {
+  return filterDraftPosts(a0, a1);
+}
 
 /// DATES
 

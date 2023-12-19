@@ -36,12 +36,3 @@
     box-shadow: 0 4px 8px 4px var(--shadow-content);
   }
 }
-
-.footer {
-  @extend %post-margins;
-  text-align: center;
-}
-
-.footerCopyright {
-  font-size: 0.75em;
-}

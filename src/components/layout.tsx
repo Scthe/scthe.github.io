@@ -12,6 +12,7 @@ import '../styles/normalize.module.css';
 import '../styles/variables.module.scss';
 import '../styles/global.module.scss';
 import '../styles/fonts.module.css';
+import Footer from './footer';
 
 type Props = React.PropsWithChildren<{
   title: string;
@@ -30,13 +31,17 @@ const Layout: React.FC<Props> = ({
   children,
 }) => {
   const siteMeta = useSiteMeta();
+
+  // canonicalUrl
   canonicalUrl = ensureSufix(
     joinPaths(siteMeta.siteUrl || '', canonicalUrl),
     '/',
   );
-  title = title.includes(siteMeta.title || '')
-    ? title
-    : `${title} - ${siteMeta.title || ''}`;
+
+  // title
+  title = ensureTitleHasSiteName(title, siteMeta.title);
+
+  // image
   const imageBase = image || siteMeta.defaultImage!;
   const imagePublicUrl = useGetFile(imageBase).publicURL!;
   image = joinPaths(siteMeta.siteUrl || '', imagePublicUrl);
@@ -81,15 +86,17 @@ const Layout: React.FC<Props> = ({
         <div className={styles.contentInner}>{children}</div>
       </main>
 
-      <footer className={styles.footer}>
-        <div>Thanks for reading!</div>
-        <div className={styles.footerCopyright}>
-          Content and illustrations © 2021 Marcin Matuszczyk. All Rights
-          Reserved.
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 };
 
 export default Layout;
+
+function ensureTitleHasSiteName(
+  title: string,
+  siteName: string | null,
+): string {
+  siteName = siteName || '';
+  return title.includes(siteName) ? title : `${title} - ${siteName}`;
+}

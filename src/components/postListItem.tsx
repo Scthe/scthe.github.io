@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Link } from 'gatsby';
 
+import { useMode } from '../hooks/useMode';
 import Date from './date';
 import * as styles from './postListItem.module.scss';
 
@@ -9,6 +10,7 @@ export interface PostListItemProps {
   date: Date;
   permalink: string;
   excerpt: string;
+  absolutePath: string;
 }
 
 const PostListItem: React.FC<PostListItemProps> = ({
@@ -16,7 +18,14 @@ const PostListItem: React.FC<PostListItemProps> = ({
   date,
   permalink,
   excerpt,
+  absolutePath,
 }) => {
+  const mode = useMode();
+  const isValid = title && date;
+  if (mode === 'development' && !isValid) {
+    console.warn(`Probably invalid post file: '${absolutePath}'`);
+  }
+
   return (
     <article className={styles.postItem} itemType="http://schema.org/Article">
       <header>

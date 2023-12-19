@@ -40,7 +40,7 @@ function getHeadingText(node: any): string {
 }
 
 /** https://github.com/bryanbraun/anchorjs/blob/master/anchor.js#L239 */
-function urlify(children: any) {
+export function urlify(children: any) {
   const text = getHeadingText(children);
   return convert(text);
 }

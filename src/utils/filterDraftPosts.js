@@ -1,8 +1,9 @@
 /**
  * @template { readonly draft: boolean | null } Frontmatter
- * @param {readonly { readonly frontmatter: Frontmatter | null }[]} allPosts
+ * @template { readonly frontmatter: Frontmatter | null } Post
+ * @param {readonly Post[]} allPosts
  * @param {boolean} includeDrafts
- * @return {T[]}
+ * @return {Post[]}
  */
 function filterDraftPosts(allPosts, includeDrafts) {
   return allPosts.filter((e) => {

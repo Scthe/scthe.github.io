@@ -4,11 +4,17 @@ import { MDXProvider } from '@mdx-js/react';
 
 import Layout from '../components/layout';
 import PageTitle from '../components/pageTitle';
-import Heading from '../components/markdown/heading';
-import BlogImage from '../components/markdown/image';
-import CodeBlock, { CodeBlockWrapper } from '../components/markdown/codeBlock';
-import MarkdownLink from '../components/markdown/link';
-import { Figure, Figcaption, RawImage } from '../components/markdown/figure';
+import {
+  Heading,
+  BlogImage,
+  CodeBlock,
+  MarkdownLink,
+  CodeBlockWrapper,
+  Figure,
+  Figcaption,
+  RawImage,
+  CrossPostLink,
+} from '../components/markdown';
 
 import { parseDate } from '../utils';
 import { BlogPostContextProvider } from '../hooks/useGetBlogPost';
@@ -40,6 +46,7 @@ const COMPONENTS = {
   img: RawImage,
   BlogImage,
   a: MarkdownLink,
+  CrossPostLink,
 };
 
 type DataProps = GatsbyTypes.BlogPostBySlugQuery;
@@ -64,7 +71,7 @@ function checkFrontmatter(
   const check = (k: keyof Frontmatter) => {
     if (mode === 'development' && fm[k] == null) {
       console.error(
-        `[BlogPost.template] Frontmatter does not contain '${k}'`,
+        `[BlogPost.template] Frontmatter does not contain '${String(k)}'`,
         fm,
       );
     }
@@ -95,8 +102,8 @@ const BlogPostTemplate: React.FC<PageProps<DataProps, PageTemplateContext>> = ({
     <BlogPostContextProvider id={pageContext.id}>
       <Layout
         title={fm.title}
-        description={fm.excerpt!}
-        canonicalUrl={fm.permalink!}
+        description={fm.excerpt}
+        canonicalUrl={fm.permalink}
         image={fm.image!}
         type={{
           type: 'article',

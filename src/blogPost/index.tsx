@@ -15,15 +15,15 @@ import {
   RawImage,
   CrossPostLink,
   TableOfContents,
-} from '../components/markdown';
+} from './components';
 
 import { parseDate } from '../utils';
 import { BlogPostContextProvider } from '../hooks/useGetBlogPost';
 import { BuildMode, useMode } from '../hooks/useMode';
 
-import './styles/_text.module.scss';
-import './styles/_lists.module.scss';
-import './styles/_tables.module.scss';
+import './_text.module.scss';
+import './_lists.module.scss';
+import './_tables.module.scss';
 
 require(`katex/dist/katex.min.css`);
 

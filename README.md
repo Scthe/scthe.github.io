@@ -29,7 +29,6 @@ Vercel's Gatsby integration throws errors on git push hook: `Field "image" of ty
 ### Push:
 
 1. `git s` - check if all **local** articles are publishable i.e. no drafts in `content\blog`
-1. `yarn build`
 1. `vercel build`
 1. verify: `http-server .` in `.vercel\output\static`
 1. `vercel deploy --prebuilt` - generate draft deploy

@@ -77,7 +77,7 @@ $break-top-nav-desktop: 450px;
   }
 }
 
-%post-margins {
+%post-margins-h {
   margin-left: var(--post-padding-h);
   margin-right: var(--post-padding-h);
   @include mq-above($break-content-desktop) {

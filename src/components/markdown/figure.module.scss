@@ -7,7 +7,7 @@
 }
 
 .figcaption {
-  @extend %post-margins;
+  @extend %post-margins-h;
   font-size: var(--font-size-image-caption);
   margin-top: var(--post-figure-caption-margin-top);
   text-align: center;

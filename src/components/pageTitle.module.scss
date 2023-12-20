@@ -1,7 +1,7 @@
 @import '../styles/mixins';
 
 .postsMeta {
-  @extend %post-margins;
+  @extend %post-margins-h;
 }
 
 .contentTitle {

@@ -1,7 +1,7 @@
 @import '../styles/mixins';
 
 .footer {
-  @extend %post-margins;
+  @extend %post-margins-h;
   text-align: center;
 }
 

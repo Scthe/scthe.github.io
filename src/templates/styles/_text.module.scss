@@ -6,7 +6,7 @@ $blockquote-left-border: #ddd;
   // paragraph text
   & > p {
     @extend %word-wrap;
-    @extend %post-margins;
+    @extend %post-margins-h;
     @include margin-v(var(--post-p-margin-top), 0);
     @extend %char-spacing;
   }
@@ -16,7 +16,7 @@ $blockquote-left-border: #ddd;
   h2,
   h3,
   h4 {
-    @extend %post-margins;
+    @extend %post-margins-h;
     @include margin-v(var(--post-header-margin-top), 0);
   }
 
@@ -33,7 +33,7 @@ $blockquote-left-border: #ddd;
 
   // blockquote: '>'
   blockquote {
-    @extend %post-margins;
+    @extend %post-margins-h;
     @include margin-v(var(--post-element-margin-top), 0);
     font-style: italic;
     color: var(--color-subtitle);

@@ -4,7 +4,7 @@
   ul,
   ol,
   dl {
-    @extend %post-margins;
+    @extend %post-margins-h;
     @include margin-v(var(--post-list-margin-top), 0);
   }
 

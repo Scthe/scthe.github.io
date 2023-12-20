@@ -29,6 +29,7 @@ export default function useGetBlogPost(): ReturnType {
           }
           frontmatter {
             title
+            permalink
           }
         }
       }

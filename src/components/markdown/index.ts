@@ -4,6 +4,7 @@ import CodeBlock, { CodeBlockWrapper } from './codeBlock';
 import MarkdownLink from './link';
 import { Figure, Figcaption, RawImage } from './figure';
 import CrossPostLink from './crossPostLink';
+import TableOfContents from './tableOfContent';
 
 export {
   Heading,
@@ -15,4 +16,5 @@ export {
   Figcaption,
   RawImage,
   CrossPostLink,
+  TableOfContents,
 };

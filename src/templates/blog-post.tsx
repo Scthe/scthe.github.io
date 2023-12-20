@@ -14,6 +14,7 @@ import {
   Figcaption,
   RawImage,
   CrossPostLink,
+  TableOfContents,
 } from '../components/markdown';
 
 import { parseDate } from '../utils';
@@ -47,6 +48,7 @@ const COMPONENTS = {
   BlogImage,
   a: MarkdownLink,
   CrossPostLink,
+  TableOfContents,
 };
 
 type DataProps = GatsbyTypes.BlogPostBySlugQuery;

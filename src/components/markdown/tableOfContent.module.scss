@@ -1,0 +1,52 @@
+@import '../../styles/mixins';
+
+// we have to have high specificity to override normal markdown tags
+
+.tocWrapper {
+  @extend %post-margins;
+
+  .tocContentsHeader {
+    margin-left: 0;
+    margin-right: 0;
+    cursor: pointer;
+    @include underscored-reset();
+  }
+
+  .tocContentsHeader:hover {
+    @include underscored(var(--color-accent));
+  }
+
+  .tocExpandBtn {
+    font-family: var(--font-code);
+    color: var(--color-accent);
+  }
+
+  .tocContentWrapper {
+    @include margin-v(var(--post-list-margin-top), 0);
+    border-left: 5px solid var(--color-accent);
+  }
+
+  .tocEntryItem {
+    list-style-type: none;
+    margin-top: 0 !important;
+    font-size: var(--font-size-image-caption);
+  }
+
+  .tocEntryItem[data-toc-level='1'] {
+    font-size: calc(var(--font-size-base) * 1.2);
+  }
+
+  .tocEntryLink:not(:hover) {
+    border-bottom-color: transparent;
+    box-shadow: none;
+  }
+
+  .tocEntryChildrenList {
+    margin-top: 0;
+    padding: 0;
+  }
+
+  .tocEntryChildrenList[data-toc-level='0'] {
+    margin-left: var(--post-padding-h);
+  }
+}

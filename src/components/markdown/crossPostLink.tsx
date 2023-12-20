@@ -3,17 +3,12 @@ import { graphql, useStaticQuery } from 'gatsby';
 import { useMode } from '../../hooks/useMode';
 import MarkdownLink from './link';
 import { urlify } from './heading';
+import { TOCEntry } from './tableOfContent';
 
 type Props = React.PropsWithChildren<{
   permalink: string;
   paragraph?: string;
 }>;
-
-type TOCEntry = {
-  // TODO also contains permalink. Use instead of calc own?
-  title?: string;
-  items?: TOCEntry[];
-};
 
 const CrossPostLink: React.FC<Props> = ({ permalink, paragraph, children }) => {
   const debugName = `CrossPostLink('${permalink || ''}', '${paragraph || ''}')`;
@@ -32,9 +27,10 @@ const CrossPostLink: React.FC<Props> = ({ permalink, paragraph, children }) => {
     }
   `);
 
-  const page = allMdx.nodes.find(
-    (page) => page.frontmatter?.permalink === `/blog/${permalink}/`,
-  );
+  const page = allMdx.nodes.find((page) => {
+    const pl = page.frontmatter?.permalink;
+    return pl === `/blog/${permalink}/` || pl === permalink;
+  });
   if (page == null) {
     if (mode === 'development') {
       console.warn(`${debugName}, page not found`);

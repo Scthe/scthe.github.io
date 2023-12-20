@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 
 import { joinPaths, ensureSufix } from '../utils';
 import useSiteMeta from '../hooks/useSiteMeta';
-import useGetFile from '../hooks/useGetFile';
+import { useFindFileByBase } from '../hooks/useGetFile';
 import * as styles from './layout.module.scss';
 import TopNav from './topNav';
 import Seo, { SeoProps } from './seo';
@@ -18,7 +18,7 @@ type Props = React.PropsWithChildren<{
   title: string;
   description: string;
   canonicalUrl: string;
-  image?: string;
+  imagePublicUrl?: string;
   type: SeoProps['type'];
 }>;
 
@@ -26,7 +26,7 @@ const Layout: React.FC<Props> = ({
   title,
   description,
   canonicalUrl,
-  image,
+  imagePublicUrl,
   type,
   children,
 }) => {
@@ -42,9 +42,11 @@ const Layout: React.FC<Props> = ({
   title = ensureTitleHasSiteName(title, siteMeta.title);
 
   // image
-  const imageBase = image || siteMeta.defaultImage!;
-  const imagePublicUrl = useGetFile(imageBase).publicURL!;
-  image = joinPaths(siteMeta.siteUrl || '', imagePublicUrl);
+  const defaultSiteImage = useFindFileByBase(siteMeta.defaultImage);
+  if (!imagePublicUrl) {
+    imagePublicUrl = defaultSiteImage.publicURL!;
+  }
+  const imageFullPath = joinPaths(siteMeta.siteUrl || '', imagePublicUrl);
 
   return (
     <>
@@ -71,7 +73,7 @@ const Layout: React.FC<Props> = ({
       <Seo
         title={title}
         description={description}
-        image={image}
+        image={imageFullPath}
         url={canonicalUrl}
         type={type}
       />

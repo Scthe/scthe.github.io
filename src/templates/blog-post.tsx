@@ -106,7 +106,7 @@ const BlogPostTemplate: React.FC<PageProps<DataProps, PageTemplateContext>> = ({
         title={fm.title}
         description={fm.excerpt}
         canonicalUrl={fm.permalink}
-        image={fm.image!}
+        imagePublicUrl={(fm.image && fm.image.publicURL) || undefined}
         type={{
           type: 'article',
           datePublished: date,
@@ -134,7 +134,9 @@ export const pageQuery = graphql`
         title
         permalink
         excerpt
-        image
+        image {
+          publicURL
+        }
         draft
         isoDate: date(formatString: "YYYY-MM-DDTHH:mm:ssZ")
       }

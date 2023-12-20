@@ -1,52 +1,63 @@
 @import '../../styles/mixins';
 
-// we have to have high specificity to override normal markdown tags
-
 .tocWrapper {
-  @extend %post-margins;
+  --toc-margin-bottom: var(--post-header-margin-top);
+  --toc-content-header-spacing: 0.2em;
+  --toc-left-border-spacing: var(--post-padding-h);
+  --toc-sublevel-intend: var(--post-padding-h-desktop);
+  --toc-font-size-level0: calc(var(--font-size-base) * 1.2);
+  --toc-font-size-level1: var(--font-size-image-caption);
 
-  .tocContentsHeader {
-    margin-left: 0;
-    margin-right: 0;
-    cursor: pointer;
-    @include underscored-reset();
-  }
+  @extend %post-margins-h;
+  margin-bottom: var(--toc-margin-bottom);
+}
 
-  .tocContentsHeader:hover {
-    @include underscored(var(--color-accent));
-  }
+.tocContentsHeader {
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: var(--toc-content-header-spacing);
+  cursor: pointer;
+  @include underscored-reset();
+}
 
-  .tocExpandBtn {
-    font-family: var(--font-code);
-    color: var(--color-accent);
-  }
+.tocContentsHeader:hover {
+  @include underscored(var(--color-accent));
+}
 
-  .tocContentWrapper {
-    @include margin-v(var(--post-list-margin-top), 0);
-    border-left: 5px solid var(--color-accent);
-  }
+.tocExpandBtn {
+  font-family: var(--font-code);
+  color: var(--color-accent);
+}
 
-  .tocEntryItem {
-    list-style-type: none;
-    margin-top: 0 !important;
-    font-size: var(--font-size-image-caption);
-  }
+.tocContentWrapper {
+  margin: 0;
+  border-left: 5px solid var(--color-accent);
+}
 
-  .tocEntryItem[data-toc-level='1'] {
-    font-size: calc(var(--font-size-base) * 1.2);
-  }
+.tocEntryItem {
+  list-style-type: none;
+  margin-top: 0 !important;
+  font-size: var(--toc-font-size-level1);
+}
 
-  .tocEntryLink:not(:hover) {
-    border-bottom-color: transparent;
-    box-shadow: none;
-  }
+.tocEntryItem[data-toc-level='1'] {
+  font-size: var(--toc-font-size-level0);
+}
 
-  .tocEntryChildrenList {
-    margin-top: 0;
-    padding: 0;
-  }
+.tocEntryLink:not(:hover) {
+  border-bottom-color: transparent;
+  box-shadow: none;
+}
 
-  .tocEntryChildrenList[data-toc-level='0'] {
-    margin-left: var(--post-padding-h);
-  }
+.tocEntryChildrenList {
+  margin-top: 0;
+  padding: 0;
+}
+
+.tocEntryChildrenList[data-toc-level='0'] {
+  margin-left: var(--toc-left-border-spacing);
+}
+
+.tocEntryChildrenList[data-toc-level='1'] {
+  margin-left: var(--toc-sublevel-intend);
 }

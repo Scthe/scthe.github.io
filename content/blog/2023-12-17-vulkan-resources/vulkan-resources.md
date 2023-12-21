@@ -11,7 +11,7 @@ draft: false
 
 In this article we will look at two most basic resources that you will use in Vulkan: [VkBuffer](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkBuffer.html) and [VkImage](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImage.html). But first, we will start with AMD's Vulkan Memory Allocator. It's a library used to simplify memory allocations. Yet, it still offers enough features to make meaningful decisions. We will see how to upload the data to the GPU and make it performant. As we will see, a lot of choices depend on the usage patterns. Finally, `VkImage` can be used as a framebuffer attachment, 3D object texture, or a sampled image (raw data). Each scenario has different requirements and constraints. We will also explain image tiling and layouts.
 
-This article builds on the previous [Vulkan synchronization](/blog/vulkan-synchronization/). Read it to understand concepts like pipeline barriers, memory dependencies, frames in flight, etc.
+This article builds on the previous <CrossPostLink permalink="/blog/vulkan-synchronization/">"Vulkan synchronization"</CrossPostLink>. Read it to understand concepts like pipeline barriers, memory dependencies, frames in flight, etc.
 
 
 
@@ -21,7 +21,7 @@ This article builds on the previous [Vulkan synchronization](/blog/vulkan-synchr
 To create a `VmaAllocator`, use [vmaCreateAllocator()](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__init.html#ga200692051ddb34240248234f5f4c17bb). The basic allocator requires a `VkInstance`, `VkPhysicalDevice`, and `VkDevice`. There are also:
 
 * `uint32_t vulkanApiVersion`. Same Vulkan version you have provided to `vkCreateInstance()`.
-* `VmaAllocatorCreateFlags flags`. Used to allow VMA to use [specified](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__init.html#ga4f87c9100d154a65a4ad495f7763cf7c), memory-related [device extensions](/blog/vulkan-initialization/).
+* `VmaAllocatorCreateFlags flags`. Used to allow VMA to use [specified](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/group__group__init.html#ga4f87c9100d154a65a4ad495f7763cf7c), memory-related <CrossPostLink permalink="/blog/vulkan-initialization/" paragraph="Vulkan device extensions">device extensions</CrossPostLink>.
 * `VkDeviceSize preferredLargeHeapBlockSize`. VMA allocates memory in blocks. Set preferred block size. Usually leave the default 256 MB.
 * `VkAllocationCallbacks* pAllocationCallbacks`. Allows you to intercept all allocations and assign the **CPU**(!) memory yourself. I don't think it's possible to use this field to allocate GPU memory. Still, it's nice for debugging.
 * `VmaDeviceMemoryCallbacks* pDeviceMemoryCallbacks`. [Callbacks](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/struct_vma_device_memory_callbacks.html) for `pfnAllocate()` and `pfnFree()`. Both functions return `void` and are only for logging purposes.
@@ -78,7 +78,7 @@ You should avoid `required_flags` as they force certain behavior. Especially if 
     * static 3D object's textures and buffers,
     * everything that rarely changes and favors fast access.
 * `VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT`. Make memory visible from the host.
-* `VK_MEMORY_PROPERTY_HOST_COHERENT_BIT`. Alleviates need to call `vkFlushMappedMemoryRanges()` or `vkInvalidateMappedMemoryRanges()` after each CPU writes to the mapped memory. Assures [availability](/blog/vulkan-synchronization). Does not guarantee `visibility`.
+* `VK_MEMORY_PROPERTY_HOST_COHERENT_BIT`. Alleviates need to call `vkFlushMappedMemoryRanges()` or `vkInvalidateMappedMemoryRanges()` after each CPU writes to the mapped memory. Assures <CrossPostLink permalink="/blog/vulkan-synchronization/" paragraph="VkAccessFlagBits2, Execution And Memory Dependencies">availability</CrossPostLink>. Does not guarantee `visibility`.
 * `VK_MEMORY_PROPERTY_HOST_CACHED_BIT`. Create a cached version of the memory on the host for faster access. I'm not sure how this flag works with `VK_MEMORY_PROPERTY_HOST_COHERENT_BIT`. If I wanted both, I would set them in `preferred_flags`. There is a [StackOverflow thread](https://stackoverflow.com/questions/45017121/are-host-cached-bit-and-host-coherent-bit-contradicting-each-other) where someone else noticed this issue.
 
 Both `required_flags` and `preferred_flags` are masks, so you can `OR` the bits. Popular library ["gpu-allocator" by Traverse-Research](https://github.com/Traverse-Research/gpu-allocator) differentiates the following use cases to determine `preferred_flags`:
@@ -208,7 +208,7 @@ At first glance, [VkBufferCreateInfo](https://registry.khronos.org/vulkan/specs/
 * [VkSharingMode sharingMode](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkSharingMode.html). Usually `EXCLUSIVE`. Unless you need to use the buffer on multiple `queue families`.
 * `uint32_t* queue_family_indices`. You've selected a `queue family` after calling [vkGetPhysicalDeviceQueueFamilyProperties()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkGetPhysicalDeviceQueueFamilyProperties.html). Can be ignored with `EXCLUSIVE` sharing mode.
 
-> In [Vulkan initialization](/blog/vulkan-initialization/), we selected 1 `queue family` and created 1 `VkQueue` object. If you have many `queue families` the situation is more complicated. Remember that you can have many `queues` for a single `queue family`.
+> In <CrossPostLink permalink="/blog/vulkan-initialization/">"Vulkan initialization"</CrossPostLink>, we selected 1 `queue family` and created 1 `VkQueue` object. If you have many `queue families` the situation is more complicated. Remember that you can have many `queues` for a single `queue family`.
 
 The last 2 parameters in `VkBufferCreateInfo` are `size` (in bytes) and `VkBufferUsageFlags usage`. Usage refers to if it's an index, vertex, uniform, storage (SSBO) buffer, etc. This field is a mask. You can provide many usages for a single buffer. This is especially important to use with transfer operations. To fill the buffer from the CPU, set `usage` to `VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_*`.
 
@@ -282,7 +282,7 @@ uniform GlobalConfigUniformBuffer {
 }
 ```
 
-How can a CPU write to the GPU-allocated buffer so that all values are received correctly? The biggest problem is always alignment. If the first member of the UBO structure were `vec3`, what would be the byte offset of the second member? In OpenGL, this type of problem [leads to a huge headache](https://www.khronos.org/opengl/wiki/Interface_Block_(GLSL)#Memory_layout). I recommend always rounding up values to `vec4` (instead of `vec3`). At the very least, make sure that if you have members of type `float`, they are declared in groups of 4. I've also had a few issues with mixing in random `int`s between other fields. You can [preview uniform values in RenderDoc](/blog/debugging-vulkan-using-renderdoc/).
+How can a CPU write to the GPU-allocated buffer so that all values are received correctly? The biggest problem is always alignment. If the first member of the UBO structure were `vec3`, what would be the byte offset of the second member? In OpenGL, this type of problem [leads to a huge headache](https://www.khronos.org/opengl/wiki/Interface_Block_(GLSL)#Memory_layout). I recommend always rounding up values to `vec4` (instead of `vec3`). At the very least, make sure that if you have members of type `float`, they are declared in groups of 4. I've also had a few issues with mixing in random `int`s between other fields. You can <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/" paragraph="Debugging shader in RenderDoc">preview uniform values in RenderDoc</CrossPostLink>.
 
 
 
@@ -359,7 +359,7 @@ Examples from my Rust-Vulkan-TressFX project:
   * [Rust TfxParamsUBO](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/render_graph/_shared/tfx_params_ubo.rs)
 
 
-In the [next article](#), we will see how to actually bind the `VkBuffer` objects to GLSL descriptors.
+In <CrossPostLink permalink="/blog/vulkan-frame/" paragraph="Binding uniform values">"A typical Vulkan frame"</CrossPostLink>, we will see how to actually bind the `VkBuffer` objects to GLSL descriptors.
 
 
 
@@ -411,7 +411,7 @@ Let's look at an example cubemap declaration:
 Check the full cubemap example in [Sascha Willems' Vulkan examples](https://github.com/SaschaWillems/Vulkan/blob/3c0f3e18cdee7aa67e5e9198b76a24985bb49391/examples/texturecubemap/texturecubemap.cpp#L160) repository. It requires e.g. special `VkImageView` with `imageType=VK_IMAGE_VIEW_TYPE_CUBE`.
 
 
-> Remember that [VkImageMemoryBarrier2](/blog/vulkan-synchronization/) contains [VkImageSubresourceRange](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageSubresourceRange.html) which also specifies affected layers and mipmaps.
+> Remember that <CrossPostLink permalink="/blog/vulkan-synchronization/" paragraph="Barrier types wrt. resource type">VkImageMemoryBarrier2</CrossPostLink> contains [VkImageSubresourceRange](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageSubresourceRange.html) which also specifies affected layers and mipmaps.
 
 
 
@@ -521,7 +521,7 @@ You may ask, if we cannot write from CPU to an image with `VK_IMAGE_TILING_OPTIM
   }
 ```
 
-A bit verbose, but you only have to write it once. If you compare this with [code for uploading buffers](#), you may notice it's similar. Only one concept left to explore - image layouts.
+A bit verbose, but you only have to write it once. If you compare this with code for uploading buffers, you may notice it's similar. Only one concept left to explore - image layouts.
 
 
 
@@ -544,7 +544,8 @@ When explaining tiling, I said that the driver may choose the best memory repres
 
 There are many other niche layouts.
 
-To do the `image layout transition` you need to submit the [vkCmdPipelineBarrier2()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdPipelineBarrier2KHR.html) command with the appropriate [VkImageMemoryBarrier2](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageMemoryBarrier2.html). Now it's a good time for a [quick refresher on Vulkan synchronization](/blog/vulkan-synchronization/) as you need to specify:
+To do the `image layout transition` you need to submit the [vkCmdPipelineBarrier2()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdPipelineBarrier2KHR.html) command with the appropriate [VkImageMemoryBarrier2](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageMemoryBarrier2.html). Now it's a good time for a <CrossPostLink permalink="/blog/vulkan-synchronization/" paragraph="Vulkan pipeline barrier semantics">quick refresher on Vulkan synchronization</CrossPostLink> as you need to specify:
+
 
 * `srcStageMask`, `srcAccessMask` - previous access scope,
 * `dstStageMask`, `dstAccessMask` - next access scope,
@@ -556,21 +557,21 @@ As you can see, doing `image layout transition` requires global frame knowledge.
 
 Let's look at the 4 most common use cases for a **color** image that is either **used as a render target** or **sampled in a fragment shader** (in a different pass).
 
-* `read-after-read`. Both passes sample the image. The first pass already did the layout transition, so for the 2nd pass, it's a noop.
-* `write-after-read`. The first pass samples the image and the 2nd renders to it. If you refer to [my synchronization article](/blog/vulkan-synchronization/), you notice that it's an `execution dependency` (`VkAccessFlagBits2` are optional). Required values for `VkImageMemoryBarrier2`:
+* `Read-after-read`. Both passes sample the image. The first pass already did the layout transition, so for the 2nd pass, it's a noop.
+* `Write-after-read`. The first pass samples the image and the 2nd renders to it. If you refer to <CrossPostLink permalink="/blog/vulkan-synchronization/" paragraph="VkAccessFlagBits2, Execution And Memory Dependencies">my synchronization article</CrossPostLink>, you notice that it's an `execution dependency` (`VkAccessFlagBits2` are optional). Required values for `VkImageMemoryBarrier2`:
     * previous access scope: `VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT`,
     * next access scope: `VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT`,
     * layout change: `VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL` -> `VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL`,
-* `read-after-write`. The first pass renders to the image. The second pass samples from it. This is a `memory dependency`. Required values for `VkImageMemoryBarrier2`:
+* `Read-after-write`. The first pass renders to the image. The second pass samples from it. This is a `memory dependency`. Required values for `VkImageMemoryBarrier2`:
     * previous access scope: (`VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT`, `VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT`),
     * next access scope (for fragment shader): (`VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT`, `VK_ACCESS_2_SHADER_SAMPLED_READ_BIT`),
     * layout change: `VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL` -> `VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL`,
-* `write-after-write`. Both the first and second pass render to the same image. This is a `memory dependency`. While there is no need to change the image layout, we need to wait for the first write to finish before we override it. Required values for `VkImageMemoryBarrier2`:
+* `Write-after-write`. Both the first and second pass render to the same image. This is a `memory dependency`. While there is no need to change the image layout, we need to wait for the first write to finish before we override it. Required values for `VkImageMemoryBarrier2`:
     * both access scopes: (`VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT`, `VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT`),
     * layout change: both are `VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL`,
 
 
-> If this is overwhelming, you can always use one of the [libraries that simplify synchronization](/blog/vulkan-synchronization/). E.g. [simple_vulkan_synchronization](https://github.com/Tobski/simple_vulkan_synchronization) or [vk-sync-rs](https://github.com/h3r2tic/vk-sync-rs).
+> If this is overwhelming, you can always use one of the <CrossPostLink permalink="/blog/vulkan-synchronization/" paragraph="Q: Can you write a pipeline barrier for me?">libraries that simplify synchronization</CrossPostLink>. E.g. [simple_vulkan_synchronization](https://github.com/Tobski/simple_vulkan_synchronization) or [vk-sync-rs](https://github.com/h3r2tic/vk-sync-rs).
 
 
 Now we know what image layouts are. Yet if we were to create an image right now, we would receive the following validation layer error:
@@ -680,21 +681,23 @@ There are quite a few ways to handle memory leaks:
 
 All Vulkan objects that are created with `vkCreate*()` have a corresponding `vkDestroy*()`. In Rust/ash, this is often part of the [Drop](https://doc.rust-lang.org/reference/destructors.html) trait. Let's say you have a struct (often called `Device` or `VkContext`) that holds `vma::Allocator`, `ash::Device`, `ash::Instance`, `ash::Entry`. The `Drop()` functions are in [order the fields are defined](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/vk_ctx/vk_ctx.rs#L16).
 
-> Vulkan messages are easier to understand if you [assign custom labels](/blog/debugging-vulkan-using-renderdoc/) to objects.
+> Vulkan messages are easier to understand if you <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/" paragraph="Adding labels to the Vulkan resources">assign custom labels</CrossPostLink> to objects.
 
 
 
 ## Summary
 
-After [Vulkan initialization](/blog/vulkan-initialization/) and [Vulkan synchronization](/blog/vulkan-synchronization/), we have finally started writing the application code. No longer do we follow the API or deal with theoretical concepts. We have seen how to allocate resources in high-performance memory regions. How to transfer data from the CPU efficiently. To achieve this, we used either temporary buffers (transfer once) or mapped memory (transfer often). From now on, we will avoid `vec3` in uniform buffers. For `VkImage`, we checked how to deal with different dimensions and sizes. `VK_FORMAT_*` enums no longer hold any secrets. We optimized `VkImages` according to the usage. Not only based on the statically declared `VK_IMAGE_USAGE_*`, but also layout transitions before every use. Finally, we investigated `VkImageViews` and finished with a few tips on tracking memory leaks.
+After <CrossPostLink permalink="/blog/vulkan-initialization/">"Vulkan initialization"</CrossPostLink> and <CrossPostLink permalink="/blog/vulkan-synchronization/">"Vulkan synchronization"</CrossPostLink>, we have finally started writing the application code. No longer do we follow the API or deal with theoretical concepts. We have seen how to allocate resources in high-performance memory regions. How to transfer data from the CPU efficiently. To achieve this, we used either temporary buffers (transfer once) or mapped memory (transfer often). From now on, we will avoid `vec3` in uniform buffers. For `VkImage`, we checked how to deal with different dimensions and sizes. `VK_FORMAT_*` enums no longer hold any secrets. We optimized `VkImages` according to the usage. Not only based on the statically declared `VK_IMAGE_USAGE_*`, but also layout transitions before every use. Finally, we investigated `VkImageViews` and finished with a few tips on tracking memory leaks.
 
-In the [Vulkan frame](#), we will finish this series of articles. Running compute shaders and graphic passes are the bread and butter of graphic programming. Knowing Vulkan synchronization, with `VkBuffers` and `VkImages` at hand, we are finally ready to draw some triangles.
+In <CrossPostLink permalink="/blog/vulkan-frame/">"A typical Vulkan frame"</CrossPostLink>, we will finish this series of articles. Running compute shaders and graphic passes are the bread and butter of graphic programming. Knowing Vulkan synchronization, with `VkBuffers` and `VkImages` at hand, we are finally ready to draw some triangles.
 
 
 ## References
 
 * [AMD Vulkan Memory Allocator docs](https://gpuopen-librariesandsdks.github.io/VulkanMemoryAllocator/html/index.html)
 * Adam Sawicki's ["Vulkan Memory Types on PC and How to Use Them"](https://asawicki.info/news_1740_vulkan_memory_types_on_pc_and_how_to_use_them)
+* Arseny Kapoulkine's ["Writing an efficient Vulkan renderer"](https://zeux.io/2020/02/27/writing-an-efficient-vulkan-renderer/)
+* Yuriy O'Donnell's ["FrameGraph: Extensible Rendering Architecture in Frostbite"](https://www.gdcvault.com/play/1024612/FrameGraph-Extensible-Rendering-Architecture-in)
 * Kyle Halladay's ["Comparing Uniform Data Transfer Methods in Vulkan"](https://kylehalladay.com/blog/tutorial/vulkan/2017/08/13/Vulkan-Uniform-Buffers.html)
 * OpenGL wiki [Interface blocks](https://www.khronos.org/opengl/wiki/Interface_Block_(GLSL)#Memory_layout)
 * Vulkan tutorial: [mipmaps](https://vulkan-tutorial.com/Generating_Mipmaps), [multisampling](https://vulkan-tutorial.com/Multisampling)
@@ -702,5 +705,6 @@ In the [Vulkan frame](#), we will finish this series of articles. Running comput
 * ["Unified Resource State Management for Vulkan and Direct3D12"](http://diligentgraphics.com/2018/12/09/resource-state-management/)
 * Johannes Unterguggenberger's ["Use Buffers and Images in Vulkan Shaders"](https://www.youtube.com/watch?v=5VBVWCg7riQ)
 * Andrew Garrard & Frederic Garnier ["Low-level mysteries of pipeline barriers"](https://youtu.be/e0ySJ9Qzvrs?si=w3q1agvH3MWwe-z1&t=565)
+* Embark Studios's [kajiya](https://github.com/EmbarkStudios/kajiya/)
 
 

@@ -1,7 +1,7 @@
 ---
 title: "Writing neural networks from scratch - implementation tips"
 permalink: "/blog/neural-networks-implementation-tips/"
-excerpt: "Tips for implementing neural networks from scratch. From identifying use cases and data generation to implementation, testing, debugging and profiling. Separate section dedicated to GPUs and unique problems for massively parallel devices."
+excerpt: "Tips for implementing neural networks from scratch. From identifying use cases and data generation to implementation, testing, debugging and profiling. A separate section is dedicated to GPUs and unique problems for massively parallel devices."
 date: 2015-08-23 12:00:00
 image: "./result_cmp.jpg"
 draft: false
@@ -10,7 +10,7 @@ draft: false
 
 Judging by the number of new articles, neural networks were popular in recent months. And not only because Google, Netflix, Adobe, Baidu, Facebook and countless others has been using them. There are many hobbyists playing with machine learning too. After seeing amazing examples of what is possible I decided to create my own neural network. This article presents my findings. I hope You will find it useful.
 
-If you are also interested in derivation of neural network equations, I've also got you covered. Check out ["Math behind (convolutional) neural networks"](/blog/math-behind-neural-networks/).
+If you are also interested in derivation of neural network equations, I've also got you covered. Check out <CrossPostLink permalink="/blog/math-behind-neural-networks/">"Math behind (convolutional) neural networks"</CrossPostLink>.
 
 
 
@@ -275,7 +275,7 @@ Scheduling script example
 
 ### Separate parameters from hyperparameters
 
-While not critical, in my opinion this step is quite important. Every change to hyperparameters directly affects parameters that You will receive, so –including backup- You will probably have quite a lot of files. Efficiently managing data is a skill on it's own. This will come hand if You decide to create [separate schedule script](#useful-scripts).
+While not critical, in my opinion this step is quite important. Every change to hyperparameters directly affects parameters that You will receive, so –including backup- You will probably have quite a lot of files. Efficiently managing data is a skill on it's own. This will come hand if You decide to create <CrossPostLink paragraph="Useful scripts">separate schedule script</CrossPostLink>.
 
 
 
@@ -528,7 +528,7 @@ Of course the road from theory to application is quite long.
 Implementing neural network is quite long process. It is also an interesting learning experience. It does not teach You everything there is about machine learning, but gives a solid understanding how these things work.
 Sure there are always things that can be implemented better and another milliseconds to shave. I've also seen a couple of interesting publications about FFT in convolutions. But right now I don't think I'm going to experiment any further - the goal of this project was already achieved.
 
-If you are also interested in derivation of neural network equations, I've also got you covered. Check out ["Math behind (convolutional) neural networks"](/blog/math-behind-neural-networks/).
+If you are also interested in derivation of neural network equations, I've also got you covered. Check out <CrossPostLink permalink="/blog/math-behind-neural-networks/">"Math behind (convolutional) neural networks"</CrossPostLink>.
 
 <br/>
 

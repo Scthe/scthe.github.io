@@ -10,9 +10,9 @@ export const BlogPostContextProvider: React.FC<Props> = ({ id, children }) => (
 );
 
 type NodeArray = GatsbyTypes.BlogPostsQuery['allMdx']['nodes'];
-type ReturnType = ArrayItemType<NodeArray>;
+export type CurrentBlogPost = ArrayItemType<NodeArray>;
 
-export default function useGetBlogPost(): ReturnType {
+export default function useGetBlogPost(): CurrentBlogPost {
   const id = useContext(BlogPostContext);
 
   const { allMdx } = useStaticQuery<GatsbyTypes.BlogPostsQuery>(graphql`

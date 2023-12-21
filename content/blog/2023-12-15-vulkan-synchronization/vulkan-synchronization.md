@@ -1,7 +1,7 @@
 ---
 title: "Vulkan synchronization"
 permalink: "/blog/vulkan-synchronization/"
-excerpt: "Closer look at Vulkan synchronization objects, vkCmdPipelineBarrier, execution vs memory dependencies, synchronization with swapchain, frames in flight and many more."
+excerpt: "A closer look at Vulkan synchronization objects, vkCmdPipelineBarrier(), execution vs memory dependencies, synchronization with swapchain, frames in flight, and many more."
 date: 2023-12-15 12:00:00
 image: "./frame_in_flight_vs_swapchain.png"
 draft: false
@@ -16,10 +16,10 @@ Synchronization is probably the most complex area of Vulkan. The API is a bit [r
 * synchronization with swapchain,
 * frames in flight.
 
-This is the second article in the series. Previously, in ["Vulkan initialization"](/blog/vulkan-initialization), we've seen how to initialize Vulkan. We've discussed [swapchain](/blog/vulkan-initialization#create-swapchain), and [command buffers](blog/vulkan-initialization#storing-vulkan-commands). Both of these concepts will be relevant.
+This is the second article in the series. Previously, in <CrossPostLink permalink="/blog/vulkan-initialization/">"Vulkan initialization"</CrossPostLink>, we've seen how to initialize Vulkan. We've discussed <CrossPostLink permalink="/blog/vulkan-initialization/" paragraph="Create swapchain">swapchain</CrossPostLink>, and <CrossPostLink permalink="/blog/vulkan-initialization/" paragraph="Storing Vulkan commands">command buffers</CrossPostLink>. Both of these concepts will be relevant.
 
 
-It might seem unusual to discuss synchronization right after we have finished initializing Vulkan. Yet as you will see in both ["Vulkan resources"](#) and ["Typical Vulkan frame"](#), this concept permeates through most other API surfaces. 
+It might seem unusual to discuss synchronization right after we have finished initializing Vulkan. Yet as you will see in both <CrossPostLink permalink="/blog/vulkan-resources/">"Vulkan resources"</CrossPostLink> and <CrossPostLink permalink="/blog/vulkan-frame/">"A typical Vulkan frame"</CrossPostLink>, this concept permeates through most other API surfaces. 
 
 
 
@@ -56,7 +56,7 @@ Let's describe each synchronization method in Vulkan.
 
 ### [Pipeline barriers](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdPipelineBarrier.html)
 
-Used to split the time into 'before' and 'after' the barrier. Added between 2 different, **consecutive** Vulkan commands that have some dependency. E.g. the first command draws to an image and the 2nd wants to sample this image in the fragment shader. Can be used for image layout transitions (more on that in ["Vulkan resources"](#)). This can cause stalling, as certain steps have to be finished before we kick off new work. We will go into more detail in the next paragraphs.
+Used to split the time into 'before' and 'after' the barrier. Added between 2 different, **consecutive** Vulkan commands that have some dependency. E.g. the first command draws to an image and the 2nd wants to sample this image in the fragment shader. Can be used for image layout transitions (more on that in <CrossPostLink permalink="/blog/vulkan-resources/" paragraph="Image layouts">"Vulkan resources"</CrossPostLink>). This can cause stalling, as certain steps have to be finished before we kick off new work. We will go into more detail in the next paragraphs.
 
 **Pipeline barriers are a good choice** to add dependency between commands that are 1) right after one another and 2) are in a single queue. They are also used for image layout transitions.
 
@@ -74,7 +74,7 @@ Used to split the time into 'before' and 'after' the barrier. Added between 2 di
 
 ### [Subpass dependencies (VkSubpassDependency)](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkSubpassDependency.html)
 
-We will look at subpasses in ["Typical Vulkan frame"](#). This feature is quite rare in practice. Exists mostly for the sake of mobile tile-oriented renderers. Subpass dependencies are similar to pipeline barriers. They are part of the definition of `VkRenderPass`. Unfortunately, this is also their main weakness. Unless you have a [render graph](https://www.gdcvault.com/play/1024612/FrameGraph-Extensible-Rendering-Architecture-in), it might be hard to track changes to each image. With pipeline barriers, you can just store "the last layout/usage" for each resource. 
+We will look at subpasses in <CrossPostLink permalink="/blog/vulkan-frame/" paragraph="Creating VkRenderPass">"A typical Vulkan frame"</CrossPostLink>. This feature is quite rare in practice. Exists mostly for the sake of mobile tile-oriented renderers. Subpass dependencies are similar to pipeline barriers. They are part of the definition of `VkRenderPass`. Unfortunately, this is also their main weakness. Unless you have a [render graph](https://www.gdcvault.com/play/1024612/FrameGraph-Extensible-Rendering-Architecture-in), it might be hard to track changes to each image. With pipeline barriers, you can just store "the last layout/usage" for each resource. 
 
 **Subpass dependencies are a good choice if** you are already using subpasses (usually on mobile) and if while defining `VkRenderPass`, you already know what was the previous access to the resource.
 
@@ -222,7 +222,7 @@ Not all pairs of `VkPipelineStageFlagBits2` and `VkAccessFlagBits2` are valid. P
 * [VkImageMemoryBarrier2](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageMemoryBarrier2.html). Extends `VkMemoryBarrier2` with the following fields:
   * `image`. Image affected by memory dependency.
   * `subresourceRange`. A [VkImageSubresourceRange](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkImageSubresourceRange.html) structure describing the affected mipmap level and array layer.
-  * `oldLayout`, `newLayout`. Used for image layout transitions. Like it or not, you will have to become intimately familiar with image layouts sooner or later. It's a complicated topic that we will discuss in ["Vulkan resources"](#).
+  * `oldLayout`, `newLayout`. Used for image layout transitions. Like it or not, you will have to become intimately familiar with image layouts sooner or later. It's a complicated topic that we will discuss in <CrossPostLink permalink="/blog/vulkan-resources/" paragraph="Image layouts">"Vulkan resources"</CrossPostLink>.
   * `srcQueueFamilyIndex`, `dstQueueFamilyIndex`. Used if we want to transfer buffer's queue family ownership. Can be ignored with `VK_QUEUE_FAMILY_IGNORED`.
 
 
@@ -230,11 +230,11 @@ Not all pairs of `VkPipelineStageFlagBits2` and `VkAccessFlagBits2` are valid. P
 
 ## Synchronizing frames in flight and swapchain images
 
-When [creating the swapchain](/blog/vulkan-initialization/#creating-swapchain), we have also specified `uint32_t minImageCount`. This parameter is used to hint how many `swapchain images` we would like to create. Usually, you will have 2 (double buffering) or 3 images (triple buffering).
+When <CrossPostLink permalink="/blog/vulkan-initialization/" paragraph="Creating swapchain">creating the swapchain</CrossPostLink>, we have also specified `uint32_t minImageCount`. This parameter is used to hint how many `swapchain images` we would like to create. Usually, you will have 2 (double buffering) or 3 images (triple buffering).
 
 A similar, but unrelated term is `frames in flight`. The main idea is that when the GPU is processing commands for frame N, the CPU constructs a list of commands for frame N+1. While this sounds simple, there are some less obvious implications. If the GPU uses a buffer to render a frame, you should not override its content from the CPU at the same time. The easiest solution is to have separate copies per each possible `frame in flight`. This only applies to resources that are accessed both from the CPU and GPU, like uniform buffers (CPU updates matrices, etc.). Each `frame in flight` has its own command buffers and synchronization objects (which we will see shortly). While you can choose as many `frames in flight` as you want, it's almost always going to be either 1 (wait after each frame to not override current values) or 2 (ping-pongs between 2 sets of objects).
 
-> Finding all resources written to from CPU might seem daunting. Until you realize that most CPU writes are done to mapped resources. Treat it as a hint that such resources might have to be duplicated for each `frame in flight`. As we will see in ["Vulkan resources"](#), using mapped memory that is never changed is suboptimal.
+> Finding all resources written to from CPU might seem daunting. Until you realize that most CPU writes are done to mapped resources. Treat it as a hint that such resources might have to be duplicated for each `frame in flight`. As we will see in <CrossPostLink permalink="/blog/vulkan-resources/" paragraph="VMA allocations in practice">"Vulkan resources"</CrossPostLink>, using mapped memory that is never changed is suboptimal.
 
 > The terminology here can get a bit loose, especially on forums. A single `frame in flight` often refers to the frame that the GPU is working on right now. A CPU might be working on the next frame, but since it's not the frame that the GPU is working on, it's not called in-flight. When researching this topic, a lot of times you will have to read between the lines to guess the author's intent. Both this article and [Vulkan tutorial](https://vulkan-tutorial.com/Drawing_a_triangle/Drawing/Frames_in_flight) define `frames in flight` as how many frames are being worked on concurrently (either by GPU or CPU). It's even more confusing when people equate `frames in flight` with `swapchain images` count.
 
@@ -252,7 +252,7 @@ The concepts for `Swapchain image count` and `frames in flight` met when the ren
 | N+5 | 0 | 1 |
 
 <Figcaption>
-Comparison frame in flight index vs swapchain image.
+Comparison between frame in flight and swapchain image indices.
 </Figcaption>
 </Figure>
 
@@ -293,34 +293,20 @@ As both frame N and N+1 do `vkQueueSubmit()`, you might consider adding a semaph
 
 To draw a single frame, the following operations must be completed, usually in the following order:
 
-1. Acquire from swapchain the image we will draw to (`vkAcquireNextImageKHR()`).
 1. Wait (on CPU - `vkWaitForFences()`) for the previous `frame in flight` that used the same resources as the current frame. It's a previous frame if there is 1 `frame in flight`, and it's previous-previous frame if there are 2.
 1. Record commands in the `command buffer` (draws, compute dispatches, etc.).
-2. Submit `command buffers` to the `queue` to execute (`vkQueueSubmit()`).
-3. Present the finished image to the user (`vkQueuePresentKHR()`).
+1. Acquire from swapchain the image we will draw to (`vkAcquireNextImageKHR()`).
+1. Submit `command buffers` to the `queue` to execute (`vkQueueSubmit()`).
+1. Present the finished image to the user (`vkQueuePresentKHR()`).
 
 
 This corresponds to the following code in Rust (using Ash):
 
 ```rust
 /// increasing index of the frame (just add +1 at the end of the frame to it)
-let frame_idx = ;
-/// contains objects needed for each swapchain image
-let swapchain_img_data = self.swapchain_datas[frame_idx % swapchain_imgs_cnt];
+let frame_id = self.total_frame_id;
 /// contains objects needed for each frame in flight
-let frame_data = self.frame_datas[frame_idx % frames_in_flight];
-
-// acquire an image. Pass in a semaphore to be signalled.
-// Potentially blocking if no image available
-let swapchain_image_index: usize = swapchain_loader
-  .acquire_next_image(
-    swapchain,
-    u64::MAX,
-    swapchain_img_data.acquire_semaphore,
-    vk::Fence::null(),
-  )
-  .expect("Failed to acquire next swapchain image")
-  .0 as _;
+let frame_data = self.frame_datas[frame_id % frames_in_flight];
 
 // CPU waits for previous frame
 device.wait_for_fences(
@@ -335,12 +321,24 @@ device.reset_fences(&[frame_data.queue_submit_finished_fence])
 // record commands to frame_data.command_buffer
 // ...
 
+// acquire an image. Pass in a semaphore to be signalled.
+// Potentially blocking if no image available
+let swapchain_image_index: usize = swapchain_loader
+  .acquire_next_image(
+    swapchain,
+    u64::MAX,
+    frame_data.acquire_semaphore,
+    vk::Fence::null(),
+  )
+  .expect("Failed to acquire next swapchain image")
+  .0 as _;
+
 // submit command buffers (non blocking)
 let submit_info = vk::SubmitInfo::builder()
   .command_buffers(&[frame_data.command_buffer])
   .wait_dst_stage_mask(&[vk::PipelineStageFlags::COLOR_ATTACHMENT_OUTPUT])
-  .wait_semaphores(&[swapchain_img_data.acquire_semaphore])
-  .signal_semaphores(&[swapchain_img_data.rendering_complete_semaphore])
+  .wait_semaphores(&[frame_data.acquire_semaphore])
+  .signal_semaphores(&[frame_data.rendering_complete_semaphore])
   .build();
 device.queue_submit(
     queue, &[submit_info], frame_data.queue_submit_finished_fence
@@ -350,31 +348,31 @@ device.queue_submit(
 let present_info = vk::PresentInfoKHR::builder()
   .image_indices(&[swapchain_image_index])
   .swapchains(&[swapchain])
-  .wait_semaphores(&[swapchain_img_data.rendering_complete_semaphore])
+  .wait_semaphores(&[frame_data.rendering_complete_semaphore])
   .build();
 swapchain_loader
   .queue_present(queue, &present_info)
   .expect("vkQueuePresent()");
 
-frame_idx += 1;
+self.total_frame_id = self.total_frame_id + 1;
 ```
 
-The first step is to acquire the next image to which we will draw. Then we wait, as we should not update GPU memory while it's still in use. For 1 `frame in flight`, we essentially wait for the previous frame to finish. For 2 `frames in flight`, we wait for a fence from 2 frames ago. Once we 1) have `swapchain image` (`acquire_semaphore`) and 2) are allowed to update GPU memory (`vkWaitForFences()`), we write to mapped buffers and submit `command buffers` for execution. After the rendering is done (`rendering_complete_semaphore`), the finished frame is presented to the user (the exact present behavior depends on `VkPresentModeKHR`).
+The first step is to wait, as we should not update GPU memory while it's still in use. For a single `frame in flight`, we essentially wait for the previous frame to finish. For 2 `frames in flight`, we wait for a fence from 2 frames ago. We can then record the commands (using multithreading if needed) and update uniform buffers. Since the commands will draw to the `swapchain image`, we have to acquire it first. Call `vkAcquireNextImageKHR()` (potentially blocking if no image available) and tell it to signal `acquire_semaphore`. Submit the commands for execution. In the `vkQueueSubmit()` function specify `wait_semaphores(&[acquire_semaphore])` and `signal_semaphores(&[rendering_complete_semaphore])`. After the rendering is done (`rendering_complete_semaphore`), the finished frame is presented to the user (the exact present behavior depends on `VkPresentModeKHR`).
 
 There are the following synchronization objects: 
 
-* `acquire_semaphore` (one per `swapchain image`)
-  * **signaled when:** we have acquired the image to which we will draw in this frame,
+* `acquire_semaphore`
+  * **signaled when:** we have acquired the `swapchain image` to which we will draw in this frame,
   * **waited on:** before we will render to the `swapchain image`,
-* `rendering_complete_semaphore` (one per `swapchain image`)
+* `rendering_complete_semaphore`
   * **signaled when:** `vkQueueSubmit()` ends, which means that `swapchain image` contains the rendering result,
   * **waited on:** before we will `vkQueuePresentKHR()` the finished frame to the user,
-* `queue_submit_finished_fence` (one per `frame in flight`)
+* `queue_submit_finished_fence`
   * **signaled when:** `vkQueueSubmit()` ends, which means that all commands have been finished and we will no longer use per-`frame in flight` resources,
   * **waited on:** before we update any per-`frame in flight` resources (uniform/command buffers etc.).
 
 
-The exact ordering of the first few steps might be different depending on the application. Both `vkAcquireNextImageKHR()` and `vkWaitForFences()` can block CPU thread. On some OSes `vkQueuePresentKHR()` [may also block](https://youtu.be/ch6161wvME8?si=9Msr9yDvf84rxlja&t=66). You might want to first wait for `queue_submit_finished_fence`, then submit some work to GPU, and only then call `vkAcquireNextImageKHR()`.
+The exact ordering of the first few steps might be different depending on the application. Both `vkAcquireNextImageKHR()` and `vkWaitForFences()` can block CPU thread. Usually, `vkAcquireNextImageKHR()` is called as late as possible (just before we render to the `swapchain image`). On some OSes `vkQueuePresentKHR()` [may also block](https://youtu.be/ch6161wvME8?si=9Msr9yDvf84rxlja&t=66).
 
 
 
@@ -396,7 +394,7 @@ Let's dissect EmbarkStudios' kajiya (written mostly by [Tomasz Stachowiak](https
 
 **Render loop**
 
-The following operations are executed inside [renderer.draw_frame()](https://github.com/EmbarkStudios/kajiya/blob/d373f76b8a2bff2023c8f92b911731f8eb49c6a9/crates/lib/kajiya-rg/src/renderer.rs#L116):
+The following operations are executed inside [renderer.draw_frame()](https://github.com/EmbarkStudios/kajiya/blob/d373f76b8a2bff2023c8f92b911731f8eb49c6a9/crates/lib/kajiya-rg/src/renderer.rs#L116) (`frame0` refers to current `DeviceFrame`):
 
 1. [device.begin_frame()](https://github.com/EmbarkStudios/kajiya/blob/d373f76b8a2bff2023c8f92b911731f8eb49c6a9/crates/lib/kajiya-rg/src/renderer.rs#L132)
    1. [Get DeviceFrame for the current frame in flight](https://github.com/EmbarkStudios/kajiya/blob/d373f76b8a2bff2023c8f92b911731f8eb49c6a9/crates/lib/kajiya-backend/src/vulkan/device.rs#L511)
@@ -411,10 +409,13 @@ The following operations are executed inside [renderer.draw_frame()](https://git
    1. [Swapping frame in flight resources after each frame](https://github.com/EmbarkStudios/kajiya/blob/d373f76b8a2bff2023c8f92b911731f8eb49c6a9/crates/lib/kajiya-backend/src/vulkan/device.rs#L607)
 
 
+You can notice that kajiya has 2 command buffers. The first (`main_cb`), contains most of the rendering commands. After it is submitted, `vkAcquireNextImageKHR()` is called. The second command buffer (named in code as a "presentation command buffer" - `presentation_cb`) contains passes writing to the `swapchain image`.
+
+The render graph implementation is quite interesting too. Initially, all passes are stored in a flat array. During `RenderGraph.record_main_cb()`, the index of the first pass writing to the `swapchain image` is [calculated](https://github.com/EmbarkStudios/kajiya/blob/d373f76b8a2bff2023c8f92b911731f8eb49c6a9/crates/lib/kajiya-rg/src/graph.rs#L815). All passes before that index record their commands into `main_cb`. `RenderGraph.record_main_cb()` then returns, submits the commands, `swapchain image` is acquired, and `RenderGraph.record_presentation_cb()` starts recording `presentation_cb`.
 
 If you want to see **all** operations from the start: [main loop](https://github.com/EmbarkStudios/kajiya/blob/d373f76b8a2bff2023c8f92b911731f8eb49c6a9/crates/lib/kajiya-simple/src/main_loop.rs#L340)'s `while running {...}`.
 
-Khronos Group also has synchronization examples for [Swapchain Image Acquire and Present](https://github.com/KhronosGroup/Vulkan-Docs/wiki/Synchronization-Examples#swapchain-image-acquire-and-present). It features e.g. `VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT` execution dependency inside `VkSubmitInfo`. It functions as an additional check to `acquire_semaphore`. [Turns out vkAcquireNextImageKHR() is allowed to return an image for which commands have been submitted but not finished executing](https://stackoverflow.com/questions/39599633/why-is-a-vkfence-necessary-for-every-swapchain-command-buffer-when-already-using). The `vkAcquireNextImageKHR()` is also allowed to return images out of order (`pImageIndex` has a value that is not a simple `imageIndex = (imageIndex + 1) % imageCount`).
+Khronos Group also has synchronization examples for [Swapchain Image Acquire and Present](https://github.com/KhronosGroup/Vulkan-Docs/wiki/Synchronization-Examples#swapchain-image-acquire-and-present). It features e.g. `VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT` execution dependency inside `VkSubmitInfo`. It functions as an additional check to `acquire_semaphore`. Turns out, vkAcquireNextImageKHR() is [allowed to return an image for which commands have been submitted but not finished executing](https://stackoverflow.com/questions/39599633/why-is-a-vkfence-necessary-for-every-swapchain-command-buffer-when-already-using). The `vkAcquireNextImageKHR()` is also allowed to return images out of order (`pImageIndex` has a value that is not a simple `imageIndex = (imageIndex + 1) % imageCount`).
 
 
 
@@ -434,19 +435,19 @@ Khronos Group has a list of the most common use cases in its [GitHub "Synchroniz
 
 Examples from Rust-Vulkan-TressFX:
 
-* [acquire_next_swapchain_image()](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/render_graph.rs#L172),
-* [wait_for_previous_frame_in_flight()](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/render_graph.rs#L182),
-* [queue submit](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/render_graph.rs#L363),
-* [queue present](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/render_graph.rs#L382),
+* [wait_for_previous_frame_in_flight()](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/render_graph.rs#L174),
+* [acquire_next_swapchain_image()](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/render_graph.rs#L183),
+* [queue submit](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/render_graph.rs#L356),
+* [queue present](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/render_graph.rs#L373),
 * Images
-    * prepare for `read-after-write`: [layout](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/vk_utils/vk_texture_sync.rs#L153), [access](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/vk_utils/vk_texture_sync.rs#L166),
-    * prepare for `write-after-write` or `write-after-read`: [layout](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/vk_utils/vk_texture_sync.rs#L191), [access](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/vk_utils/vk_texture_sync.rs#L205),
-* [the barrier between a render pass and compute shader that will change SSBO](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/render_graph/tfx_simulation.rs#L59),
-* [the barrier between 2 compute shaders](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/render_graph/tfx_simulation.rs#L95),
-* [the barrier between compute shader and vertex shader](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/render_graph/tfx_simulation.rs#L77),
-* [wait at the end of the setup command buffer](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/vk_utils/setup_cmd_buf.rs#L37),
-* [stalling CPU to get query results for the GPU profiler](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/gpu_profiler.rs#L155),
-* [drain work before exiting the app](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/main.rs#L138).
+    * prepare for `read-after-write`: [layout](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/vk_utils/vk_texture_sync.rs#L153), [access](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/vk_utils/vk_texture_sync.rs#L166),
+    * prepare for `write-after-write` or `write-after-read`: [layout](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/vk_utils/vk_texture_sync.rs#L191), [access](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/vk_utils/vk_texture_sync.rs#L205),
+* [the barrier between a render pass and compute shader that will change SSBO](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/render_graph/tfx_simulation.rs#L59),
+* [the barrier between 2 compute shaders](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/render_graph/tfx_simulation.rs#L95),
+* [the barrier between compute shader and vertex shader](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/render_graph/tfx_simulation.rs#L77),
+* [wait at the end of the setup command buffer](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/vk_utils/setup_cmd_buf.rs#L37),
+* [stalling CPU to get query results for the GPU profiler](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/gpu_profiler.rs#L155),
+* [drain work before exiting the app](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/35e4c7b2ae2bb891f4b3774fc777face21abf475/src/main.rs#L138).
 
 
 
@@ -469,7 +470,7 @@ If that fails, search for this command in [Sascha Willems' Vulkan examples](http
 Here are a few things you can try:
 
 - Use a global barrier that has `VK_PIPELINE_STAGE_ALL_COMMANDS_BIT`.
-- Check Vulkan [validation layers](/blog/vulkan-initialization/#vulkan-validation-layers). Overview by Jeremy Gebben and John Zulauf: ["Ensure Correct Vulkan Synchronization by Using Synchronization Validation"](https://www.youtube.com/watch?v=JvAIdtAZnAw).
+- Check Vulkan <CrossPostLink permalink="/blog/vulkan-initialization/" paragraph="Vulkan validation layers">validation layers</CrossPostLink>. Overview by Jeremy Gebben and John Zulauf: ["Ensure Correct Vulkan Synchronization by Using Synchronization Validation"](https://www.youtube.com/watch?v=JvAIdtAZnAw).
 - Create an option that will render only the first frame and exit the app. Add debug logs to everything e.g. image layout transitions, buffer barrier ranges, etc.
 - Use tools offered by IHV e.g. AMD's [Radeon Graphics Profiler ](https://gpuopen.com/rgp/) and [NVIDIA Nsight Graphics](https://developer.nvidia.com/nsight-systems) for NVIDIA.
 
@@ -526,10 +527,12 @@ You may stall GPU execution while waiting for previous work to finish. Our goal 
 * Hans-Kristian Arntzen's ["Yet another blog explaining Vulkan synchronization"](https://themaister.net/blog/2019/08/14/yet-another-blog-explaining-vulkan-synchronization)
 * Johannes Unterguggenberger's ["Understand Fences, Semaphores, Barriers,..."](https://www.youtube.com/watch?v=GiKbGWI4M-Y)
 * [Khronos Group's  "Understanding Vulkan Synchronization"](https://www.khronos.org/blog/understanding-vulkan-synchronization)
-* Arseny Kapoulkine's ["Writing an efficient Vulkan renderer"](https://zeux.io/2020/02/27/writing-an-efficient-vulkan-renderer/),
+* Arseny Kapoulkine's ["Writing an efficient Vulkan renderer"](https://zeux.io/2020/02/27/writing-an-efficient-vulkan-renderer/)
+* Yuriy O'Donnell's ["FrameGraph: Extensible Rendering Architecture in Frostbite"](https://www.gdcvault.com/play/1024612/FrameGraph-Extensible-Rendering-Architecture-in)
 * John Zulauf's ["How to Use Synchronization Validation Across Multiple Queues and Command Buffers"](https://www.youtube.com/watch?v=ykJ9jJYuxnI)
 * Tobias Hector's ["simple_vulkan_synchronization"](https://github.com/Tobski/simple_vulkan_synchronization)
-* Jeremy Gebben's and John Zulauf's ["Ensure Correct Vulkan Synchronization by Using Synchronization Validation"](https://www.youtube.com/watch?v=JvAIdtAZnAw).
+* Embark Studios's [kajiya](https://github.com/EmbarkStudios/kajiya/)
+* Jeremy Gebben's and John Zulauf's ["Ensure Correct Vulkan Synchronization by Using Synchronization Validation"](https://www.youtube.com/watch?v=JvAIdtAZnAw)
 * Access scope:
     * ["Why does VkAccessFlagBits include both read bits and write bits?"](https://stackoverflow.com/questions/39553185/why-does-vkaccessflagbits-include-both-read-bits-and-write-bits)
     * ["Why do write-after-read and read-after-read hazards only require execution dependencies to synchronize?"](https://github.com/ARM-software/vulkan-sdk/issues/25)

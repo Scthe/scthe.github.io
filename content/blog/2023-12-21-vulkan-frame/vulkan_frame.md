@@ -8,10 +8,10 @@ draft: false
 ---
 
 
-In previous articles, we have seen how to [initialize](/blog/vulkan-initialization/) Vulkan and [allocate memory](/blog/vulkan-resources/) for buffers/images. We've also looked into [synchronization](/blog/vulkan-synchronization/). We will now investigate how to use graphic and compute pipelines. This allows you to render triangles on the screen, or do efficient computations. As graphic pipelines are much more complicated, we will explore compute first.
+In previous articles, we have seen how to <CrossPostLink permalink="/blog/vulkan-initialization/">initialize</CrossPostLink> Vulkan and <CrossPostLink permalink="/blog/vulkan-resources/">allocate memory</CrossPostLink> for buffers/images. We've also looked into <CrossPostLink permalink="/blog/vulkan-synchronization/">synchronization</CrossPostLink>. We will now investigate how to use graphic and compute pipelines. This allows you to render triangles on the screen, or do efficient computations. As graphic pipelines are much more complicated, we will explore compute first.
 
 
-In Vulkan, when wanting to use a compute/graphic pass, we can differentiate 2 steps. First, we create a `VkPipeline` object. To do so, we need to declare e.g. shader modules, uniform types, framebuffer attachment types, depth/stencil test and write, etc. Think about it as providing the context for the shader compiler. SPIR-V code contained in `.spv` files is quite generic. The more information we provide during compilation, the more optimizations the driver can do. After all the passes are declared, we can start the second step - pass execution during the render loop. Each pass will `vkCmdBindPipeline()` and record its commands to a `command buffer`. In the end, we will call `vkQueueSubmit()` (submit the commands for execution) and `vkQueuePresentKHR()` (present the swapchain image). We have already explained the render loop synchronization in [Vulkan synchronization](/blog/vulkan-synchronization/).
+In Vulkan, when wanting to use a compute/graphic pass, we can differentiate 2 steps. First, we create a `VkPipeline` object. To do so, we need to declare e.g. shader modules, uniform types, framebuffer attachment types, depth/stencil test and write, etc. Think about it as providing the context for the shader compiler. SPIR-V code contained in `.spv` files is quite generic. The more information we provide during compilation, the more optimizations the driver can do. After all the passes are declared, we can start the second step - pass execution during the render loop. Each pass will `vkCmdBindPipeline()` and record its commands to a `command buffer`. In the end, we will call `vkQueueSubmit()` (submit the commands for execution) and `vkQueuePresentKHR()` (present the swapchain image). We have already explained the render loop synchronization in <CrossPostLink permalink="/blog/vulkan-synchronization/" paragraph="Synchronization between frames in Vulkan">"Vulkan synchronization"</CrossPostLink>.
 
 
 
@@ -104,13 +104,14 @@ As you can see, we are describing everything that we have already specified in t
   * [https://github.com/gwihlidal/spirv-reflect-rs](),
   * [https://github.com/grovesNL/spirv_cross]() - wrapper for `SPIRV-Cross`,
 
-> If you want to verify that uniform buffer values are correct (data alignment!), I recommend [RenderDoc](/blog/debugging-vulkan-using-renderdoc/).
+> If you want to verify that uniform buffer values are correct (data alignment!), I recommend <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/" paragraph="Debugging shader in RenderDoc">RenderDoc</CrossPostLink>.
 
 
 
 ### Declaring push constants
 
-Vulkan [push constants](https://docs.vulkan.org/guide/latest/push_constants.html) refer to a small amount of data that we can set **during pass execution**. Vulkan specification guarantees 128 bytes. Anything more is hardware-dependent. Imagine we are writing a [separable filter](https://en.wikipedia.org/wiki/Separable_filter) like a blur. For performance reasons we first do a horizontal blur, followed by [memory barriers](/blog/vulkan-synchronization/) and the vertical blur. But how do we inform the shader about the direction of the blur? We could bind a uniform buffer with this data and change the value between draw commands. Or just use push constants to transfer `vec2` (memory aligned to `vec4`):
+Vulkan [push constants](https://docs.vulkan.org/guide/latest/push_constants.html) refer to a small amount of data that we can set **during pass execution**. Vulkan specification guarantees 128 bytes. Anything more is hardware-dependent. Imagine we are writing a [separable filter](https://en.wikipedia.org/wiki/Separable_filter) like a blur. For performance reasons we first do a horizontal blur, followed by <CrossPostLink permalink="/blog/vulkan-synchronization/" paragraph="Vulkan pipeline barrier semantics">memory barriers</CrossPostLink> and the vertical blur. But how do we inform the shader about the direction of the blur? We could bind a uniform buffer with this data and change the value between draw commands. Or just use push constants to transfer `vec2` (memory aligned to `vec4`):
+
 
 ```c
 layout(push_constant) uniform Constants {
@@ -265,9 +266,9 @@ let group_count_x = get_group_count_x(...);
 device.cmd_dispatch(command_buffer, group_count_x, 1, 1);
 ```
 
-That's all there is to it. If you've used compute shaders in OpenGL, you already know about workgroup dimensions. In CUDA it is the [size of blocks per grid and the size of threads per block](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#thread-and-block-heuristics). [vkCmdDispatch()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdDispatch.html) allows to specify `groupCountX` (calculated by `get_group_count_x()`), and `groupCountY`, `groupCountZ` (both 1 in the code above). As you can see, using compute passes in Vulkan can be a bit tedious, but it's simple. Don't forget that RenderDoc [offers a debugger](/blog/debugging-vulkan-using-renderdoc/)!
+That's all there is to it. If you've used compute shaders in OpenGL, you already know about workgroup dimensions. In CUDA it is the [size of blocks per grid and the size of threads per block](https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#thread-and-block-heuristics). [vkCmdDispatch()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdDispatch.html) allows to specify `groupCountX` (calculated by `get_group_count_x()`), and `groupCountY`, `groupCountZ` (both 1 in the code above). As you can see, using compute passes in Vulkan can be a bit tedious, but it's simple. Don't forget that RenderDoc <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/" paragraph="Debugging shader in RenderDoc">offers a debugger</CrossPostLink>!
 
-> It's useful to have a callback before and after each compute/render pass. It's used to assign a profiler scope or a [debug name](/blog/debugging-vulkan-using-renderdoc/).
+> It's useful to have a callback before and after each compute/render pass. It's used to assign a profiler scope or a <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/" paragraph="Assigning labels to passes">debug name</CrossPostLink>.
 
 Let's now look at how to bind values for uniforms and push constants. This is something we will do for graphic passes too. 
 
@@ -346,7 +347,7 @@ You can find the code in [uniforms.rs: bind_resources_to_descriptors()](https://
   />
   <Figcaption>
 
-Debugging uniform values in [RenderDoc](/blog/debugging-vulkan-using-renderdoc/). It also works with `push constants`.
+Debugging uniform values in <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/" paragraph="Debugging shader in RenderDoc">RenderDoc</CrossPostLink>. It also works with `push constants`.
 
   </Figcaption>
 </Figure>
@@ -452,13 +453,13 @@ Even if you use a depth/stencil buffer only for tests, you still have to declare
 
 [Creating VkPipeline](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateGraphicsPipelines.html) requires filling all fields of the [VkGraphicsPipelineCreateInfo](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkGraphicsPipelineCreateInfo.html). It's tedious. I recommend writing a utility that will initialize `VkGraphicsPipelineCreateInfo` with some default values. This way:
 
-- There is only one place to fix the errors. As you might have read in my [VulkanRenderDoc article](/blog/debugging-vulkan-using-renderdoc/), I made the mistake of using memory after `Vec` went out of scope. This crashed RenderDoc at random. Fixing it was [easy enough](https://github.com/Scthe/Rust-Vulkan-TressFX/commit/8927ca22be424577e35b02643f6daeb5f9f78f26).
+- There is only one place to fix the errors. As you might have read in my <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/" paragraph="Bug example when loading the capture">"Debugging Vulkan using RenderDoc"</CrossPostLink> article, I made the mistake of using memory after `Vec` went out of scope. This crashed RenderDoc at random. Fixing it was [easy enough](https://github.com/Scthe/Rust-Vulkan-TressFX/commit/8927ca22be424577e35b02643f6daeb5f9f78f26).
 - Makes it impossible for certain classes of errors to happen. In Rust, Ash will happily initialize `VkStencilOpState.write_mask` to `0`. It's a bit dreary to remember to set it every time.
 - It shows what is actually important. In Rust Vulkan TressFX's [forward rendering pass](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/render_graph/forward_pass.rs#L166), the only thing that matters is depth stencil settings. I have worked with many people who like to copy-paste entire pages of code or JIRA ticket descriptions. Nothing says 'a job' more than diffing text of 5 JIRA tickets! As they say "If I had more time, I would have written a shorter letter.".
 
 The values I've chosen are ones that can render a fullscreen quad. E.g. depth, stencil test/write disabled, no culling, blend mode to override current content, etc.
 
-> I've also suggested a similar approach in the [OpenGL DrawParams article](/blog/opengl-state-management/). At least in Vulkan, the settings have [less](https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDepthMask.xhtml) [unhinged](https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDepthFunc.xhtml) [names](https://registry.khronos.org/OpenGL-Refpages/gl4/html/glEnable.xhtml).
+> I've also suggested a similar approach in the <CrossPostLink permalink="/blog/opengl-state-management/">"OpenGL state management"</CrossPostLink> article. At least in Vulkan, the settings have [less](https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDepthMask.xhtml) [unhinged](https://registry.khronos.org/OpenGL-Refpages/gl4/html/glDepthFunc.xhtml) [names](https://registry.khronos.org/OpenGL-Refpages/gl4/html/glEnable.xhtml).
 
 It's worthwhile to create a few functions to generate common settings combinations. E.g. `stencil_write_if_touched(reference: u32, override_current: bool)` or `depth_stencil_noop()` etc. Usefulness depends on use cases. For example, in Rust-Vulkan-TressFX, there were only [4 different use cases for depth/stencil](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/vk_utils/pipeline.rs#L205). Similar utilities proved helpful for the rest of `VkGraphicsPipelineCreateInfo's` fields.
 
@@ -514,7 +515,7 @@ create_graphic_pipeline_with_defaults(
 
 You can find the full usage sample in [ForwardPass.create_pipeline()](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/render_graph/forward_pass.rs), and the utility itself in [pipeline.rs](https://github.com/Scthe/Rust-Vulkan-TressFX/blob/c0a020e1117bbb2d4ab6737738d8f89b9cb8b4b1/src/vk_utils/pipeline.rs#55)
 
-As for what each struct field does, I recommend reading the docs carefully. If you have worked with any graphic API before, you will find the options familiar. Some of the options I've described in detail in the [OpenGL DrawParams article](/blog/opengl-state-management/).
+As for what each struct field does, I recommend reading the docs carefully. If you have worked with any graphic API before, you will find the options familiar. Some of the options I've described in detail in the <CrossPostLink permalink="/blog/opengl-state-management/">"OpenGL state management"</CrossPostLink> article.
 
 `VkGraphicsPipelineCreateInfo` is the most complex object in Vulkan. Unfortunately, you might have to create a lot of `VkPipelines` for a single graphic pass. In Rust-Vulkan-TressFX, both mesh and hair can cast shadows. The fragment shader is the same in both cases. Only vertex shader changes. This means that for this pass I had to create:
 
@@ -635,7 +636,7 @@ While that's a lot of code, there is not much new. We have already seen most of 
 
 Of course, in the real app, there are more efficient ways of rendering the triangles. Rebinding uniforms for every object is probably not the best idea. You might also store all vertex and index buffers in big continuous `VkBuffers`. Use `entity.first_index` and `entity.vertex_offset` parameters to control offsets.
 
-> It's useful to have a callback before and after each compute/render pass. It's used to assign a profiler scope or a [debug name](/blog/debugging-vulkan-using-renderdoc/).
+> It's useful to have a callback before and after each compute/render pass. It's used to assign a profiler scope or a <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/" paragraph="Assigning labels to passes">debug name</CrossPostLink>.
 
 
 

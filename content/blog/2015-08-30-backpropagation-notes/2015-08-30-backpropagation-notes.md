@@ -10,7 +10,7 @@ draft: false
 
 In this article we will derive the basic math behind nerural networks. Leter we will adapt the equations for convolutional neural networks. I've done this by hand for my [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution) project, so that you don't have to.
 
-If you are looking for practical tips about implementing neural networks, you should check out my other article - ["Writing neural networks from scratch - implementation tips"](/blog/neural-networks-implementation-tips/).
+If you are looking for practical tips about implementing neural networks, you should check out my other article - <CrossPostLink permalink="/blog/neural-networks-implementation-tips/">"Writing neural networks from scratch - implementation tips"</CrossPostLink>.
 
 
 ## Chain rule
@@ -327,7 +327,7 @@ Now it's time for part II.
 
 
 
-## Backpropagation in Convolutional Neural Networks (as it applies to images)
+## Backpropagation in Convolutional Neural Networks
 
 Main difference between fully connected and convolutional neural networks is that weights and biases are now reused.
 
@@ -456,7 +456,7 @@ $$
 
 ### Parameters
 
-The key now is to follow the sentence from TL;DR in [CNN - forward propagation](#forward-propagation):
+The key now is to follow the sentence from TL;DR in <CrossPostLink paragraph="Forward propagation">CNN - forward propagation</CrossPostLink>:
 
 > 'Since we apply **same** kernel several times across image, we effectively share kernel (therefore - weights).'
 
@@ -485,4 +485,4 @@ $$
 
 Hopefully notes presented here helped You understand neural networks better. If You know how the equations were created You can adapt them to any use case.
 
-If you are looking for practical tips about implementing neural networks, you should check out my other article - ["Writing neural networks from scratch - implementation tips"](/blog/neural-networks-implementation-tips/).
+If you are looking for practical tips about implementing neural networks, you should check out my other article - <CrossPostLink permalink="/blog/neural-networks-implementation-tips/">"Writing neural networks from scratch - implementation tips"</CrossPostLink>.

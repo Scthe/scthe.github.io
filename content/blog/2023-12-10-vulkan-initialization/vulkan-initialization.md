@@ -10,7 +10,6 @@ draft: false
 
 Vulkan is infamous for being both complex and verbose. This is the first article in the series meant to explain all the complexity. Ideal readers should at least skim the [Vulkan-tutorial](https://vulkan-tutorial.com/) beforehand. I'm not going to provide snippets to copy and paste to assemble the whole program. Instead, we will walk through every API function that we call. We will discuss what is its purpose, and what every parameter represents. I hope it will allow you to make more conscious choices when writing the code.
 
-<CrossPostLink permalink="vulkan-synchronization" paragraph="Offscreen framebufers"> some text!</CrossPostLink>
 
 > I'm using Rust and [Ash](https://github.com/ash-rs/ash), but I assume C++ developers will not have much problem following the code. `VK_FORMAT_B8G8R8A8_UNORM` becomes `vk::Format::B8G8R8A8_UNORM`. All functions are `snake_case` and are usually invoked on an `ash::Device` object instead of being global.
 
@@ -39,7 +38,9 @@ The above steps are mandatory in every Vulkan application. Many applications do 
 
 * [Create a command pool](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateCommandPool.html) and [command buffers](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkAllocateCommandBuffers.html). I've only used 1 `command buffer` per `frame in flight` as the whole app is quite simple. In multithreaded command recording, this approach would have to be adjusted.
 * Initialize [AMD Vulkan Memory Allocator](https://gpuopen.com/vulkan-memory-allocator/). In Rust and [Ash](https://github.com/ash-rs/ash) I've used [vma](https://crates.io/crates/vma) over [vk-mem-rs](https://github.com/gwihlidal/vk-mem-rs) as it is actively maintained.
-* Create some intra-frame synchronization objects. It's usually something like `acquire_semaphore`, `rendering_complete_semaphore` (sometimes known as `release_semaphore`), `queue_submit_finished_fence` etc. We will investigate each of these objects in [Vulkan synchronization](#).
+* Create some intra-frame synchronization objects. It's usually something like `acquire_semaphore`, `rendering_complete_semaphore` (sometimes known as `release_semaphore`), `queue_submit_finished_fence` etc. We will investigate each of these objects in <CrossPostLink permalink="/blog/vulkan-synchronization/" paragraph="Synchronization between frames in Vulkan">"Vulkan synchronization"</CrossPostLink>.
+
+
 
 After the above operations finish, we can move to either render graph initialization (pipelines, render passes etc.) or load our scene (vertex and index buffers, materials etc.). After all, our Vulkan 'context' is initialized and we can start writing our app.
 
@@ -64,7 +65,7 @@ Vulkan instance extensions relate to either Vulkan installation or integration w
 
 * [VK_KHR_surface](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_surface.html). Adds `VkSurfaceKHR` objects that serve as a bridge between OS-backed window and Vulkan. You can use it to e.g. [query](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkGetPhysicalDeviceSurfaceFormatsKHR.html) available [surface formats](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkSurfaceFormatKHR.html)(color space and `VkFormat`).
 * [VK_KHR_win32_surface](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_win32_surface.html), [VK_KHR_xlib_surface](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_xlib_surface.html), [VK_MVK_macos_surface](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_MVK_macos_surface.html), [VK_KHR_android_surface](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_android_surface.html). Used to create `VkSurfaceKHR` based on the OS window. For e.g. on Windows [vkCreateWin32SurfaceKHR()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateWin32SurfaceKHR.html) uses [HINSTANCE](https://devblogs.microsoft.com/oldnewthing/20050418-59/?p=35873) and [HWND](https://learn.microsoft.com/en-us/windows/apps/develop/ui-input/retrieve-hwnd).
-* [VK_EXT_debug_utils](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_EXT_debug_utils.html). Used to pretty-print validation layer messages, add labels to objects or group commands into logical passes. I've written ["Debugging Vulkan using RenderDoc"](/blog/debugging-vulkan-using-renderdoc/) based on this extension.
+* [VK_EXT_debug_utils](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_EXT_debug_utils.html). Used to pretty-print validation layer messages, add labels to objects or group commands into logical passes. I've written <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/">"Debugging Vulkan using RenderDoc"</CrossPostLink> based on this extension.
 
 > If you are using ash, just query [ash-window's enumerate_required_extensions()](https://github.com/ash-rs/ash/blob/e6d80badc389d94e2a747f442e5ed4189b66d7d3/ash-window/src/lib.rs#L121). On Windows it will return both `VK_KHR_surface` and `VK_KHR_win32_surface`.
 
@@ -223,10 +224,10 @@ Using devices in Vulkan involves many steps. Here is a quick summary:
 Here are a few of Vulkan device extensions that you might consider using:
 
 * [VK_KHR_swapchain](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_swapchain.html). Companion to `VK_KHR_surface`. Adds the ability to present the result to a window.
-* [VK_KHR_synchronization2](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_synchronization2.html). Simplifies synchronization API. We will look at it closely in ["Vulkan synchronization"](#).
+* [VK_KHR_synchronization2](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_synchronization2.html). Simplifies synchronization API. We will look at it closely in <CrossPostLink permalink="/blog/vulkan-synchronization/">"Vulkan synchronization"</CrossPostLink>.
 * [VK_KHR_push_descriptor](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_push_descriptor.html). Simplifies managing uniforms. Uniforms are used to provide data (buffers, images etc.) to shaders.
 * [VK_KHR_separate_depth_stencil_layouts](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_separate_depth_stencil_layouts.html). Used to read only depth from combined depth/stencil image.
-* [VK_KHR_shader_non_semantic_info](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_shader_non_semantic_info.html). We have already seen this extension in ["Debugging Vulkan using RenderDoc"](/blog/debugging-vulkan-using-renderdoc/).
+* [VK_KHR_shader_non_semantic_info](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_shader_non_semantic_info.html). We have already seen this extension in <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/">"Debugging Vulkan using RenderDoc"</CrossPostLink>.
 
 In `VkApplicationInfo` you decided on the Vulkan version. It may already contain some of the extensions you will use. It's not necessary to redeclare them. Validation layers will inform you if this happens.
 
@@ -317,7 +318,7 @@ pub unsafe fn get_present_mode(
 
 Documentation for `VkPresentModeKHR` is surprisingly easy to read. I also recommend Johannes Unterguggenberger's ["Presentation Modes and Swap Chain Setup in Vulkan"](https://www.youtube.com/watch?v=nSzQcyQTtRY). `VK_PRESENT_MODE_FIFO_KHR` is always available and makes a good default.
 
-> Remember `VkPresentModeKHR` as it will be important when we discuss [frames in flight](#).
+> Remember `VkPresentModeKHR` as it will be important when we discuss <CrossPostLink permalink="/blog/vulkan-synchronization/" paragraph="Synchronizing frames in flight and swapchain images">frames in flight</CrossPostLink>.
 
 Yet this is not enough to enable/disable VSync. Imagine some old-school WinForms app. It rerenders the content **only** after user interaction. Of course, in video games, we do not want this (though it could be useful in e.g. main menu when nothing dynamic happens). I have used winit Rust library and this behavior is described in the [event handling](https://docs.rs/winit/0.25.0/winit/#event-handling) section.
 
@@ -425,12 +426,13 @@ let swapchain_image_views: Vec<vk::ImageView> = swapchain_images
 
 In C++ you call [vkCreateImageView()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateImageView.html). I do not have much experience with VR, but I think that's the only case for `layer_count` other than 1. You have separate image views for the left and right eye. There is no need for mipmaps other than the base level. The only parameter that is not contained in this snippet is `swapchain_image_format`. It's the format that we selected after calling `vkGetPhysicalDeviceSurfaceFormatsKHR()` e.g. `vk::Format::B8G8R8A8_UNORM`.
 
-> The number of created swapchain images is not related to `frames in flight`. This is discussed in [Vulkan synchronization](#).
+> The number of created swapchain images is not related to `frames in flight`. This is discussed in <CrossPostLink permalink="/blog/vulkan-synchronization/" paragraph="Synchronizing frames in flight and swapchain images">"Vulkan synchronization"</CrossPostLink>.
 
 
 ## Other miscellaneous Vulkan objects
 
-Most of the Vulkan initialization is behind us. The objects that are left - while important - are quite simple to use. We will explore AMD's Vulkan Memory Allocator in a separate article about [Vulkan resources](#).
+Most of the Vulkan initialization is behind us. The objects that are left - while important - are quite simple to use. We will explore AMD's Vulkan Memory Allocator in a separate article about <CrossPostLink permalink="/blog/vulkan-resources/" paragraph="Using AMD's VulkanMemoryAllocator">Vulkan resources</CrossPostLink>.
+
 
 
 ### Storing Vulkan commands
@@ -441,7 +443,7 @@ To execute an operation in Vulkan, you record commands to the GPU into a `comman
 * [vkCmdDispatch()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdDispatch.html). Dispatch compute shader.
 * [vkCmdBindVertexBuffers()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdBindVertexBuffers.html), [vkCmdBindIndexBuffer()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdBindIndexBuffer.html). Bind vertex/index buffers before a draw.
 * [vkCmdCopyBuffer()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdCopyBuffer.html), [vkCmdCopyImage()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdCopyImage.html). Copy data between buffers/images.
-* [vkCmdWriteTimestamp()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdWriteTimestamp.html). Used by GPU profilers. We will use this when writing [Simple GPU profiler](#).
+* [vkCmdWriteTimestamp()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdWriteTimestamp.html). Used by GPU profilers.
 
 The first argument is always the `command buffer` to which the command is recorded. This is a core concept of Vulkan. Recording commands consume most of the CPU time when drawing the frame.
 
@@ -457,7 +459,7 @@ To create a `command buffer` call [vkAllocateCommandBuffers()](https://registry.
 
 The simplest usage of `command buffers` is one for each `frame in flight` to have its `command buffer`. At the start of the frame we call `vkBeginCommandBuffer()`. We record some commands. Then we call `vkEndCommandBuffer()` and submit the work to GPU with `vkQueueSubmit()`. Of course, this can get more complicated. If you have many threads recording `command buffers` for a single frame, you usually have one `command pool` per thread.
 
-> We will explore `frames in flight` in depth in [Vulkan synchronization](#). Reading it will allow you to make more conscious decisions regarding `command buffers`.
+> We will explore `frames in flight` in depth in <CrossPostLink permalink="/blog/vulkan-synchronization/" paragraph="Synchronizing frames in flight and swapchain images">"Vulkan synchronization"</CrossPostLink>. Reading it will allow you to make more conscious decisions regarding `command buffers`.
 
 Let's look at sample Vulkan projects:
 
@@ -466,9 +468,9 @@ Let's look at sample Vulkan projects:
 
 Alternatively, you can record the command buffers once during the app initialization. Every app parameter is then controlled by uniforms. While not all apps fit this approach, it could be an interesting optimization.
 
-A common pattern in Vulkan is to create a special `setup command buffer`. When uploading data for 3D objects, we might not be able to write to high-performance GPU memory regions directly from the CPU. To solve this, we write the data to temporary, CPU-visible memory and use the `setup command buffer` to copy it to the more optimal chunk of memory. We will see this pattern over and over again in the [Vulkan resources](#) article.
+A common pattern in Vulkan is to create a special `setup command buffer`. When uploading data for 3D objects, we might not be able to write to high-performance GPU memory regions directly from the CPU. To solve this, we write the data to temporary, CPU-visible memory and use the `setup command buffer` to copy it to the more optimal chunk of memory. We will see this pattern over and over again in the <CrossPostLink permalink="/blog/vulkan-resources/">"Vulkan resources"</CrossPostLink> article.
 
-While command buffers are easy to create there is a bit of theory behind using them efficiently. Be it to [set up synchronization](#), optimize [resource's memory placement](#), or [draw scene triangles](#). Commands are how you order a GPU to do something.
+While command buffers are easy to create there is a bit of theory behind using them efficiently. Be it to <CrossPostLink permalink="/blog/vulkan-synchronization/" paragraph="Synchronizing frames in flight and swapchain images">set up synchronization</CrossPostLink>, optimize <CrossPostLink permalink="/blog/vulkan-resources/">resource's memory placement</CrossPostLink>, or <CrossPostLink permalink="/blog/vulkan-frame/">draw scene triangles</CrossPostLink>. Commands are how you order a GPU to do something.
 
 
 
@@ -481,7 +483,7 @@ In Vulkan, the pipeline complements commands that use shaders. To create a `VkPi
 
 ## Summary
 
-In this article, we have seen how to initialize Vulkan. We've chosen the API version and added instance and device extensions. We went over Vulkan integration with an OS-provided window. Swapchain images are ready for render. We have listed available GPUs and selected ones that match our preferences. We created a `queue` to which we will submit commands. The pipeline cache is ready for compute and graphic passes. We have seen how to create `command buffers`. But before we progress further, we need to understand [Vulkan synchronization](/blog/vulkan-synchronization/).
+In this article, we have seen how to initialize Vulkan. We've chosen the API version and added instance and device extensions. We went over Vulkan integration with an OS-provided window. Swapchain images are ready for render. We have listed available GPUs and selected ones that match our preferences. We created a `queue` to which we will submit commands. The pipeline cache is ready for compute and graphic passes. We have seen how to create `command buffers`. But before we progress further, we need to understand <CrossPostLink permalink="/blog/vulkan-synchronization/">Vulkan synchronization</CrossPostLink>.
 
 
 
@@ -495,4 +497,7 @@ In this article, we have seen how to initialize Vulkan. We've chosen the API ver
 * Alex Fry's ["High Dynamic Range Color Grading and Display in Frostbite"](https://www.youtube.com/watch?v=7z_EIjNG0pQ),
 * Tom Forsyth's ["The sRGB Learning Curve"](https://medium.com/@tomforsyth/the-srgb-learning-curve-773b7f68cf7a),
 * Johannes Unterguggenberger's ["Presentation Modes and Swap Chain Setup in Vulkan"](https://www.youtube.com/watch?v=nSzQcyQTtRY).
+* Embark Studios's [kajiya](https://github.com/EmbarkStudios/kajiya/),
+* Arseny Kapoulkine's [niagara](https://github.com/zeux/niagara),
+
 

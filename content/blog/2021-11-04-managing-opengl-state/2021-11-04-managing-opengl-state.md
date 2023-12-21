@@ -1,7 +1,7 @@
 ---
 title: "Declarative OpenGL state management"
 permalink: "/blog/opengl-state-management/"
-excerpt: "Some parts of OpenGL API reach as far back as the year 1992 and it shows. Let's look at how to manage basic OpenGL state in a more stateless way."
+excerpt: "Some parts of OpenGL API reach as far back as the year 1992 and it shows. Let's look at how to manage the basic OpenGL state in a more stateless way."
 date: 2021-11-11 12:00:00
 image: "./opengl-state-management.jpg"
 draft: false
@@ -205,7 +205,7 @@ drawFullscreenQuad();
 
 A stencil buffer usually offers 8-bit resolution (256 values). It's common to use a mask, so you compare e.g. only the 5th bit. The stencil buffer is great to mark pixels that contain certain properties e.g. skin, wet surfaces, etc. It can also be used with basic math operations with e.g. `GL_INCR`.
 
-Stencil settings are `separable`. This means we can specify the settings for front and back faces independently. I will explore this topic in detail in sections about [face culling](#cull-state). Separable stencil functions have `Separate` suffix (e.g. `glStencilMaskSeparate`) and the first parameter is always `GLenum face` which can be one of `GL_FRONT`, `GL_BACK`, `GL_FRONT_AND_BACK`. The nonseparable variant is equal to `GL_FRONT_AND_BACK`.
+Stencil settings are `separable`. This means we can specify the settings for front and back faces independently. I will explore this topic in detail in sections about <CrossPostLink paragraph="Cull state">face culling</CrossPostLink>. Separable stencil functions have `Separate` suffix (e.g. `glStencilMaskSeparate`) and the first parameter is always `GLenum face` which can be one of `GL_FRONT`, `GL_BACK`, `GL_FRONT_AND_BACK`. The nonseparable variant is equal to `GL_FRONT_AND_BACK`.
 
 
 ### Enable/disable stencil testing
@@ -579,8 +579,8 @@ From the docs, here is what affects this operation:
 
 * [Pixel ownership test](https://www.khronos.org/opengl/wiki/Per-Sample_Processing#Pixel_ownership_test) - there are special rules for the default/window framebuffer. See [OpenGL 4.6 spec](https://www.khronos.org/registry/OpenGL/specs/gl/glspec46.core.pdf) section "14.9.1 Pixel Ownership Test".
 
-* The scissor test - discussed in [scissor test section](#scissor-gl-scissor). Used to clear only a rectangular subsection of the texture.
-* Dithering - discussed in [dithering section](#dithering)
+* The scissor test - discussed in <CrossPostLink paragraph="Scissor - glScissor">scissor test section</CrossPostLink>. Used to clear only a rectangular subsection of the texture.
+* Dithering - discussed in <CrossPostLink paragraph="Dithering">dithering section</CrossPostLink>
 * Buffer writemasks - each type of buffer is affected by different masks as discussed in a previous paragraph.
 
 In particular, `glClear` is not affected by blend function, stencil, fragment shaders, depth-buffering, or glViewport.
@@ -636,7 +636,7 @@ glClearBufferiv(GL_STENCIL, 0, clearStencil); // stencil
 
 
 
-## What we achieved
+## Summary
 
 Our goal was to simplify draw state management in OpenGL. State management is a crucial part of the API, but lack of visibility and inaccessible documentation made it complicated to use. After applying a few tricks we were able to achieve:
 

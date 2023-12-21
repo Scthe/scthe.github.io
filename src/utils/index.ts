@@ -7,6 +7,8 @@ export type ArrayItemType<T extends readonly unknown[]> =
 
 export type EnsureDefined<T> = T extends undefined | null ? never : T;
 
+export type Maybe<T> = T | undefined | null;
+
 export const removePrefix = (str: string, prefix: string): string => {
   return str.startsWith(prefix) ? str.substring(prefix.length) : str;
 };

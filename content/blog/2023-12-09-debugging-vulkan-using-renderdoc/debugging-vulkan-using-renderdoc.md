@@ -1,7 +1,7 @@
 ---
 title: "Debugging Vulkan using RenderDoc"
 permalink: "/blog/debugging-vulkan-using-renderdoc/"
-excerpt: "Learn how to debug Vulkan using RenderDoc. Add labels to objects and passess. Debug GLSL code as if it was run on CPU."
+excerpt: "Learn how to debug Vulkan using RenderDoc. Add labels to objects and passes. Debug GLSL code as if it was run on CPU."
 date: 2023-12-09 12:00:00
 image: "./sintel_debug.jpg"
 draft: false
@@ -191,7 +191,7 @@ Provide it to [vkSetDebugUtilsObjectNameEXT](https://registry.khronos.org/vulkan
 
 Even if we add labels to `VkRenderPass` object, they will not show up in the `Event Browser` window. The label will be only visible on all objects that reference it e.g. `VkPipeline`. You may notice that it's not even what we want. We want to 'group' Vulkan commands between the start and end events. With [vkCmdBeginDebugUtilsLabelEXT](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdBeginDebugUtilsLabelEXT.html) and [vkCmdEndDebugUtilsLabelEXT](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCmdEndDebugUtilsLabelEXT.html) we could have the following example sequence of commands:
 
-```c++
+```c
 vkCmdBeginDebugUtilsLabelEXT(...); // start region
 vkCmdBeginRenderPass(...);
 vkCmdBindDescriptorSets(...);
@@ -227,7 +227,7 @@ pub unsafe fn end_cmd_buffer_debug_label(
 
 // usage:
 begin_cmd_buffer_debug_label(&debug_utils, command_buffer, "MyRenderTrianglePass");
-... // cmd_begin_render_pass / cmd_draw_* / cmd_end_render_pass etc.
+... // cmd_begin_render_pass() / cmd_draw_*() / cmd_end_render_pass() etc.
 end_cmd_buffer_debug_label(&debug_utils, command_buffer);
 ```
 

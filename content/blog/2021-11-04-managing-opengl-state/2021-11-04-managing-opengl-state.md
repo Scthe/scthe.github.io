@@ -474,7 +474,7 @@ The solution is simple - add **small** (much less than 1), unique random value t
 
 ### Blend
 
-Unfortunately, I do not have enough experience to discuss blend states. This topic is quite complicated and would probably require a separate article.
+Unfortunately, I do not have enough experience to discuss blend states. This topic is quite complicated and would probably require a separate article. I can recommend Apoorva Joshi's ["Alpha compositing, OpenGL blending and premultiplied alpha"](https://apoorvaj.io/alpha-compositing-opengl-blending-and-premultiplied-alpha/) as a good overview.
 
 
 

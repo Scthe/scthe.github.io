@@ -55,10 +55,6 @@ const TableOfContents: React.FC<Props> = () => {
     return null;
   }
 
-  if (mode !== 'development') {
-    return null;
-  }
-
   const expandedSign = isExpanded ? '-' : '+';
 
   // hide on speech readers. It's a build-in for them (based on header tags)

@@ -476,9 +476,9 @@ While command buffers are easy to create there is a bit of theory behind using t
 
 ## Pipeline cache
 
-In Vulkan, the pipeline complements commands that use shaders. To create a `VkPipeline`, one does need a `VkShaderModule`. [The pipeline for compute shaders](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkComputePipelineCreateInfo.html) consists mostly of `VkPipelineShaderStageCreateInfo` (derived from `VkShaderModule`) and the description of uniform bindings. the graphic pipeline uses the most complex Vulkan object - [VkGraphicsPipelineCreateInfo](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkGraphicsPipelineCreateInfo.html). Besides shader and uniform data, it describes vertex format, viewport size, depth/stencil/blending operations, front face culling, and many, many more. There is also a separate [vkCreateRayTracingPipelinesKHR](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateRayTracingPipelinesKHR.html) to create a ray-tracing pipeline.
+In Vulkan, the pipeline complements commands that use shaders. To create a `VkPipeline`, one does need a `VkShaderModule`. [The pipeline for compute shaders](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkComputePipelineCreateInfo.html) consists mostly of `VkPipelineShaderStageCreateInfo` (derived from `VkShaderModule`) and the description of uniform bindings. The graphic pipeline uses the most complex Vulkan object - [VkGraphicsPipelineCreateInfo](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VkGraphicsPipelineCreateInfo.html). Besides shader and uniform data, it describes vertex format, viewport size, depth/stencil/blending operations, front face culling, and many, many more. There is also a separate [vkCreateRayTracingPipelinesKHR()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreateRayTracingPipelinesKHR.html) to create a ray-tracing pipeline.
 
-`Pipeline cache` is required to create a new `VkPipeline`. As the name suggests, it tries to optimize the creation of new pipelines. Use [vkGetPipelineCacheData()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkGetPipelineCacheData.html) to get cache content and save it on the hard drive. Call [vkCreatePipelineCache()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreatePipelineCache.html) to create a new cache. `VkPipelineCacheCreateInfo.pInitialData` is a `void*` pointer to the data retrieved from the hard drive. What is the content of the cache? It's driver-dependent. You can read Arseny Kapoulkine's ["Robust pipeline cache serialization"](https://zeux.io/2019/07/17/serializing-pipeline-cache/) for more details. It mentions e.g. how to discard the previous cache if the user has changes GPU or installs a new driver.
+`Pipeline cache` is required to create a new `VkPipeline`. As the name suggests, it tries to optimize the creation of new pipelines. Use [vkGetPipelineCacheData()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkGetPipelineCacheData.html) to get cache content and save it on the hard drive. Call [vkCreatePipelineCache()](https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/vkCreatePipelineCache.html) to create a new cache. `VkPipelineCacheCreateInfo.pInitialData` is a `void*` pointer to the data retrieved from the hard drive. What is the content of the cache? It's driver-dependent. You can read Arseny Kapoulkine's ["Robust pipeline cache serialization"](https://zeux.io/2019/07/17/serializing-pipeline-cache/) for more details. It mentions e.g. how to discard the previous cache if the user has changed GPU or installed a new driver.
 
 
 ## Summary
@@ -490,10 +490,10 @@ In this article, we have seen how to initialize Vulkan. We've chosen the API ver
 
 ## References
 
-* [https://vulkan-tutorial.com/](),
+* [https://vulkan-tutorial.com/](https://vulkan-tutorial.com/),
 * Arseny Kapoulkine's ["niagara: Building a Vulkan renderer from scratch*"](https://www.youtube.com/playlist?list=PL0JVLUVCkk-l7CWCn3-cdftR0oajugYvd) playlist,
 * Arseny Kapoulkine's ["Writing an efficient Vulkan renderer"](https://zeux.io/2020/02/27/writing-an-efficient-vulkan-renderer/),
-* [https://stackoverflow.com/questions/55272626/what-is-actually-a-queue-family-in-vulkan](),
+* [https://stackoverflow.com/questions/55272626/what-is-actually-a-queue-family-in-vulkan](https://stackoverflow.com/questions/55272626/what-is-actually-a-queue-family-in-vulkan),
 * Alex Fry's ["High Dynamic Range Color Grading and Display in Frostbite"](https://www.youtube.com/watch?v=7z_EIjNG0pQ),
 * Tom Forsyth's ["The sRGB Learning Curve"](https://medium.com/@tomforsyth/the-srgb-learning-curve-773b7f68cf7a),
 * Johannes Unterguggenberger's ["Presentation Modes and Swap Chain Setup in Vulkan"](https://www.youtube.com/watch?v=nSzQcyQTtRY).

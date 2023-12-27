@@ -94,15 +94,15 @@ let ds_layout = device
 
 As you can see, we are describing everything that we have already specified in the GLSL shader code. Fortunately, there are tons of existing libraries that can use reflection to generate this data:
 
-* [https://github.com/KhronosGroup/SPIRV-Reflect](),
-* [https://github.com/KhronosGroup/SPIRV-Cross]() - with [user guide](https://github.com/KhronosGroup/SPIRV-Cross/wiki/Reflection-API-user-guide),
-* AMD's [https://github.com/GPUOpen-LibrariesAndSDKs/V-EZ]() - seems to be inactive,
+* [https://github.com/KhronosGroup/SPIRV-Reflect](https://github.com/KhronosGroup/SPIRV-Reflect).
+* [https://github.com/KhronosGroup/SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross). Has [user guide](https://github.com/KhronosGroup/SPIRV-Cross/wiki/Reflection-API-user-guide).
+* AMD's [https://github.com/GPUOpen-LibrariesAndSDKs/V-EZ](https://github.com/GPUOpen-LibrariesAndSDKs/V-EZ). Seems to be inactive.
 * In Rust:
-  * [https://github.com/gfx-rs/rspirv]() - a comprehensive set of tools to manage SPRI-V from Rust, might be overkill,
-  * [https://github.com/Traverse-Research/rspirv-reflect] - Embark Studios kajiya uses a [fork](https://github.com/h3r2tic/rspirv-reflect),
-  * [https://github.com/PENGUINLIONG/spirq-rs]()
-  * [https://github.com/gwihlidal/spirv-reflect-rs](),
-  * [https://github.com/grovesNL/spirv_cross]() - wrapper for `SPIRV-Cross`,
+  * [https://github.com/gfx-rs/rspirv](https://github.com/gfx-rs/rspirv). A comprehensive set of tools to manage SPRI-V from Rust, might be overkill.
+  * [https://github.com/Traverse-Research/rspirv-reflect](https://github.com/Traverse-Research/rspirv-reflect). Does not work with <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/" paragraph="Debugging shader in RenderDoc">VK_KHR_shader_non_semantic_info</CrossPostLink>. Embark Studios kajiya uses a [fork](https://github.com/h3r2tic/rspirv-reflect),
+  * [https://github.com/PENGUINLIONG/spirq-rs](https://github.com/PENGUINLIONG/spirq-rs). Does not work with <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/" paragraph="Debugging shader in RenderDoc">VK_KHR_shader_non_semantic_info</CrossPostLink>.
+  * [https://github.com/gwihlidal/spirv-reflect-rs](https://github.com/gwihlidal/spirv-reflect-rs). Wrapper for `SPIRV-Reflect`.
+  * [https://github.com/grovesNL/spirv_cross](https://github.com/grovesNL/spirv_cross). Wrapper for `SPIRV-Cross`.
 
 > If you want to verify that uniform buffer values are correct (data alignment!), I recommend <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/" paragraph="Debugging shader in RenderDoc">RenderDoc</CrossPostLink>.
 

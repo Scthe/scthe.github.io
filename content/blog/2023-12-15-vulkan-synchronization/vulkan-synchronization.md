@@ -24,7 +24,7 @@ It might seem unusual to discuss synchronization right after we have finished in
 
 
 
-## Synchronization in Vulkan
+## Vulkan synchronization rules
 
 
 Here are the [general rules for Vulkan synchronization](https://gpuopen.com/wp-content/uploads/2016/05/Most-common-mistakes-in-Vulkan-apps.pdf):
@@ -519,7 +519,7 @@ You may stall GPU execution while waiting for previous work to finish. Our goal 
 
 
 
-### References
+## References
 
 
 * [Khronos Group's samples](https://github.com/KhronosGroup/Vulkan-Docs/wiki/Synchronization-Examples)

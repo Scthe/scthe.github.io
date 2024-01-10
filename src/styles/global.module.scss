@@ -34,14 +34,14 @@ html:global(.dark-theme) {
 }
 
 *:focus-visible {
-  outline: 2px dashed var(--color-accent) !important;
-  outline-offset: 0px;
+  outline: 4px dashed var(--color-focus) !important;
+  outline-offset: 5px;
   border-radius: 5px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   *:focus-visible {
-    animation: focus-slide-in var(--color-accent);
+    animation: focus-slide-in var(--color-focus);
   }
 }
 

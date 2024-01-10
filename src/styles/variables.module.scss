@@ -1,4 +1,5 @@
 $color-accent: #009cb5;
+$color-accent2: #8710bd;
 
 :root {
   /* text: font sizes */
@@ -38,9 +39,11 @@ $color-accent: #009cb5;
 
   /* basic colors */
   --color-accent: #{$color-accent};
+  --color-accent2: #{$color-accent2};
   --color-accent-transparent: #{$color-accent}80;
   --color-accent-lighten: #{lighten($color-accent, 8%)};
   --color-accent-darken: #{darken($color-accent, 8%)};
+  --color-focus: var(--color-accent2);
 
   --color-selection: #{$color-accent}80;
   --color-table-alternate-row: #{$color-accent}0a;

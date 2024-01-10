@@ -46,7 +46,7 @@ const config = {
           // https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-plugin-image/
           formats: ['auto'],
           placeholder: `blurred`,
-          quality: 70,
+          quality: 90,
           // breakpoints: [750, 1080, 1366, 1920],
           // backgroundColor: `transparent`,
           // tracedSVGOptions: {},

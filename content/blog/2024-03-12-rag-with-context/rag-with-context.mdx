@@ -1,0 +1,284 @@
+---
+title: "Implementing retrieval-augmented generation with context"
+permalink: "/blog/rag-with-context/"
+excerpt: "A guide to implement retrieval-augmented generation (RAG) app that can infer user's questions from chat context."
+date: 2024-03-12 12:00:00
+image: "./rag-with-context-preview.png"
+draft: false
+---
+
+Retrieval-augmented generation (RAG) is used to implement semantic search over data. What does it mean? In the old days, when a user provided a query we only returned content that matched the wording exactly. If the user searches for the word "apple", we do not return articles that only mention "Jonagold" (a popular apple cultivar). Ideally, we would search based on the user's intent, not their exact query. This is what the retrieval-augmented generation process does.
+
+To achieve this, RAG uses machine learning to find words connected to the query. Another improvement is to allow more natural language when asking for information. No longer constrained by a list of keywords, it's easier to formulate precise questions. Moreover, the user does not have to think about the best possible query. We can detect that more accurate results are returned if we change the user's prompt.
+
+The simplest RAG takes a question and returns an answer. Such interaction does not resemble a chat as it loses the context between questions. Instead, in this article, I will explain the [second simplest](https://www.youtube.com/watch?v=-XoCvn4fnXw) RAG. It uses AI (in the form of a Large Language Model - LLM) to extract additional information from past messages to enhance the results.
+
+> In LlamaIndex, this corresponds to [CondensePlusContextChatEngine](https://docs.llamaindex.ai/en/stable/examples/chat_engine/chat_engine_condense_plus_context.html).
+
+## Step 1 - Rephrase the question
+
+Imagine the following conversation:
+
+```
+User: What is the name of Jean's sister?
+AI: Jean's sister's name is Barbara.
+User: What are her hobbies?
+AI: ...
+```
+
+When asking "What are her hobbies?" we do not directly specify any person. Most people would assume we are asking about Barbara's hobbies. The large language model (LLM) has to infer the actual question based on the **context**. To do so,  we ask the model to rephrase the user's request by giving it the following prompt:
+
+
+```
+Given the following conversation between a user and an AI assistant,
+rephrase the last question to be a standalone question.
+
+User: What is the name of Jean's sister?
+Assistant: Jean's sister's name is Barbara.
+User: What are her hobbies?
+```
+
+We can receive the following example answers:
+
+* `"What are Barbara's hobbies?"`.
+* `"What are Jean's hobbies?"`. 
+* List of many different rephrasing proposals. We can fix this by specifying: "provide one way to rephrase".
+* `"I'm sorry, I am an AI model, I cannot listen to private conversations"`. Change the prompt to "Given the following dialogue between ..." to circumvent this.
+* `"Sure, I would be glad to help you with this. **Rephrased question**: 'What are Jean's hobbies?'"`. It's like the expected answer but contains extra fluff. We cannot ask the vector database with such a statement. We have to manually remove "Sure, I would be glad to help you with this." (and similar variants).
+* `"The context does not provide enough information to rephrase the question"`. This can happen from time to time. Will result in garbage if used for vector search.
+
+There are a few more patterns like the above. Of course, we cannot rely on any particular wording as it's all probabilistic. As you might imagine, this step heavily relies on the LLM's capabilities.
+
+One thing you might notice is that the LLM will "stick" to the context closely. Imagine you ask it "Who is person A?" and then "Who is person B?" right after. The model will usually infer the second question as "Who is person B in relation to person A?" or "What are common traits between person A and person B?".
+
+## Step 2 - Vector search
+
+At this point let's assume that the model rephrased the question as "What are Barbara's hobbies?".  Here are the steps to match the question against the knowledge base.
+
+### Tokenization
+
+Computers don't want to deal with strings. They love the numbers. This is the goal of tokenization. It assigns numbers to each word, subword, or character. Here is an example:
+
+<Figure className="table_wrapper">
+
+| Transformation | Example value |
+| ------- | ----------- |
+| Raw sentence                 | What are Barbara's hobbies?                           |
+| Sentence split by tokens | `["what", " are", " barbara", "'s", " hobbies", "?"]` |
+| Tokens                   | `[768, 631, 10937, 568, 36370, 289]`                  |
+
+<Figcaption>
+Tokenization example for the question "What are Barbara's hobbies?" using CLIP tokenizer.
+</Figcaption>
+</Figure>
+
+This example uses [CLIP tokenizer](https://huggingface.co/docs/transformers/v4.38.2/en/model_doc/clip#transformers.CLIPTokenizer) (also used by e.g. [stable diffusion 1.5](https://huggingface.co/runwayml/stable-diffusion-v1-5) ). As you can see, it splits the question into 6 subwords. "Barbara's" is tokenized as 2 tokens, one for "barbara", and the other for "'s". Each tokenizer has a long table that assigns a token number to a substring. For example "hobbies" is always assigned `36370` in CLIP tokenizer.
+
+Let's imagine that the word "Barbara" does not exist as a single token. It would be then split into subwords, probably as `["bar", "bar", "a"]` (`[1040, 1040, 64]`). Both "bar" and "a" are common words. This means that tokenizing "Barbara" is trivial regardless if the world itself is inside the tokenizer's dictionary. Almost as if I've chosen this name for a reason! Find the full dictionary for the CLIP tokenizer under [vocab.json](https://huggingface.co/openai/clip-vit-base-patch32/resolve/main/vocab.json). You might notice that:
+
+* all entries are in lowercase (a feature of this particular tokenizer),
+* some tokens contain `</w>` to denote whitespace (e.g. differentiate "week" in "week off" from "weekend").
+
+The tokenization process itself is quite boring and deterministic. Starting from the first letter, find the longest substring that is inside a dictionary. This is your first token. Now restart this process, starting from where the 1st token ended. So it happens that the CLIP tokenizer uses a [byte pair encoding](https://en.wikipedia.org/wiki/Byte_pair_encoding) algorithm.
+
+There are many different tokenizers. Watch ["Let's build the GPT Tokenizer"](https://www.youtube.com/watch?v=zduSFxRajkE) by Andrej Karpathy if you want to know more.
+
+### Embeddings
+
+Embeddings are the "magic" part. They are calculated by a neural network. It will take a token and convert it into its characteristic list of numbers. Words that express similar concepts will have "similar" embeddings. From the university, you might remember distance metrics like Euclidean, Levenshtein, or Hamming distance. For RAG,  **cosine similarity** is most popular:
+
+$$
+similarity(\vec{a},\vec{b}) =
+\frac {\vec{a} \cdot \vec{b}}  {|\vec{a}| |\vec{b}|} =
+\frac {\sum_{i=1}^n a_ib_i}  { \sqrt{\sum_{i=1}^n a_i^2 } \sqrt{\sum_{i=1}^n b_i^2}}
+$$
+
+Given 2 vectors, calculate a dot product and divide it by multiplied lengths. If you've done any graphic programming, you've done this thousands of times. The result is the cosinus of the angle between two vectors. If both vectors are the same, the angle is 0dgr and the value is 1. If the vectors are opposite, the angle is 180dgr, and the value is -1. Of course, both vectors should have the same length. In our case, both vectors are token embeddings, so we don't have to care about this requirement. Each embedding model has a different vector length. For example, an embedding model for [BERT](https://en.wikipedia.org/wiki/BERT_(language_model)) produces 768 numbers for each token.
+
+
+Let's look at examples using the popular [BAAI/bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5) embedding. It comes with its own tokenizer ([dictionary](https://huggingface.co/BAAI/bge-small-en-v1.5/blob/main/vocab.txt) size of 30522).
+
+<Figure className="table_wrapper">
+
+| Word A  | Word B      | Cosine similarity  |
+| ------- | ----------- | ------------------ |
+| hobby   | interests   | 0.7344689165832781 |
+| hobby   | clouds      | 0.5189642479834368 |
+| heaven  | hell        | 0.7761356021475678 |
+| barbara | ??!@?#!?@?# | 0.5279304929259324 |
+
+<Figcaption>
+Cosine similarity values for different pairs of words.
+</Figcaption>
+</Figure>
+
+As you can see, words that we - as humans - would consider related achieve higher results.
+
+Another thing you might have noticed is that we don't want to embed just a single token. We want to operate on entire sentences or paragraphs. Embedding for a token should be influenced by its relative position within a sentence, and by other nearby tokens. With this purpose, `BAAI/bge-small-en-v1.5` has a special `[CLS]` (numeric value 101) token.
+
+
+
+<Figure className="table_wrapper">
+
+| Sentence | Tokens (string)                | Tokens                    | `[CLS]` embedding                                    |
+| -------- | ------------------------------ | ------------------------- | ---------------------------------------------------- |
+| a | `["[CLS]", "a", "[SEP]"]` | `[101, 1037, 102]` | `[-0.013781401328742504, ..., 0.020197534933686256]` |
+| a b | `["[CLS]", "a", "b", "[SEP]"]` | `[101, 1037, 1038, 102]` | `[-0.05177692696452141, ..., 0.004707774147391319]`  |
+
+
+<Figcaption>
+Changes in `[CLS]` embeddings depending on the sentence.
+</Figcaption>
+</Figure>
+
+
+`[CLS]` (for "classify") is a special token added by the BERT researchers for the classification.
+
+> "The first token of every sequence is always a special classification token (`[CLS]`). The final hidden state corresponding to this token is used as the aggregate sequence representation for classification tasks. Sentence pairs are packed together into a single sequence. We differentiate the sentences in two ways. First, we separate them with a special token (`[SEP]`). ..."
+> - "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding", Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova.*
+
+
+One of the differences between GPT and BERT is that GPT learns `[CLS]` during fine-tuning, while BERT learns it at the same time as the rest of the model. This means that cosine similarity between `[CLS]` tokens from different sentences should show how much the sentences are related. Let's compare a few answers to our question: "What are Barbara's hobbies?":
+
+
+<Figure className="table_wrapper">
+
+| Sentence                                         | Cosine similarity to the question |
+| ------------------------------------------------ | --------------------------------- |
+| Barbara likes to run.                            | 0.701                             |
+| Barbara's hobbies are playing piano and singing. | 0.696                             |
+| Barbara thinks clouds are white.                 | 0.558                             |
+| Sky is blue.                                     | 0.429                             |
+
+<Figcaption>
+Cosine similarity between the question "What are Barbara's hobbies?" and different answers.
+</Figcaption>
+</Figure>
+
+
+ The closest answer to the question "What are Barbara's hobbies?" is "Barbara likes to run.". Surprisingly, "Barbara's hobbies are playing piano and singing." scores lower. Even though it contains the same word as the question. We have already seen that the model can "understand" that "hobbies" and "likes" have similar meanings. The sentences that humans would describe as unrelated scored lower.
+
+We now have a way to compare the asked question against any text of arbitrary length. Texts that may contain the answer to the question would score higher. With this, we can create a ranking of paragraphs. All that is left is to condense such ranking (or a few top-scoring entries) into a single, coherent, and concise answer.
+
+
+## Step 3 - Formulate the answer
+
+To get a single answer we can ask LLM with the following prompt:
+
+```
+Given the information below and not prior knowledge, answer the query.
+If you don't know the answer, just say that you don't know.
+Use five sentences maximum and keep the answer concise.
+
+Barbara likes to run.
+Barbara's hobbies are playing piano and singing.
+
+Query: What are Barbara's hobbies?
+```
+
+Before, we asked the LLM to rephrase the question given context. In my experience, the answer was quite "stable". Sometimes there was an error. Most often, you get something at least reasonable, even with smaller models. Now, we are asking the AI to pluck the answer from the context and summarize the result. The output (on smaller models) is - from what I've seen - mixed. 
+
+As an example, here is a paragraph from [Lyney's page](https://genshin-impact.fandom.com/wiki/Lyney/Lore) on Genshin Impact wiki:
+
+> But the siblings, even with a recommendation from the manager of the Hotel, did not find it all that easy to fit in, nor was it easy for the children there to immediately accept these new "outsiders." <br />
+> And in this environment, oppressive in its gloom, the water pumping equipment broke while Lynette was using it, right before everyone's eyes, deepening the distrust to the extreme. <br />
+> Lyney could only step up and take responsibility, agreeing to fix the equipment so as not to affect everyone's daily lives. <br />
+> In truth, he did not know all that much about repair work, but given Lynette's propensity for damaging various small devices, he had long gotten used to following his intuition to do some fixes here and there. <br />
+> Unfortunately, he underestimated the complexity of the pumping equipment and difficulty of fixing it. While he succeeded in restoring it to normal operations, he remained at a complete loss as to whether he had solved the root problem or not, he could not tell.
+
+Given this paragraph, I asked Microsoft's Phi-2 and Google's gemma-2b (both 3 billion parameters) the following question: "What has happened at the Hotel?". The answers stated there is not enough context to say. There are a few knobs that you can adjust (`temperature`, `top_k`, `top_p`, etc.). Yet, I doubt you will come close to the performance of the bigger models.
+
+Of course, there is a chance you will receive the correct answer. This is quite a lot, considering that we started with just "What are her hobbies?".
+
+
+## Data preprocessing
+
+By now we have seen the full pipeline from asking the question to formulating the final answer. We will now cover the offline steps that happen before the app starts. We need to prepare our data and transform it into vector embeddings.
+
+### Parsing data
+
+You will receive data in some format. You need to extract it into the embeddings. To extract the words from most of the documents you can use python's [unstructured](https://unstructured-io.github.io/unstructured/index.html) library. It [handles](https://unstructured-io.github.io/unstructured/core/partition.html) CSV, e-mails, EPubs, HTML, markdown, PDFs, XML, PowerPoint files, and many more. It can [pull data](https://unstructured-io.github.io/unstructured/ingest/source_connectors.html) from local hard drives, Dropbox, Google Drive, One Drive, S3, MongoDB, etc. It also offers some basic tools for [cleaning](https://unstructured-io.github.io/unstructured/core/cleaning.html) and [extracting](https://unstructured-io.github.io/unstructured/core/extracting.html). 
+
+LlamaIndex also has built-in [handlers for text extraction](https://github.com/run-llama/llama_index/tree/d63fec1c69a2e1e51bf884a805b9fd31ad8d1ee9/llama-index-integrations/readers/llama-index-readers-file/llama_index/readers/file). Called from this wonderful [Dict structure](https://github.com/run-llama/llama_index/blob/d63fec1c69a2e1e51bf884a805b9fd31ad8d1ee9/llama-index-core/llama_index/core/readers/file/base.py#L39) based on the file extension.
+
+[Apache Spark](https://spark.apache.org/) is often used for bigger-scale parallel processing. And remember, if the data contains a lot of "fluff" (e.g. e-mails), you can always ask LLM to summarize it before creating embedding.
+
+As expected, in the end, you will have to manually clean the data (or automatize it). For the Genshin Impact wiki (360 MB XML, which is comparatively tiny), I first extracted all articles. There is no need to preserve e.g. user comments, image metadata, etc. Then I had to handle wiki's internal templating engine. You will also need a strategy for handling tables, datatables (numbers), images, etc. Often it's done as a separate document. You can also use a web crawler, but probably not if you intend to write an article about it.
+
+Personally, well, this was just an afternoon project for me. Parsing data is not exactly an enthralling task. At some point, I just sorted articles on the Genshin Impact wiki by length, took 500 longest, and explicitly added ones that are related to all playable characters. It still required a lot of manual data handling. For example, each character has at least 4 separate articles:
+
+* as a person within a story (lore page), 
+* as a playable character with stats like attack, defense, health pool, etc.,
+* as a companion for player housing,
+* as a card in Genshin Impact's TCG minigame.
+ 
+There are also pages for voice-over, screenshots gallery, etc. Remember, this is a recent, well-kept wiki for one of the most popular video games on the market. Imagine a wiki for Star Wars or The Lord of the Rings.
+
+### Creating embeddings
+
+In <CrossPostLink paragraph="Step 2 - Vector search">Step 2 - Vector search</CrossPostLink> we have seen how to create embeddings for text of an arbitrary length. So how to split text into smaller chunks? We could do this based on token count. This usually uses the following parameters: `chunk_size` and `chunk_overlap`. Here is an example:
+
+* Sentence: `"aa bb cc dd ee ff ii jj ll mm pp rr ss"`. Each "word" is tokenized as a single token (there is no separate token for 'nn', so it would make it harder to count). There are 13 words.
+* Tokens: `[101,  9779, 22861, 10507, 20315, 25212, 21461, 2462, 29017, 2222, 3461, 4903, 25269, 7020, 102]`. It's 13 tokens (one for each "word") and additional `[CLS]` and `[SEP]` tokens at the start/end respectively. Remember that whitespace is included in `</w>`.
+
+
+
+<Figure className="table_wrapper">
+
+| chunk_size | chunk_overlap | Result |
+| ---------- | ------------- | ------------------ |
+| 2 | 0 | [`"aa bb"`, `"cc dd"`, `"ee ff"`, `"ii jj"`, `"ll mm"`, `"pp rr"`, `"ss"`] |
+| 2 | 1 | [`"aa bb"`, `"bb cc"`, `"cc dd"`, `"dd ee"`, `"ee ff"`, `"ff ii"`, `"ii jj"`, `"jj ll"`, `"ll mm"`, `"mm pp"`, `"pp rr"`, `"rr ss"`] |
+| 8 | 4 | [`"aa bb cc dd ee ff ii jj"`, <br /> `"ee ff ii jj ll mm pp rr"`, <br /> `"ll mm pp rr ss"`] |
+| 10 | 5 | [`"aa bb cc dd ee ff ii jj ll mm"`, <br /> `"ff ii jj ll mm pp rr ss"`] |
+
+<Figcaption>
+Visualized chunks for different values of `chunk_size` and `chunk_overlap`.
+</Figcaption>
+</Figure>
+
+As you can see, `chunk_size` decides how many tokens are in each chunk. `chunk_overlap` decides how many last tokens to copy from the previous chunk. Values for both parameters depend on your content. Too big and content gets "lost". Too small and you lose context when formulating the final answer. There are also strategies to use smaller chunks for vector search and then add a few sentences before/after when providing the text for LLM.
+
+We can also split the text based on sentences and paragraphs. In LlamaIndex's [SentenceSplitter](https://github.com/run-llama/llama_index/blob/d63fec1c69a2e1e51bf884a805b9fd31ad8d1ee9/llama-index-core/llama_index/core/node_parser/text/sentence.py#L32) you can specify separators for both sentences and paragraphs. If the text is longer than a chunk, it will be split first by paragraphs. If a paragraph is still longer than a chunk size, it will be split to preserve whole sentences.
+
+### Storage
+
+Here are a few things you might consider storing (naming based on [LlamaIndex's storing docs](https://docs.llamaindex.ai/en/stable/module_guides/storing/storing.html)):
+
+* Vector Stores. Embedding vectors of ingested document chunks. We have already spent this entire article talking about them. 
+* Document Stores. Chunks' texts that we will need to provide to LLM when formulating the answer.
+	* Both this and Vector Stores have 1 row per 1 chunk. You can store both in a single SQL table if you want.
+* Chat Stores. Stores chat state (past messages) per user.
+* Knowledge graph (with e.g. Neo4j) if you use it to store relationship data.
+
+As for vector storage format, here are a few popular:
+
+* Safetensor. A raw-values dump as a single file.
+* [Chroma](https://www.trychroma.com/). In local mode it uses SQLite. I will be honest, if there is 1 argument to convince me to use something it is "uses SQLite".
+	* Make sure to [disable telemetry](https://docs.trychroma.com/telemetry).
+* Postgres with [pgvector](https://github.com/pgvector/pgvector).
+* [Qdrant](https://qdrant.tech/).
+* [Pinecone](https://www.pinecone.io/).
+* Many [others](https://llamahub.ai/?tab=vector_stores).
+
+
+## Summary
+
+In this article, we have explored the implementation of a retrieval-augmented generation search that uses context to enhance the user's query. We went over the following steps:
+
+1. Rephrase the question using a large language model to better reflect the user's intent.
+2. Find the paragraphs from the knowledge base that contain the answer.
+3. Use LLM to formulate concise and coherent answer.
+
+We also saw how to prepare the data to make it accessible during the retrieval stage. With newly gained knowledge we can now create more interactive apps that better fulfill user's needs.
+
+
+## Sources
+* [LlamaIndex](https://docs.llamaindex.ai/en/stable/) docs. If you are looking for further enhancements, there are a few other propositions described, like:
+	* [routers](https://docs.llamaindex.ai/en/latest/module_guides/querying/router/root.html), 
+	* [metadata-based filters](https://docs.llamaindex.ai/en/latest/examples/vector_stores/chroma_auto_retriever.html),
+	* graph databases, which allow to better infer relationships,
+	* [many other](https://docs.llamaindex.ai/en/latest/optimizing/production_rag.html).
+* ["What are embeddings"](https://raw.githubusercontent.com/veekaybee/what_are_embeddings/main/embeddings.pdf) by Vicki Boykis.
+* ["How to Finetune the Entire RAG Architecture (including DPR retriever)"](https://shamanesiri.medium.com/how-to-finetune-the-entire-rag-architecture-including-dpr-retriever-4b4385322552) by Shamane Siriwardhana.
+* ["BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"](https://arxiv.org/abs/1810.04805) by Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova.

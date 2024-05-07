@@ -107,7 +107,7 @@ As you can see, we are describing everything that we have already specified in t
 * In Rust:
   * [https://github.com/gfx-rs/rspirv](https://github.com/gfx-rs/rspirv). A comprehensive set of tools to manage SPRI-V from Rust, might be overkill.
   * [https://github.com/Traverse-Research/rspirv-reflect](https://github.com/Traverse-Research/rspirv-reflect). Does not work with <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/" paragraph="Debugging shader in RenderDoc">VK_KHR_shader_non_semantic_info</CrossPostLink>. Embark Studios kajiya uses a [fork](https://github.com/h3r2tic/rspirv-reflect).
-  * [https://github.com/PENGUINLIONG/spirq-rs](https://github.com/PENGUINLIONG/spirq-rs). Does not work with <CrossPostLink permalink="/blog/debugging-vulkan-using-renderdoc/" paragraph="Debugging shader in RenderDoc">VK_KHR_shader_non_semantic_info</CrossPostLink>.
+  * [https://github.com/PENGUINLIONG/spirq-rs](https://github.com/PENGUINLIONG/spirq-rs).
   * [https://github.com/gwihlidal/spirv-reflect-rs](https://github.com/gwihlidal/spirv-reflect-rs). Wrapper for `SPIRV-Reflect`.
   * [https://github.com/grovesNL/spirv_cross](https://github.com/grovesNL/spirv_cross). Wrapper for `SPIRV-Cross`.
 

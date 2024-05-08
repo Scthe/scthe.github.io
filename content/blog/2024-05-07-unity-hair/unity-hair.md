@@ -8,19 +8,11 @@ draft: false
 ---
 
 
-```c
-TODO metadata
-TODO mention git repo, and what is in it
-TODO repo: readme, license, cleanup blender+unity
-TODO check all links
-```
-
-
-In this article, we will create hair in Unity using their [com.unity.demoteam.hair](https://github.com/Unity-Technologies/com.unity.demoteam.hair) package (based on [AMD's TressFX](https://gpuopen.com/tressfx/)). As a lot of people noticed, the [official documentation](https://learn.unity.com/project/getting-started-with-hair-simulation) is.. lacking. There was a SIGGRAPH 2022 presentation ["Probe-based lighting, strand-based hair system, and physical hair shading in Unity’s ‘Enemies’ "](https://advances.realtimerendering.com/s2022/index.html#Enemies), but it's mostly a list of used technology. Even the unlisted(!) video ["Inside Unity’s new flagship demo, Enemies | Unity at GDC 2022"](https://youtu.be/tz3dpl7FlH4?si=nFLm1QcMe21-uBuk&t=1126) from the official Unity YouTube channel just walks through the sample scene. None of this helps the artist in actually creating new hair for their character. Let's remedy that.
+In this article, we will create hair in Unity using [com.unity.demoteam.hair](https://github.com/Unity-Technologies/com.unity.demoteam.hair) package. As a lot of people noticed, the [official documentation](https://learn.unity.com/project/getting-started-with-hair-simulation) is.. lacking. There was a SIGGRAPH 2022 presentation ["Probe-based lighting, strand-based hair system, and physical hair shading in Unity’s ‘Enemies’"](https://advances.realtimerendering.com/s2022/index.html#Enemies), but it's mostly a list of used technology. Even the unlisted(!) video ["Inside Unity’s new flagship demo, Enemies | Unity at GDC 2022"](https://youtu.be/tz3dpl7FlH4?si=nFLm1QcMe21-uBuk&t=1126) from the official Unity YouTube channel just walks through the sample scene. None of this helps the artist in actually creating new hair for their character. Let's remedy that.
 
 > There also exists [cn.unity.hairfx.core](https://github.com/Unity-China/cn.unity.hairfx.core). It's a simple [port](https://github.com/Unity-China/cn.unity.hairfx.core/blob/main/Runtime/TressFXFileFormat.cs#L35) of TressFX. As we will see, `com.unity.demoteam.hair` is only loosely inspired by AMD's work.
 
-We will start with a hair system in Blender, and export it into Alembic curves. The file gets imported into Unity, where we add materials and tweak physics settings. We then add collisions using both capsules and signed distance fields (SDF).
+We will start with a hair system in Blender, and export it into Alembic curves. The file gets imported into Unity, where we add materials and tweak physics settings. We then add collisions using both capsules and signed distance fields (SDF). Both the Blender file and the Unity project are available in my ["unity-hair"](https://github.com/Scthe/unity-hair) GitHub repository. Check it out to find hair samples and stage-by-stage visualizations. All images in this article were derived from it. It's quite fun to play with the physics! Just look at the videos in the Readme!
 
 
 > I do not work for Unity. I do not even work in this tech sector. I've tried integrating hair into ["AI-Iris-Avatar"](https://github.com/Scthe/ai-iris-avatar) and I gave up. I do have [previous](https://github.com/Scthe/WebFX) [experience](https://github.com/Scthe/Rust-Vulkan-TressFX) with [TressFX](https://github.com/Scthe/TressFX-OpenGL).
@@ -149,7 +141,7 @@ The "Build strand groups" button regenerates the hair strands. You have to click
 
 There are a few settings you can adjust when creating the hair asset.
 
-In "Settings Basic", the [Memory layout](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairAsset.cs#L328) describes how the points are stored in the GPU memory. **Sequential** means that all points for `strand N` lie right after another. Then all points for `strand N+1`, etc. **Interleaved** means that all first points for all strands are stored first. Then every 2nd point from all strands. Repeat for all points. Which one is more performant depends on how the compute shader accesses the data. I recommend checking if there are any FPS changes.
+In "Settings Basic", the [Memory Layout](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairAsset.cs#L328) describes how the points are stored in the GPU memory. **Sequential** means that all points for `strand N` lie right after another. Then all points for `strand N+1`, etc. **Interleaved** means that all first points for all strands are stored first. Then every 2nd point from all strands. Repeat for all points. Which one is more performant depends on how the compute shader accesses the data. I recommend checking if there are any FPS changes.
 
 In "Settings Alembic", **Resample Curves** is recommended. The asset you have exported probably has different distances between each point of each strand. For example, the distance from the strand's root to the 2nd point is 4 cm, while from the 2nd to the 3rd is 2 cm. It's even possible that not all curves have the same number of points. **Resample resolution** dictates the number of points in each strand. Each point will be spaced evenly. It's recommended that this number is a power or multiply of 2. The more points, the more smooth and computationally expensive the hair is. **Resample quality** is an implementation detail of the resample algorithm. Due to the curvature of each strand, it's impossible to predict what is the best distance between each point. The last segment will always be a bit shorter/longer. To solve this, the algorithm runs in a few iterations. I doubt you will notice a difference if you change it from the default 3.
 
@@ -197,7 +189,7 @@ In this section, we will discuss settings that affect all strand groups added to
 
 ### Settings Executive
 
-**Settings Executive** contains settings related to simulation timesteps. You can choose to simulate hair e.g. 30 times per second. Due to how Unity works, it will [accumulate time](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairInstance.cs#L677) since the last update. Then it retroactively checks how many updates it missed. If the last hair update was 80ms ago and the update is at 30Hz (every ~33.3 ms), it will [simulate hair 2 times](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairInstance.cs#L758) in a row. Use **Update Steps Min** and **Update Steps Max** to control this. Later on, you will learn about "Solver Substeps", which split each simulation into smaller steps.
+**Settings Executive** contains settings related to simulation timesteps. You can choose to simulate hair e.g. 30 times per second. Due to how Unity works, it will [accumulate time](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairInstance.cs#L677) since the last update. Then it [retroactively checks](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairInstance.cs#L688) how many updates it missed. If the last hair update was 80ms ago and the update is at 30Hz (every ~33.3 ms), it will [simulate hair 2 times](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairInstance.cs#L758) in a row. Use **Update Steps Min** and **Update Steps Max** to control this. Later on, you will learn about "Solver Substeps", which split each simulation into smaller steps.
 
 ### Settings Environment
 
@@ -256,8 +248,8 @@ Finally! You can override the hair color. Use [HairMaterialdefaultLitSRP](https:
 Each strand is a collection of points connected by [lines](https://www.youtube.com/watch?v=_LtQJHmW-lc).  In math, lines do not have width. So how do you render the strand? In Unity this is determined by the **Renderer**:
 
 * **None**. Does not render hair.
-* **Buildin Lines**.  When you draw a triangle everyone assumes it's gonna be "filled" (rasterized). But why not draw only the edges, if this is the effect you want? Think how many times you overlaid wireframes on top of the objects. In this mode, you do not deal with triangles. Remember, these lines will be thin (not adjustable). Some graphic APIs even have this feature built-in (`GL_LINES` in OpenGL).
-* [Buildin Strips](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairInstanceBuilder.cs#L421). This is the mode you want. Each point expands into 2 vertices. Four vertices between 2 consecutive points create a quad. The vertex positions are calculated based on the direction vector between both points (tangent) and the direction to the camera. Each vertex is moved `hairWidth / 2` away from the point that created it (see image below). In some distant way, this is like [billboards](https://docs.unity3d.com/Manual/class-BillboardRenderer.html). This approach may produce long, thin triangles, which can be a problem for the GPU. Still, this is the setting that you will **always** use.
+* **Buildin Lines**.  When you draw a triangle everyone assumes it's gonna be "filled" (rasterized). But why not draw only the edges, if this is the effect you want? Think how many times you overlaid wireframes on top of the objects. In this mode, you do not deal with triangles. Remember, these lines will be thin (not adjustable). Some graphic APIs even have this feature built-in (`GL_LINES` in OpenGL). Certain settings are not available in this mode. Can look good if you have tons of strands.
+* [Buildin Strips](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairInstanceBuilder.cs#L421). This is the mode you usually want. Each point expands into 2 vertices. Four vertices between 2 consecutive points create a quad. The vertex positions are calculated based on the direction vector between both points (tangent) and the direction to the camera. Each vertex is moved `hairWidth / 2` away from the point that created it (see image below). In some distant way, this is like [billboards](https://docs.unity3d.com/Manual/class-BillboardRenderer.html). This approach may produce long, thin triangles, which can be a problem for the GPU.
 * [Buildin Tubes](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairInstanceBuilder.cs#L471). Seems to be similar to strips. Instead of a single flat plane, it renders all 4 sides of each segment (front, back, both sides). Check the [original PR](https://github.com/Unity-Technologies/com.unity.demoteam.hair/pull/47/files) and the "drawing" in the code docs.
 
 
@@ -358,7 +350,7 @@ I recommend having this constraint ON. From what I have heard, it might make the
 
 #### Reference
 
-[Global shape constraints](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairSimComputeSolver.compute#L436) are a lerp between the current position/rotation and the initial position/rotation from the original hair asset. The fade parameter has offset and extent. Both control how far from the root this constraint will work. Assuming offset = 0.2 and extent = 0.4:
+[Global shape constraints](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairSimComputeSolver.compute#L967)  ([rotation](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairSimComputeSolver.compute#L1109)) are a lerp between the current position/rotation and the initial position/rotation from the original hair asset. The [fade parameter](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairSimComputeSolver.compute#L436) has offset and extent. Both control how far from the root this constraint will work. Assuming offset = 0.2 and extent = 0.4:
 
 * Points from root to 20% of the strand length: fully affected by the global constraint.
 * Points from 20% to 60% of the strand length: affected progressively less (linear).
@@ -400,24 +392,25 @@ The `HairVertex` node is actually a subgraph that wraps [HairVertex.hlsl](https:
 
 <Figure>
   <BlogImage
-    src="./surfaceTangentOS.jpg"
-    alt="Visualization of surfaceTangentOS vectors"
-  />
-  <Figcaption>
-
-  Visualization of surfaceTangentOS vectors.
-
-  </Figcaption>
-</Figure>
-
-<Figure>
-  <BlogImage
     src="./surfaceNormalOS.jpg"
     alt="Visualization of surfaceNormalOS vectors"
   />
   <Figcaption>
 
   Visualization of surfaceNormalOS vectors.
+
+  </Figcaption>
+</Figure>
+
+
+<Figure>
+  <BlogImage
+    src="./surfaceTangentOS.jpg"
+    alt="Visualization of surfaceTangentOS vectors"
+  />
+  <Figcaption>
+
+  Visualization of surfaceTangentOS vectors.
 
   </Figcaption>
 </Figure>

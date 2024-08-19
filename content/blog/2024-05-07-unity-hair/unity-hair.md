@@ -12,6 +12,18 @@ In this article, we will create hair in Unity using [com.unity.demoteam.hair](ht
 
 > There also exists [cn.unity.hairfx.core](https://github.com/Unity-China/cn.unity.hairfx.core). It's a simple [port](https://github.com/Unity-China/cn.unity.hairfx.core/blob/main/Runtime/TressFXFileFormat.cs#L35) of TressFX. As we will see, `com.unity.demoteam.hair` is only loosely inspired by AMD's work.
 
+<Figure>
+
+  ![Using a collision sphere to disrupt the hair.](./unity-collision-sphere.gif)
+
+  <Figcaption>
+
+The final result. FUN!
+
+  </Figcaption>
+</Figure>
+
+
 We will start with a hair system in Blender, and export it into Alembic curves. The file gets imported into Unity, where we add materials and tweak physics settings. We then add collisions using both capsules and signed distance fields (SDF). Both the Blender file and the Unity project are available in my ["unity-hair"](https://github.com/Scthe/unity-hair) GitHub repository. Check it out to find hair samples and stage-by-stage visualizations. All images in this article were derived from it. It's quite fun to play with the physics! Just look at the videos in the Readme!
 
 
@@ -199,7 +211,9 @@ In this section, we will discuss settings that affect all strand groups added to
 
 > I'm not going to explain this in much detail, as I'm not exactly sure about this part. You will get my best guess. The [HairSimComputeVolume.compute](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairSimComputeVolume.compute) is 1600 lines long. And that's a physics simulation, not some mundane React components.
 
-In hair systems, some properties are [accumulated over a grid](https://www.youtube.com/watch?v=ool2E8SQPGU) to make it easier/faster to compute. For Unity, [looking at the code](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairSim.cs#L309), this seems to be:
+In hair systems, some properties are [accumulated over a grid](https://www.youtube.com/watch?v=ool2E8SQPGU) to make it easier/faster to compute. For example, we want hair strands to collide with each other. But with thousands of strands, it's impossible to calculate this in real-time. This is approximated by moving hairs around so that they take up more space. We can detect dense areas, and calculate gradient vectors. They point to neighboring grid cells/points that are least occupied. Different grids solve different problems. As for velocity, you might notice that some singular hair strands flutter too much. The velocity grid averages the velocity of nearby hair points. This leads to more stable motion (which is good). But you lose on the tiny simulation details that often bring it to life. There is usually a "friction" parameter that allows to mix both solutions. Another often-seen example is the wind/aero grid. It allows for wind to be affected by colliders. Think of an obstacle between the wind source and hair. If someone wanted, they could insert a complete [fluid simulation](https://www.youtube.com/watch?v=iKAVRgIrUOU) here. Nice vortices and turbulence? Probably not in a video game. But if you want to make a movie...
+
+I'm not sure what all of Unity's grids do. With the above examples, you should have an intuitive understanding of how grid points make complex hair behaviors possible. In [Unity](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Runtime/HairSim.cs#L309), there seem to be following grids:
 
 * Weight.
 * Velocity.
@@ -440,7 +454,7 @@ The `HairVertex` node is actually a subgraph that wraps [HairVertex.hlsl](https:
 
 **lodOutputWidth** radius of the hair strand at the fragment's position. If the hair asset has thin tips (see "Tip Scale Fallback"), the width changes along the strand.
 
-[rootUV](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Editor/HairAssetBuilder.cs#L515) is the UV you have set in the asset's **UV resolve**. Use texture to drive the color of the hair.
+[rootUV](https://github.com/Unity-Technologies/com.unity.demoteam.hair/blob/7fe8b81797b013a51f42dc1f9062892bfd529c7b/Editor/HairAssetBuilder.cs#L515) is the UV you have set in the asset's **UV resolve**. Use texture to drive the color of the hair. "Resolve From Mesh" is based on the [closest triangle](https://github.com/Unity-Technologies/com.unity.demoteam.hair/commit/3c343fddbe98289fbffbb31edc63569acd4450b7).
 
 
 <Figure>

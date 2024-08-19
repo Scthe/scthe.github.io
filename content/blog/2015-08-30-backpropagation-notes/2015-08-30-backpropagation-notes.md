@@ -8,7 +8,7 @@ draft: false
 ---
 
 
-In this article we will derive the basic math behind nerural networks. Leter we will adapt the equations for convolutional neural networks. I've done this by hand for my [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution) project, so that you don't have to.
+In this article we will derive the basic math behind nerural networks. Later we will adapt the equations for convolutional neural networks. I've done this by hand for my [super-resolution using neural networks](https://github.com/Scthe/cnn-Super-Resolution) project, so that you don't have to.
 
 If you are looking for practical tips about implementing neural networks, you should check out my other article - <CrossPostLink permalink="/blog/neural-networks-implementation-tips/">"Writing neural networks from scratch - implementation tips"</CrossPostLink>.
 

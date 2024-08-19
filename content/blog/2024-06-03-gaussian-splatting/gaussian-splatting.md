@@ -658,7 +658,7 @@ fn fs_main(fragIn: VertexOutput) -> @location(0) vec4<f32> {
 }
 ```
 
-You might notice that both rendering methods calculated either $exp(-\frac{1}{2} (ax_0^2 + 2bx_0y_0 + cy_0^2))$ or $e^{-\frac{1}{2}r}$. In truth, both are exchangeable if you know how to derive them and adjust for vertex positions.
+You might notice that both rendering methods calculated either $exp(-\frac{1}{2} (ax_0^2 + 2bx_0y_0 + cy_0^2))$ or $exp(-\frac{1}{2}r)$. In truth, both are exchangeable if you know how to derive them and adjust for vertex positions.
 
 
 

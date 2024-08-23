@@ -8,13 +8,13 @@ draft: false
 ---
 
 
-In the last few years, we have seen more rendering systems that lean on software rasterization. It's an optimal choice for small triangles (~1 px wide) or thin triangles that span many pixels in a single direction. Two of the most known examples are [UE5's Nanite](https://advances.realtimerendering.com/s2021/Karis_Nanite_SIGGRAPH_Advances_2021_final.pdf#page=81) (which I've reimplemented in [Nanite WebGPU](https://github.com/Scthe/nanite-webgpu)) and [Frostbite's hair system](https://www.youtube.com/watch?v=ool2E8SQPGU) (which I've reimplemented in [Frostbitten hair WebGPU](https://github.com/Scthe/frostbitten-hair-webgpu)). Basic software rasterization for triangles has been described countless times e.g.:
+In the last few years, we have seen more rendering systems that lean on software rasterization. It's an optimal choice for small triangles (~1 px wide) or thin triangles that span many pixels (especially diagonals). Two of the most known examples are [UE5's Nanite](https://advances.realtimerendering.com/s2021/Karis_Nanite_SIGGRAPH_Advances_2021_final.pdf#page=81) (which I've reimplemented in [Nanite WebGPU](https://github.com/Scthe/nanite-webgpu)) and [Frostbite's hair system](https://www.youtube.com/watch?v=ool2E8SQPGU) (which I've reimplemented in [Frostbitten hair WebGPU](https://github.com/Scthe/frostbitten-hair-webgpu)). Basic software rasterization for triangles has been described countless times e.g.:
 
 * ["The barycentric conspiracy"](https://fgiesen.wordpress.com/2013/02/06/the-barycentric-conspirac/) and ["Optimizing the basic rasterizer"](https://fgiesen.wordpress.com/2013/02/10/optimizing-the-basic-rasterizer/) by Fabian "ryg" Giesen.
 * ["Rasterization"](https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-stage.html) by Scratchapixel.
 * ["Rasterising a triangle"](https://jtsorlinis.github.io/rendering-tutorial/) by Jason Tsorlinis.
 
-In this article, we will see the rasterization algorithm for hair. Starting from a file that contains strand points in 3D space and ending on pixel attributes inside a quad. First, we will see the required 3D transformations to produce projected vertices. Then we will go over triangle rasterization basics, and see the same function applied to quads. We will also need coordinates inside each rasterized hair segment to compute attributes.
+In this article, we will see the rasterization algorithm for hair. Starting from a file that contains strand points in 3D space and ending on pixel attributes inside a quad. First, we will see the required 3D transformations to produce projected vertices. Then we will go over triangle rasterization basics, and see the same function applied to quads. We will also need coordinates inside each rasterized hair segment to compute attributes. For each section I will also link code from my "Frostbitten hair WebGPU" so you can see how this works in practice.
 
 <Figure>
   <BlogImage
@@ -35,7 +35,7 @@ Let's go over some terminology:
 
 * **Hair strand**. Each single hair strand is created from connected points. It anchors to the head at the **root** point and ends at the **tip** point.
 * **Points**. Each strand contains the same number of points. The first point is the root, last is the tip.
-* **Segments**. Fragment of the strand between 2 consecutive points. If the strand has N points, it has N-1 segments.
+* **Segment**. Fragment of the strand between 2 consecutive points. If the strand has N points, it has N-1 segments.
 * **Tangent**. A normalized vector from $Point_i$ to $Point_{i+1}$. The last point for each strand (tip) has the same tangent as its predecessor. Tangents are always precalculated in a separate GPU buffer.
 
 <Figure>
@@ -123,6 +123,8 @@ fn ndc2viewportPx(viewportSize: vec2f, pos: vec3f) -> vec2f {
   return pos_0_1 * viewportSize.xy;
 }
 ```
+
+> Link to "Frostbitten hair WebGPU": [swRasterizeHair.wgsl.ts # projectHairSegment()](https://github.com/Scthe/frostbitten-hair-webgpu/blob/501f01969b4bc65cb7df3b901c1ced4e2da0c84b/src/passes/swHair/shaderImpl/swRasterizeHair.wgsl.ts#L39).
 
 You might be considering calculating the `right` vector in view space with `let towardsCamera = vec3f(0, 0, 1)`. It will not work. Half of the strands will render with `towardsCamera.z = 1`, the rest with `towardsCamera = -1`. I'm not sure why (view space is weird), so I switched to world space calculations.
 
@@ -233,7 +235,7 @@ for (var x = boundRectMin.x; x < boundRectMax.x; x += 1) {
   if (C0 >= 0 && C1 >= 0 && C2 >= 0) {
     // pixel inside triangle v0, v1, v2
     putPixel(p, COLOR_BLUE);
-    }
+  }
 }}
 
 
@@ -296,7 +298,7 @@ for (var x = boundRectMin.x; x < boundRectMax.x; x += 1) {
   if (C0 >= 0 && C1 >= 0 && C2 >= 0 && C3 >= 0) {
     // pixel inside quad v00, v01, v10, v11
     putPixel(p, COLOR_LIGHT_PURPLE);
-    }
+  }
 }}
 ```
 
@@ -304,6 +306,8 @@ for (var x = boundRectMin.x; x < boundRectMax.x; x += 1) {
 > The notation for `v0-` and `v1-` is relative to the hair segment. `v0-` denotes vertices near the start point. `v1-` denotes vertices near the end point.
 
 Given what's written till this point, you should be able to software rasterize hair based on imported strand points.
+
+> Link to "Frostbitten hair WebGPU": [hairTilesPass.wgsl.ts](https://github.com/Scthe/frostbitten-hair-webgpu/blob/501f01969b4bc65cb7df3b901c1ced4e2da0c84b/src/passes/swHair/hairTilesPass.wgsl.ts#L172).
 
 
 ### Optimization (or not)
@@ -334,7 +338,9 @@ $$
 
 For triangles, this is around 7% faster. Measured in one of the test scenes in [Nanite WebGPU](https://github.com/Scthe/nanite-webgpu).
 
-Since quad has 4 edges, we precompute 4 sets of A, B, C. Unfortunately, this is quite a lot of registers. In "Frostbitten hair WebGPU", [HairFinePass](https://github.com/Scthe/frostbitten-hair-webgpu/blob/d6306a69ab1cde4ef1321fc98c2040fd64ccac37/src/passes/swHair/shaderImpl/processHairSegment.wgsl.ts#L39) uses this optimization, while [HairTilesPass](https://github.com/Scthe/frostbitten-hair-webgpu/blob/d6306a69ab1cde4ef1321fc98c2040fd64ccac37/src/passes/swHair/shaderImpl/tilePassesShared.wgsl.ts#L57) does not. Quad rasterization if you use this optimization:
+Since quad has 4 edges, we precompute 4 sets of A, B, C. Unfortunately, this is quite a lot of registers. In "Frostbitten hair WebGPU", [HairFinePass](https://github.com/Scthe/frostbitten-hair-webgpu/blob/d6306a69ab1cde4ef1321fc98c2040fd64ccac37/src/passes/swHair/shaderImpl/processHairSegment.wgsl.ts#L39) uses this optimization, while [HairTilesPass](https://github.com/Scthe/frostbitten-hair-webgpu/blob/501f01969b4bc65cb7df3b901c1ced4e2da0c84b/src/passes/swHair/hairTilesPass.wgsl.ts#L153) does not.
+
+Quad rasterization if you use this optimization:
 
 ```rust
 let CC0 = edgeC(v01, v00);
@@ -382,6 +388,8 @@ fn edgeC(v0: vec2f, v1: vec2f) -> EdgeC{
   return result;
 }
 ```
+
+> Link to "Frostbitten hair WebGPU": [processHairSegment.wgsl.ts](https://github.com/Scthe/frostbitten-hair-webgpu/blob/501f01969b4bc65cb7df3b901c1ced4e2da0c84b/src/passes/swHair/shaderImpl/processHairSegment.wgsl.ts#L39) (part of [HairFinePass](https://github.com/Scthe/frostbitten-hair-webgpu/blob/501f01969b4bc65cb7df3b901c1ced4e2da0c84b/src/passes/swHair/hairFinePass.wgsl.ts)). My project has 2 different passess that use software rasterization. `HairTilesPass` is faster without an optimization.
 
 
 ## Segment-space coordinates
@@ -453,6 +461,8 @@ Given the value for the long axis, it's easier to get the second coordinate. Not
 6. Divide this distance by segment `width near the pixel`. Saturate the result so that it is between 0 and 1.
 
 Alternatively, you could find points on both side edges: `e0 = mix(v00, v10, v)`, `e1 = mix(v01, v11, v)`. Then `u = distance(pixel - e0) / distance(e0 - e1)`.
+
+> Link to "Frostbitten hair WebGPU": [swRasterizeHair.wgsl.ts](https://github.com/Scthe/frostbitten-hair-webgpu/blob/501f01969b4bc65cb7df3b901c1ced4e2da0c84b/src/passes/swHair/shaderImpl/swRasterizeHair.wgsl.ts#L170).
 
 ### Code
 

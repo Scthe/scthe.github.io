@@ -53,7 +53,7 @@ Let's go over some terminology:
 
 ## Projecting spline points
 
-In Blender, the hair particle system is a collection of splines. Splines have control points. Everyone has seen the smoothness of bezier curves, etc. Real-time representations usually quantize each strand into discrete points. I do it in [my Blender exporter](https://github.com/Scthe/frostbitten-hair-webgpu/blob/master/scripts/tfx_exporter.py). The **number of points per strand** is customizable and depends on the hairstyle. Short hair can get away with as little as 3 points. My [Frostbitten hair WebGPU](https://scthe.github.io/frostbitten-hair-webgpu) uses 16 points per strand. Increasing the number of points provides a smoother look at the cost of complexity. The rendering performance hit depends on the selected technique. For example, in Frostbite's tech, the cost evaluation is quite complicated. While you have to process more segments in the tile pass, the fine pass often reaches enough pixel/tile "opaqueness" to return early during the processing. This optimization happens regardless of strand count.
+In Blender, the hair particle system is a collection of splines. Splines have control points. Everyone has seen the smoothness of bezier curves, etc. Real-time representations usually quantize each strand into discrete points - I do it in [my Blender exporter](https://github.com/Scthe/frostbitten-hair-webgpu/blob/master/scripts/tfx_exporter.py). The **number of points per strand** is customizable and depends on the hairstyle. Short hair can get away with as little as 3 points. For example, my [Frostbitten hair WebGPU](https://scthe.github.io/frostbitten-hair-webgpu) uses 16 points per strand. Increasing the number of points provides a smoother look at the cost of complexity. The rendering performance hit depends on the selected technique. As I've discovered, in Frostbite's tech, the cost evaluation is quite complicated. While you have to process more segments in the tile pass, the fine pass often reaches enough pixel/tile "opaqueness" to return early during the processing. This optimization happens regardless of strand count.
 
 The question now stands: "How to turn connected points into pixel coordinates?". We will be using billboards that have width controlled by `fiberRadius` parameter. Increasing `fiberRadius` makes each strand wider.
 
@@ -394,7 +394,7 @@ fn edgeC(v0: vec2f, v1: vec2f) -> EdgeC{
 
 ## Segment-space coordinates
 
-This leaves us with the last question: "How to calculate barycentric coordinates for pixels inside the quad?". Well, we don't. For hair, we need coordinates in "segment space", according to 2 axes. I'm not sure if there is some industry-standard algorithm for this. I've used my own. I will highlight where it has some issues. You can always check the demo page for [Frostbitten hair WebGPU](https://scthe.github.io/frostbitten-hair-webgpu) to see how big of a problem it is in practice. A lot of value is in realizing what problem we are trying to solve. I will explain the derivation of both values. You can find the complete code at the end.
+This leaves us with the last question: "How to calculate barycentric coordinates for pixels inside the quad?". Well, we don't. For hair, we need coordinates in "segment space", according to 2 axes. I'm not sure if there is some industry-standard algorithm for this, so I've used my own. I will highlight where it has some issues, but you can always check the demo page for [Frostbitten hair WebGPU](https://scthe.github.io/frostbitten-hair-webgpu) to see how big of a problem it is in practice. A lot of value is in realizing what problem we are trying to solve. You can find the complete code at the end.
 
 > There are algorithms to calculate barycentric coordinates in a quad. I spend 2 hours trying to get them to work. This was one of the first days of writing "Frostbitten hair WebGPU". Since I still had the whole app to write, I decided to use something good enough. I did not change it later and it is present in the final version.
 
@@ -432,7 +432,7 @@ This leaves us with the last question: "How to calculate barycentric coordinates
   </Figcaption>
 </Figure>
 
-Looking at the image, there are obvious flaws. Pixel $px1$ is projected beyond the end segment. It requires the call to `saturate()`. The value for $px2$ is also incorrect. The perceived error depends on the hair width and angle between subsequent tangents. It's not noticeable as the hair is thin and most rendering techniques provide anti-aliasing with transparency. You should research this if you have more time. Or debug barycentric coordinates.
+Looking at the image, there are obvious flaws. Pixel $px1$ is projected beyond the end segment. It requires the call to `saturate()`. The value for $px2$ is also incorrect. The perceived error depends on the hair width and angle between subsequent tangents. It's not noticeable as the hair is thin and most rendering techniques provide anti-aliasing with transparency.
 
 > If you look at the image and think there is an obvious better algorithm, then I guess I've made damn good illustrations.
 

@@ -1,39 +1,47 @@
 ---
-title: 'My notes from "Nanite GPU Driven Materials"'
+title: "My notes from 'Nanite GPU Driven Materials'"
 permalink: "/blog/nanite-materials-notes/"
-excerpt: "My notes from ["Nanite GPU Driven Materials"](https://media.gdcvault.com/gdc2024/Slides/GDC+slide+presentations/Nanite+GPU+Driven+Materials.pdf) by Graham Wihlidal. Explore the changes in Nanite after Unreal Engine 5.0."
+excerpt: 'My notes from "Nanite GPU Driven Materials" by Graham Wihlidal. Describes the changes in Nanite after Unreal Engine 5.0.'
 date: 2024-09-25 12:00:00
-image: "./nanite-pipeline.jpg"
+image: "./nanite-pipeline.png"
 draft: false
 ---
 
-`TODO images, header image`
 
+These are my notes from ["Nanite GPU Driven Materials"](https://media.gdcvault.com/gdc2024/Slides/GDC+slide+presentations/Nanite+GPU+Driven+Materials.pdf) by Graham Wihlidal. It was presented at GDC 2024 and is now accessible as a PDF. As you can access the original source there is no reason to read this article. Still, some might find it useful.
 
-These are my notes from ["Nanite GPU Driven Materials"](https://media.gdcvault.com/gdc2024/Slides/GDC+slide+presentations/Nanite+GPU+Driven+Materials.pdf) by Graham Wihlidal. It was presented at GDC 2024 and is now accessible as a PDF. As you can access the authoritative source there is no reason to read this article. Still, some might find it useful.
-
-> I do not work for or are affiliated with Epic Games in any way. These are all my personal notes that I made public. If I say "Unreal Engine does X" it's a shorthand.
+> I do not work for, or are affiliated with Epic Games in any way. These are my personal notes that I have made public. If I say "Unreal Engine does X" it's a shorthand.
 
 First, we are going to see the initial Nanite pipeline as presented in ["Nanite A Deep Dive"](https://advances.realtimerendering.com/s2021/Karis_Nanite_SIGGRAPH_Advances_2021_final.pdf) by Brian Karis. We will discuss problems and inefficiencies. We will then use programmable rasterization steps to handle e.g. alpha masks, two-sided materials, and vertex animation. Shading using compute shaders follows next. We will end with a discussion on the new DirectX 12 Work Graphs API.
 
 I assume the reader already has a working knowledge of GPU-driven rendering and meshlets. I will skip any explanation of two-pass occlusion culling. It is important but contributes nothing to what's described. I've also tried to skip Nanite-specific stuff to make it more accessible, although software rasterizer plays a big role in this post. This also applies to terms like "cluster". For Nanite, it refers to a combination of meshlet and per-instance data. I will usually stick to "meshlet" instead.
 
-Feel free to send me an email in case of any errors. Some stuff was simplified, but that's the nature of personal notes.
+Feel free to send me an email in case of any errors. Some stuff was simplified, but that's to keep the text brief.
 
 ## Nanite in UE 5.0 (2022)
 
-The presentation starts with the graphic pipeline overview as presented in ["Nanite A Deep Dive"](https://advances.realtimerendering.com/s2021/Karis_Nanite_SIGGRAPH_Advances_2021_final.pdf) by Brian Karis. Here is a simplified version familiar to everyone who worked with GPU-driven rendering (two-pass occlusion culling skipped for clarity):
+The presentation starts with the graphic pipeline overview as presented in ["Nanite A Deep Dive"](https://advances.realtimerendering.com/s2021/Karis_Nanite_SIGGRAPH_Advances_2021_final.pdf) by Brian Karis. Here is a **simplified** version familiar to everyone who worked with GPU-driven rendering (two-pass occlusion culling skipped for clarity):
 
-`IMAGE: instance culling -> meshlet culling /-HW_mshlt_list-> HW raster  \-SW_mshlt_list-> SW raster --(vis bufer)--> Material passes`
+
+<Figure>
+  <BlogImage
+    src="./nanite-pipeline.png"
+    alt="GPU-driven rendering passes: instance culling, meshlet culling, hardware and software rasterizers, material passes."
+  />
+  <Figcaption>
+
+  Simplified pipeline for GPU-driven rendering. See slide 12 for full Nanite version.
+
+  </Figcaption>
+</Figure>
+
 
 For the hardware/software rasterizer split, decide based on e.g. projected size of the meshlet bounding sphere. Both rasterizers write to the visibility buffer using 64-bit atomic operations (`depth << 32 | clusterId`). However, UE5 has shader graphs, which leads to 2 immediate problems:
 
 1. Some materials need special code to decide if/how they write to the visibility buffer. E.g. alpha masks, two-sided materials, vertex animations, etc.
 2. You have a visibility buffer and the referenced triangles are shaded using shader graphs. How do you swap between materials?
 
-In UE 5.0, the first problem was not addressed. Objects with special materials were rendered without Nanite. We will see the solution in the `next section`.
-
-`TODO link in 'next section'`
+In UE 5.0, the first problem was not addressed. Objects with special materials were rendered without Nanite. We will see the solution in the <CrossPostLink paragraph="Programmable Raster in UE 5.1 (2022)">"Programmable Raster" section</CrossPostLink>.
 
 UE's team solved problem 2 by rendering many fullscreen triangles, one for each material. Each draw finds all the pixels that use its material and does the shading only for them. As draw commands are added from the CPU, some commands do nothing. E.g. the renderer does a draw with material id for a chair. But, after GPU culling, there are no pixels with this material. What if you did a pipeline state object (PSO) or descriptor change for nothing?
 
@@ -43,7 +51,17 @@ Known optimization writes `materialId` to `SV_Depth`. The fullscreen triangle ca
 > "In an initial geometry pass, all mesh instances, that pass the GPU culling stage, are rendered indirectly and their vertex attributes are written, compressed, into a set of geometry buffers. No material specific operations and texture fetches are done (except for alpha-testing and certain kinds of GPU hardware tessellation techniques). A subsequent full screen pass transfers a material ID from the geometry buffers into a 16-bits depth buffer. Finally, in the shading pass for each material, a screen space rectangle is rendered that encloses the boundaries of all visible meshes. The depth of the rectangle vertices is set to a value that corresponds to the currently processed material ID and early depth-stencil testing is used to reject pixels from other materials."
 
 
-`IMAGE - image 2 from article above: "The current version of the original article is missing the crucial image. I've retrieved it from [web.archive](https://web.archive.org/web/20220305140355/https://www.eidosmontreal.com/news/deferred-next-gen-culling-and-rendering-for-dawn-engine/) cache. All rights to the image belong to Eidos Montreal."`
+<Figure>
+  <BlogImage
+    src="./dawn-engine-RenderingOverview.jpg"
+    alt="Dawn engine's pipeline with a separate pass that extracts materialId from the GBuffer and writes it to the depth buffer."
+  />
+  <Figcaption>
+
+  The current version of the original article is missing the crucial image. I've retrieved it from [web.archive](https://web.archive.org/web/20220305140355/https://www.eidosmontreal.com/news/deferred-next-gen-culling-and-rendering-for-dawn-engine/) cache. All rights to the image belong to Eidos Montreal.
+
+  </Figcaption>
+</Figure>
 
 
 
@@ -51,7 +69,7 @@ Later on, the technique was optimized using 64x64 tiles. There are 2 possible ap
 
 First, compute a list of materials for each tile. Then, for each material, draw all tiles. The vertex shader returns bogus coordinates if the tile does not contain pixels affected by the material. Or the usual NDC tile coordinates if it does. With a single memory read, we can skip depth tests for 64x64 pixels.
 
-Or, create a list of tiles per material. We still use draw indirects, but the tile index is used to grab an entry from the current material's tile list. Each entry maps to the tile's location.
+Or, create a list of tiles per material. We still use draw indirects, but the draw index is used to grab an entry from the current material's tile list. Each entry maps to the tile's location.
 
 
 ## Programmable Raster in UE 5.1 (2022)
@@ -70,7 +88,17 @@ As mentioned above, Nanite in UE5 did not handle the following material properti
 
 All these effects interact with the visibility buffer or change values written to it. Looking back at the Nanite pipeline, we need to make rasterization stages configurable.
 
-`IMAGE same as above`
+<Figure>
+  <BlogImage
+    src="./nanite-pipeline.png"
+    alt="GPU-driven rendering passes: instance culling, meshlet culling, hardware and software rasterizers, material passes."
+  />
+  <Figcaption>
+
+  Based on this picture of the pipeline we will need to change both hardware and software rasterizers.
+
+  </Figcaption>
+</Figure>
 
 As we have both hardware (HW) and software (SW) rasterization, we have to handle all effects in both variants. This number can explode if you need separate descriptors.
 
@@ -84,7 +112,17 @@ Meshlets might also contain triangles with different materials.
 
 We now have to create compute passes that, for each raster bin, output a list of meshlets.
 
-`IMAGE new pipeline with raster pases`
+<Figure>
+  <BlogImage
+    src="./nanite-pipeline-raster-passes.png"
+    alt="GPU-driven rendering passes: instance culling, meshlet culling, hardware and software rasterizers (both have variants for each raster bin), material passes."
+  />
+  <Figcaption>
+
+  New pipeline with programmable raster passes. We will have to create many variants of software and hardware rasterizers.
+
+  </Figcaption>
+</Figure>
 
 
 ### Sorting into raster bins
@@ -113,7 +151,17 @@ This is enough for each draw/dispatch to rasterize its assigned triangles.
 
 We will now look at the later stage of the pipeline - shading.
 
-`IMAGE pipeline, arrow pointing to shading`
+<Figure>
+  <BlogImage
+    src="./nanite-pipeline-shading.png"
+    alt="GPU-driven rendering passes: instance culling, meshlet culling, hardware and software rasterizers, material passes. Arrow pointing to material passes."
+  />
+  <Figcaption>
+
+  Executing shader graphs per material to write to the GBuffer.
+
+  </Figcaption>
+</Figure>
 
 All the shading was moved to compute shaders - see slides 59 and 60 for potential problems. While this approach has some performance advantages over fullscreen passes (dispatches are cheaper for empty workload, no [context rolls](https://gpuopen.com/learn/understanding-gpu-context-rolls/), access to workgroups, no longer bound by 2x2 quads), the naive implementation will be slower than the one from UE 5.0. Let's see how sorting pixel locations into **shading bins** can improve this.
 
@@ -121,7 +169,7 @@ All the shading was moved to compute shaders - see slides 59 and 60 for potentia
 
 The slides do not define a shading bin. Let's use the simplest one: a unique material (for simplicity we are not even considering different triangles, etc.). We will revisit this definition later. Our goal is to generate a list of pixel locations for each material. This requires an allocation of size `screenPixelCount * vec2<u32>`. The algorithm is like one for raster bins and has the following stages:
 
-1. **Count** dispatches a thread per 2x2 pixel region (a **quad**). Counts the number of pixels per shading bin.
+1. **Count** dispatches a thread per 2x2 pixel region (a **quad**). Counts the number of pixels per shading bin (material).
 2. **Reserve** dispatches a thread per shading bin. Calculates memory offsets in the before-mentioned array. This functions as a memory space reservation.
     * Also initializes indirect arguments for each shading dispatch.
 3. **Scatter** dispatches a thread per 2x2 pixel region. Fills the array with pixel locations based on reserved memory offsets.
@@ -141,7 +189,7 @@ On slide 68 there is a note about [Delta Color Compression (DCC)](https://gpuope
 
 ### Shading passes
 
-We are finally ready to evaluate shader graphs to populate GBuffer. The simplest solution is, for each material, to do an indirect dispatch where 1 thread == 1 pixel. Set the push constants (Vulkan) or root constants (DirectX 12) to provide the `materialId` used to fetch a list of affected pixels. You might notice we still have dispatches that will not change any pixels. The CPU only knows that the material exists in the scene. It does not know that all affected triangles might have been culled. It's the 3rd time we have encountered this problem.
+We are finally ready to evaluate shader graphs to populate GBuffer. The simplest solution is, for each material, execute an indirect dispatch where 1 thread == 1 pixel. Set the push constants (Vulkan) or root constants (DirectX 12) to provide the `materialId` used to fetch a list of affected pixels (requires additional level of indirection). You might notice we still have dispatches that will not change any pixels. The CPU only knows that the material exists in the scene. It does not know that all affected triangles might have been culled. It's the 3rd time we have encountered this problem.
 
 
 ### Quads optimization
@@ -157,7 +205,17 @@ Or we could try to implement simple Variable Rate Shading. If all 4 pixels share
 
 Let's go back to the definition of shading bins, this time using slide 69:
 
-`IMAGE slide 69`
+<Figure>
+  <BlogImage
+    src="./slide-69-shade-binning-locality.jpg"
+    alt="Shade binning based on the number of pixels of the same material in a block."
+  />
+  <Figcaption>
+
+  Slide 69 from the presentation.
+
+  </Figcaption>
+</Figure>
 
 Instead of a list of pixels per material, the array seems to be split based on the number of pixels of the same material in a block. Blocks with only a single `materialId` are allocated at the front of the list. Write the leftover "standalone" pixels at the back.
 
@@ -169,7 +227,7 @@ I would assume this achieves the following:
 
 I have to say that this setup looks a bit strange. The reasoning is probably clear to people who have already implemented such systems.
 
-At this point, the presentation goes deeper into Variable Rate Shading, which would have been a separate article. Yet, I'm not interested in this subject. Although it would probably explain a lot.
+At this point, the presentation goes deeper into Variable Rate Shading, which would have been a separate article.
 
 
 
@@ -181,20 +239,40 @@ We have already encountered the same problem 3 times: empty indirect draws and d
 
 If the GPU is already doing something, the empty dispatches might not be a problem. Unfortunately, according to the screenshots, sometimes 3075 shading bins out of 3779 were empty (81%).
 
-`IMAGE slide 130`
+<Figure>
+  <BlogImage
+    src="./slide-130-empty-shading-bins.jpg"
+    alt="In game stats for shading bins utilization."
+  />
+  <Figcaption>
+
+  Slide 130 from the presentation. Out of 3779 shading bins, 3075 were empty (81%). Empty bin compaction saved nearly 1 ms.
+
+  </Figcaption>
+</Figure>
 
 
 The presentation provides a solution for consoles. Epic Games also tried to use [ID3D12GraphicsCommandList::SetPredication()](https://learn.microsoft.com/en-us/windows/win32/api/d3d12/nf-d3d12-id3d12graphicscommandlist-setpredication) on DirectX 12, but the PSO (and descriptors) change proved too costly.
 
 The solution (as some people have heard from the news) is to use DirectX 12 Work Graphs. All I know is that it allows you to dispatch/schedule a separate shader from another.
 
-Here is a quote by Graham Wihlidal from the official release of D3D12 Work Graphs 6 months ago:
+Here is a quote by Graham Wihlidal from the [official release of D3D12 Work Graphs](https://devblogs.microsoft.com/directx/d3d12-work-graphs/) 6 months ago:
 
->"With Work Graphs, complex pipelines that are highly variable in terms of overall “shape” can now run efficiently on the GPU, with the scheduler taking care of synchronization and data flow. This is especially important for producer-consumer pipelines, which are very common in rendering algorithms. The programming model also becomes significantly simpler for developers, as complex resource and barrier management code is moved from the application into the Work Graph runtime."
+>"(...) With Work Graphs, complex pipelines that are highly variable in terms of overall “shape” can now run efficiently on the GPU, with the scheduler taking care of synchronization and data flow. This is especially important for producer-consumer pipelines, which are very common in rendering algorithms. The programming model also becomes significantly simpler for developers, as complex resource and barrier management code is moved from the application into the Work Graph runtime. (...)"
 
 And here is a screenshot from relevant [DirectX-Specs](https://github.com/microsoft/DirectX-Specs/blob/master/d3d/WorkGraphs.md) introduction:
 
-`IMAGE from https://github.com/microsoft/DirectX-Specs/blob/master/d3d/WorkGraphs.md`
+<Figure>
+  <BlogImage
+    src="./dx12-work-graphs-spec.jpg"
+    alt="Preamble to DirectX 12 Work Graphs specification."
+  />
+  <Figcaption>
+
+  Preamble to DirectX 12 Work Graphs specification.
+
+  </Figcaption>
+</Figure>
 
 That sounds like a good fit to solve the problem. I assume other parts of Nanite might make use of it too.
 

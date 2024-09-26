@@ -25,8 +25,8 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="2.2097881"
-     inkscape:cx="239.1632"
-     inkscape:cy="72.405132"
+     inkscape:cx="244.59359"
+     inkscape:cy="70.142472"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-1928"
@@ -231,7 +231,7 @@
        id="g13173-4"
        inkscape:label="rasterHW - bins"
        transform="translate(-0.00149028,-20.613962)"
-       style="display:none"
+       style="display:inline"
        inkscape:highlight-color="#ee3bd6">
       <rect
          style="fill:none;stroke:#777777;stroke-width:0.14105;stroke-opacity:1;stop-color:#000000"
@@ -253,7 +253,7 @@
          ry="0.34323528" />
       <text
          xml:space="preserve"
-         style="font-weight:bold;font-size:1.76389px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';text-align:center;text-anchor:middle;fill:#9400e0;fill-opacity:1;stroke:none;stroke-width:0.262;stroke-opacity:1;stop-color:#000000"
+         style="font-weight:bold;font-size:1.76389px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';text-align:center;text-anchor:middle;display:none;fill:#9400e0;fill-opacity:1;stroke:none;stroke-width:0.262;stroke-opacity:1;stop-color:#000000"
          x="95.606354"
          y="31.444839"
          id="text13351-3"><tspan
@@ -268,7 +268,7 @@
            y="33.6497"
            id="tspan13665-1">each raster bin</tspan></text>
       <path
-         style="fill:none;fill-opacity:1;stroke:#9400e0;stroke-width:0.262;stroke-opacity:1;stop-color:#000000"
+         style="display:none;fill:none;fill-opacity:1;stroke:#9400e0;stroke-width:0.262;stroke-opacity:1;stop-color:#000000"
          d="m 83.243984,31.355043 5.38796,-0.374165 -4.534868,1.302091"
          id="path13786-9"
          sodipodi:nodetypes="ccc" />
@@ -306,7 +306,7 @@
     <g
        id="g13173"
        inkscape:label="rasterSW - bins"
-       style="display:none"
+       style="display:inline"
        inkscape:highlight-color="#ee3bcc">
       <rect
          style="fill:none;stroke:#777777;stroke-width:0.14105;stroke-opacity:1;stop-color:#000000"
@@ -328,7 +328,7 @@
          ry="0.34323528" />
       <text
          xml:space="preserve"
-         style="font-weight:bold;font-size:1.76389px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';text-align:center;text-anchor:middle;fill:#9400e0;fill-opacity:1;stroke:none;stroke-width:0.262;stroke-opacity:1;stop-color:#000000"
+         style="font-weight:bold;font-size:1.76389px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';text-align:center;text-anchor:middle;display:none;fill:#9400e0;fill-opacity:1;stroke:none;stroke-width:0.262;stroke-opacity:1;stop-color:#000000"
          x="95.606354"
          y="38.85318"
          id="text13351"><tspan
@@ -343,7 +343,7 @@
            y="41.058041"
            id="tspan13665">each raster bin</tspan></text>
       <path
-         style="fill:none;fill-opacity:1;stroke:#9400e0;stroke-width:0.262;stroke-opacity:1;stop-color:#000000"
+         style="display:none;fill:none;fill-opacity:1;stroke:#9400e0;stroke-width:0.262;stroke-opacity:1;stop-color:#000000"
          d="m 83.184118,38.628682 5.447826,-0.239466 -4.6995,1.900753"
          id="path13786" />
     </g>

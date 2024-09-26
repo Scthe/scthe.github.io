@@ -1,5 +1,5 @@
 ---
-title: "Notes for 3D Gaussian Splatting renderer"
+title: "Rendering in 3D Gaussian Splatting"
 permalink: "/blog/gaussian-splatting/"
 excerpt: "Math notes for 3D Gaussian Splatting renderer."
 date: 2024-06-03 12:00:00

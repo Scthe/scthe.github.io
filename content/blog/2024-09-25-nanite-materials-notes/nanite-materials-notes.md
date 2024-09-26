@@ -1,5 +1,5 @@
 ---
-title: "My notes from 'Nanite GPU Driven Materials'"
+title: "Notes from 'Nanite GPU Driven Materials'"
 permalink: "/blog/nanite-materials-notes/"
 excerpt: 'My notes from "Nanite GPU Driven Materials" by Graham Wihlidal. Describes the changes in Nanite after Unreal Engine 5.0.'
 date: 2024-09-25 12:00:00
@@ -8,9 +8,9 @@ draft: false
 ---
 
 
-These are my notes from ["Nanite GPU Driven Materials"](https://media.gdcvault.com/gdc2024/Slides/GDC+slide+presentations/Nanite+GPU+Driven+Materials.pdf) by Graham Wihlidal. It was presented at GDC 2024 and is now accessible as a PDF. As you can access the original source there is no reason to read this article. Still, some might find it useful.
+These are my notes from ["Nanite GPU Driven Materials"](https://media.gdcvault.com/gdc2024/Slides/GDC+slide+presentations/Nanite+GPU+Driven+Materials.pdf) by Graham Wihlidal. He delivered the presentation at GDC 2024, and the slides are now accessible as a PDF file. As you can download the original text, there is no reason to read this article. Still, some might find it useful.
 
-> I do not work for, or are affiliated with Epic Games in any way. These are my personal notes that I have made public. If I say "Unreal Engine does X" it's a shorthand.
+> I do not work for or are affiliated with Epic Games in any way. These are my personal notes that I have made public. If I say "Unreal Engine does X" it's a shorthand.
 
 First, we are going to see the initial Nanite pipeline as presented in ["Nanite A Deep Dive"](https://advances.realtimerendering.com/s2021/Karis_Nanite_SIGGRAPH_Advances_2021_final.pdf) by Brian Karis. We will discuss problems and inefficiencies. We will then use programmable rasterization steps to handle e.g. alpha masks, two-sided materials, and vertex animation. Shading using compute shaders follows next. We will end with a discussion on the new DirectX 12 Work Graphs API.
 
@@ -30,7 +30,7 @@ The presentation starts with the graphic pipeline overview as presented in ["Nan
   />
   <Figcaption>
 
-  Simplified pipeline for GPU-driven rendering. See slide 12 for full Nanite version.
+  Simplified pipeline for GPU-driven rendering. See slide 12 for the full Nanite version.
 
   </Figcaption>
 </Figure>
@@ -38,14 +38,14 @@ The presentation starts with the graphic pipeline overview as presented in ["Nan
 
 For the hardware/software rasterizer split, decide based on e.g. projected size of the meshlet bounding sphere. Both rasterizers write to the visibility buffer using 64-bit atomic operations (`depth << 32 | clusterId`). However, UE5 has shader graphs, which leads to 2 immediate problems:
 
-1. Some materials need special code to decide if/how they write to the visibility buffer. E.g. alpha masks, two-sided materials, vertex animations, etc.
+1. Some materials need special code to decide if/how they write to the visibility buffer. Think e.g. alpha masks, two-sided materials, vertex animations, etc.
 2. You have a visibility buffer and the referenced triangles are shaded using shader graphs. How do you swap between materials?
 
 In UE 5.0, the first problem was not addressed. Objects with special materials were rendered without Nanite. We will see the solution in the <CrossPostLink paragraph="Programmable Raster in UE 5.1 (2022)">"Programmable Raster" section</CrossPostLink>.
 
-UE's team solved problem 2 by rendering many fullscreen triangles, one for each material. Each draw finds all the pixels that use its material and does the shading only for them. As draw commands are added from the CPU, some commands do nothing. E.g. the renderer does a draw with material id for a chair. But, after GPU culling, there are no pixels with this material. What if you did a pipeline state object (PSO) or descriptor change for nothing?
+Nanite's team solved problem 2 by rendering many fullscreen triangles, one for each material. Each draw has to find all the pixels that use its material. As draw commands are added from the CPU, some commands do nothing. E.g. the renderer does a draw with `materialId` for a chair. But, after GPU culling, there are no pixels with this material. What if you did a pipeline state object (PSO) or descriptor change for nothing?
 
-Known optimization writes `materialId` to `SV_Depth`. The fullscreen triangle can test `depth_equals` to reject pixels with early depth-stencil test. This approach was [used in Eidos Montreal's Dawn Engine](https://www.eidosmontreal.com/news/deferred-next-gen-culling-and-rendering-for-dawn-engine/):
+Known optimization writes `materialId` to `SV_Depth`. The fullscreen triangle can test `DEPTH_EQUALS` to reject pixels with the early depth-stencil test. This approach was [used in Eidos Montreal's Dawn Engine](https://www.eidosmontreal.com/news/deferred-next-gen-culling-and-rendering-for-dawn-engine/):
 
 
 > "In an initial geometry pass, all mesh instances, that pass the GPU culling stage, are rendered indirectly and their vertex attributes are written, compressed, into a set of geometry buffers. No material specific operations and texture fetches are done (except for alpha-testing and certain kinds of GPU hardware tessellation techniques). A subsequent full screen pass transfers a material ID from the geometry buffers into a 16-bits depth buffer. Finally, in the shading pass for each material, a screen space rectangle is rendered that encloses the boundaries of all visible meshes. The depth of the rectangle vertices is set to a value that corresponds to the currently processed material ID and early depth-stencil testing is used to reject pixels from other materials."
@@ -65,11 +65,11 @@ Known optimization writes `materialId` to `SV_Depth`. The fullscreen triangle ca
 
 
 
-Later on, the technique was optimized using 64x64 tiles. There are 2 possible approaches.
+Later on, the technique was optimized using 64x64 pixel tiles. There are 2 possible approaches.
 
-First, compute a list of materials for each tile. Then, for each material, draw all tiles. The vertex shader returns bogus coordinates if the tile does not contain pixels affected by the material. Or the usual NDC tile coordinates if it does. With a single memory read, we can skip depth tests for 64x64 pixels.
+First, compute a list of materials for each tile (think `Map<TileId, List<MaterialId>>`). Then, for each material, draw all tiles. The vertex shader returns bogus coordinates if the tile does not contain pixels affected by the current material. Or the usual NDC tile coordinates if it does. With a single memory read, we can skip depth tests for 64x64 pixels.
 
-Or, create a list of tiles per material. We still use draw indirects, but the draw index is used to grab an entry from the current material's tile list. Each entry maps to the tile's location.
+Or, create a list of tiles per material (think `Map<MaterialId, List<TileId>>`). We still use separate draw indirects for each material. However, the draw index is used to grab an entry from the current material's tile list. Each entry is mapped to the tile's location.
 
 
 ## Programmable Raster in UE 5.1 (2022)
@@ -78,7 +78,7 @@ Or, create a list of tiles per material. We still use draw indirects, but the dr
 
 As mentioned above, Nanite in UE5 did not handle the following material properties:
 
-1. Alpha masking (grass, trees). Conditionally skip writting to the visibility buffer based on texture.
+1. Alpha masking (e.g. grass, trees). Conditionally skip writing to the visibility buffer based on texture.
     * Leaves in Fortnite seem to [still use geometry instead of alpha masks](https://www.unrealengine.com/en-US/tech-blog/bringing-nanite-to-fortnite-battle-royale-in-chapter-4).
 2. Two-sided materials. Write to visibility buffer despite "incorrect" triangle winding.
 3. Pixel depth offset. Modify written depth.
@@ -104,9 +104,9 @@ As we have both hardware (HW) and software (SW) rasterization, we have to handle
 
 For two-sided materials, HW rasterization requires PSO change from `CULL_BACKFACE` to `CULL_NONE`. For the SW raster, you can swap 2 vertex indices with each other to revert the winding if needed.
 
-For alpha masking, HW rasterization can sample the texture. SW rasterization requires barycentric coordinates, derivatives, and mipmap calculation.
+For alpha masking, HW rasterization can sample the texture. SW rasterization requires additional barycentric coordinates, derivatives, and mipmap calculation first.
 
-A unique combination of material properties and descriptors that affect rasterization is called a `raster bin`. Notice that the CPU, once again, will dispatch/draw indirect all possible combinations of raster bins. It does not know what has made through the GPU culling. If material exists in the scene we dispatch both HW and SW rasterizer for it. It might even happen that all the material's meshlets are processed by only one of them, rendering either HW or SW rasterizer jobless.
+A unique combination of material properties and descriptors that affect rasterization is called a `raster bin`. Notice that the CPU, once again, will dispatch/draw indirect all possible combinations of raster bins. It does not know what has made through the GPU culling. If material exists in the scene we dispatch both HW and SW rasterizer for it. It might even happen that all the material's meshlets are processed by only one technique, rendering either HW or SW rasterizer jobless.
 
 Meshlets might also contain triangles with different materials.
 
@@ -127,7 +127,7 @@ We now have to create compute passes that, for each raster bin, output a list of
 
 ### Sorting into raster bins
 
-Meshlet culling produces 2 lists of meshlets - one for hardware and one for software rasterizer. All we need to do is to sort both lists into raster bins. This way, draw/dispatch for each shader bin will fetch its subset of the list.
+Meshlet culling produces 2 lists of meshlets - one for hardware and one for software rasterizer. All we need to do is to sort both lists into raster bins. This way, draw/dispatch for each shader bin will fetch its slice of the list.
 
 If you've ever done GPU sorting into bins, you already know the implementation. If you don't, here is code from my [Frostbitten hair WebGPU](https://github.com/Scthe/frostbitten-hair-webgpu) that sorts screen tiles based on the number of hair segments:
 
@@ -137,12 +137,12 @@ If you've ever done GPU sorting into bins, you already know the implementation. 
 As you can see, it's not complicated. In UE5 there are 3 stages:
 
 1. **Classify** dispatches a thread per cluster. It increments a global counter for each raster bin present.
-2. **Reserve** dispatches a thread per raster bin. Calculates memory offsets in the **array that contains `vec2u` elements** (`i32 clusterIdx`, `i16 triangleIdx start`, `i16 triangleIdx end`).
+2. **Reserve** dispatches a thread per raster bin. Calculates memory offsets in the **array that contains `vec2<u32>` elements** (`i32 clusterIdx`, `i16 triangleIdx start`, `i16 triangleIdx end`).
     * Example implementation: there is a global `offsetCounter`. Each raster bin atomically adds its cluster count. This functions as a memory space reservation.
     * Also initializes indirect arguments for rasterization draws/dispatches.
 3. **Scatter** dispatches thread per cluster. Fills the array based on reserved memory offsets.
 
-Note that each dispatch/draw has to know its slice of the meshlet list - both offset and count. I've also hand-waved some other issues - see slides. E.g. you can use async compute. The barrier configuration seems atypical.
+Note that each dispatch/draw will have to know its slice of the meshlet list - both offset and count. I've also hand-waved some other issues - see slides. E.g. you can use async compute. The barrier configuration seems atypical.
 
 This is enough for each draw/dispatch to rasterize its assigned triangles.
 
@@ -163,33 +163,34 @@ We will now look at the later stage of the pipeline - shading.
   </Figcaption>
 </Figure>
 
-All the shading was moved to compute shaders - see slides 59 and 60 for potential problems. While this approach has some performance advantages over fullscreen passes (dispatches are cheaper for empty workload, no [context rolls](https://gpuopen.com/learn/understanding-gpu-context-rolls/), access to workgroups, no longer bound by 2x2 quads), the naive implementation will be slower than the one from UE 5.0. Let's see how sorting pixel locations into **shading bins** can improve this.
+In UE 5.4, all the shading was moved to compute shaders - see slides 59 and 60 for potential problems. While this approach has some performance advantages over fullscreen triangles (dispatches are cheaper for empty workload, no [context rolls](https://gpuopen.com/learn/understanding-gpu-context-rolls/), access to workgroups, no longer bound by 2x2 quads), the naive implementation will be slower than the one from UE 5.0. Let's see how sorting pixel locations into **shading bins** can improve this.
 
 ### Sorting into shading bins
 
-The slides do not define a shading bin. Let's use the simplest one: a unique material (for simplicity we are not even considering different triangles, etc.). We will revisit this definition later. Our goal is to generate a list of pixel locations for each material. This requires an allocation of size `screenPixelCount * vec2<u32>`. The algorithm is like one for raster bins and has the following stages:
+The slides do not define a shading bin. Let's use the simplest definition: a unique material (we are not even considering different triangles, etc.). We will revisit this definition later. Our goal is to generate a list of pixel locations for each material. This requires an allocation of size `screenPixelCount * vec2<u32>`. The algorithm is like one for raster bins and has the following stages:
 
 1. **Count** dispatches a thread per 2x2 pixel region (a **quad**). Counts the number of pixels per shading bin (material).
 2. **Reserve** dispatches a thread per shading bin. Calculates memory offsets in the before-mentioned array. This functions as a memory space reservation.
     * Also initializes indirect arguments for each shading dispatch.
 3. **Scatter** dispatches a thread per 2x2 pixel region. Fills the array with pixel locations based on reserved memory offsets.
     * Dispatched as 8x8 workgroup called **block** (so 16x16 pixels). Threads are assigned to quads inside the workgroup using Morton code.
-    * All pixels for a workgroup (16x16 pixels) that share the same shading bin are located next to each other in the final array. Thus, for each shading bin:
+    * All pixels for a block that share the same shading bin are placed next to each other in the final array. Thus, for each block:
         1. Count pixels from a particular shading bin.
-        2. Execute a single atomic add for this shading bin for this workgroup.
-        3. Broadcast the start offset returned from the atomic add.
+        2. Execute a single atomic add for the whole workgroup.
+        3. Broadcast inside the workgroup the start offset returned from the atomic add.
         4. Each thread calculates offsets into the array and writes.
+        5. Repeat for all shading bins in the block.
 
 > You might have seen nearly the same algorithm in John Hable's ["Visibility Buffer Rendering with Material Graphs"](http://filmicworlds.com/blog/visibility-buffer-rendering-with-material-graphs/). I've added comments relevant to UE 5.4's implementation.
 
-With this, our memory array of size `screenPixelCount * vec2<u32>` contains pixel locations sorted by material. Notice, that two `u32` are more than enough. Since each thread processes a 2x2 quad, additional **Variable Rate Shading (VRS)** info is also packed. At slide 73 this is confirmed - it's called a **quad write mask**. We have enough data to make a VRS decision (slide 101) for all 4 pixels.
+With this, our memory array of size `screenPixelCount * vec2<u32>` contains pixel locations sorted by material. Notice that two `u32` is more than enough. Since each thread processes a 2x2 quad, additional **Variable Rate Shading (VRS)** info is added. Slide 73 calls this a **quad write mask**. We have enough data to make a VRS decision (slide 101) for all 4 pixels.
 
 On slide 68 there is a note about [Delta Color Compression (DCC)](https://gpuopen.com/learn/dcc-overview/). I'm not sure how this plays with the rest of the algorithm, especially VRS.
 
 
 ### Shading passes
 
-We are finally ready to evaluate shader graphs to populate GBuffer. The simplest solution is, for each material, execute an indirect dispatch where 1 thread == 1 pixel. Set the push constants (Vulkan) or root constants (DirectX 12) to provide the `materialId` used to fetch a list of affected pixels (requires additional level of indirection). You might notice we still have dispatches that will not change any pixels. The CPU only knows that the material exists in the scene. It does not know that all affected triangles might have been culled. It's the 3rd time we have encountered this problem.
+We are finally ready to evaluate shader graphs to populate GBuffer. The simplest solution is, for each material, to execute an indirect dispatch where 1 thread == 1 pixel. Set the push constants (Vulkan) or root constants (DirectX 12) to provide the `materialId` used to fetch a list of affected pixels (requires an additional level of indirection). You might notice we still have dispatches that will not change any pixels. The CPU only knows that the material exists in the scene. It does not know that all affected triangles might have been culled. It's the 3rd time we have encountered this problem.
 
 
 ### Quads optimization
@@ -217,12 +218,12 @@ Let's go back to the definition of shading bins, this time using slide 69:
   </Figcaption>
 </Figure>
 
-Instead of a list of pixels per material, the array seems to be split based on the number of pixels of the same material in a block. Blocks with only a single `materialId` are allocated at the front of the list. Write the leftover "standalone" pixels at the back.
+Instead of a list of pixels per material, the array seems to be split based on the number of pixels of the same material in a block. Blocks containing only a single `materialId` are allocated at the front of the list. Write the leftover "standalone" pixels at the back.
 
 I would assume this achieves the following:
 
 * better data locality,
-* easier to detect bigger blocks of the same material,
+* easier to detect bigger blocks of the same material (VRS?),
 * maybe better scheduling as most of the work is executed upfront?
 
 I have to say that this setup looks a bit strange. The reasoning is probably clear to people who have already implemented such systems.
@@ -233,16 +234,16 @@ At this point, the presentation goes deeper into Variable Rate Shading, which wo
 
 ## Empty bin compaction with work graphs
 
-> We are back at slide 109
+> We are back at slide 109.
 
 We have already encountered the same problem 3 times: empty indirect draws and dispatches. The UE 5.0's implementation draws fullscreen triangles for each material. They produced no pixels if their meshlets were culled. In raster binning, we had software and hardware rasterizer commands that processed 0 meshlets. Again, some meshlets were culled. Or maybe all were assigned to software rasterizer, rendering hardware rasterizer useless? In compute shading we once again did empty dispatches for materials that never affected anything.
 
-If the GPU is already doing something, the empty dispatches might not be a problem. Unfortunately, according to the screenshots, sometimes 3075 shading bins out of 3779 were empty (81%).
+If the GPU is already doing something, the empty dispatches might not be a problem. Unfortunately, according to the screenshots, sometimes e.g. 3075 shading bins out of 3779 can be empty (81%).
 
 <Figure>
   <BlogImage
     src="./slide-130-empty-shading-bins.jpg"
-    alt="In game stats for shading bins utilization."
+    alt="In-game stats for shading bins utilization."
   />
   <Figcaption>
 
@@ -280,8 +281,8 @@ That sounds like a good fit to solve the problem. I assume other parts of Nanite
 
 Originally, I'd only read the presentation to know how Nanite was extended. Yet most of the covered topics can be broadly applied.
 
-The programmable raster was not surprising. Once you realize "alpha masks can be implemented by not writing selected pixels to the visibility buffer", most of the solution falls in place. Of course, there are more complex use cases, and converting the shader graph system (or just affected properties) was probably a lot of work.
+The programmable raster was not surprising. Once you realize "alpha masks can be implemented by not writing selected pixels to the visibility buffer", most of the solution falls in place. Of course, there are more complex use cases. Converting the shader graph system (or just affected properties) was probably a lot of work.
 
-The compute shading and (especially) Variable Rate Shading are (for me) a bit too complex and far removed from the initial Nanite problem. Remember, I look at this from the perspective of a [tiny web app](https://github.com/Scthe/nanite-webgpu), which is already limited by a lack of 64-bit atomics and early depth-stencil tests.
+The compute shading and Variable Rate Shading are (for me) a bit too complex and far removed from the initial Nanite problem. Remember, I look at this from the perspective of a [tiny web app](https://github.com/Scthe/nanite-webgpu), which is already limited by a lack of 64-bit atomics and early depth-stencil tests.
 
 The DirectX 12 Work Group API thing was interesting. I heard the news when it was first released. It's nice to know why this solution exists.

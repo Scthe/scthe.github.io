@@ -67,7 +67,7 @@ Known optimization writes `materialId` to `SV_Depth`. The fullscreen triangle ca
 
 Later on, the technique was optimized using 64x64 pixel tiles. There are 2 possible approaches.
 
-First, compute a list of materials for each tile (think `Map<TileId, List<MaterialId>>`). Then, for each material, draw all tiles. The vertex shader returns bogus coordinates if the tile does not contain pixels affected by the current material. Or the usual NDC tile coordinates if it does. With a single memory read, we can skip depth tests for 64x64 pixels.
+First, compute a list of materials for each tile (think `Map<TileId, List<MaterialId>>`). Then, for each material, draw all tiles. The vertex shader returns bogus coordinates if the tile does not contain pixels affected by the current material. Or the usual NDC tile coordinates if it does. With a few memory reads, we can skip depth tests for 64x64 pixels.
 
 Or, create a list of tiles per material (think `Map<MaterialId, List<TileId>>`). We still use separate draw indirects for each material. However, the draw index is used to grab an entry from the current material's tile list. Each entry is mapped to the tile's location.
 
@@ -90,12 +90,12 @@ All these effects interact with the visibility buffer or change values written t
 
 <Figure>
   <BlogImage
-    src="./nanite-pipeline.png"
-    alt="GPU-driven rendering passes: instance culling, meshlet culling, hardware and software rasterizers, material passes."
+    src="./nanite-pipeline-raster-passes.png"
+    alt="GPU-driven rendering passes: instance culling, meshlet culling, hardware and software rasterizers (both have variants for each raster bin), material passes."
   />
   <Figcaption>
 
-  Based on this picture of the pipeline we will need to change both hardware and software rasterizers.
+  New pipeline with programmable raster passes. We will have to create many variants of software and hardware rasterizers.
 
   </Figcaption>
 </Figure>
@@ -112,17 +112,7 @@ Meshlets might also contain triangles with different materials.
 
 We now have to create compute passes that, for each raster bin, output a list of meshlets.
 
-<Figure>
-  <BlogImage
-    src="./nanite-pipeline-raster-passes.png"
-    alt="GPU-driven rendering passes: instance culling, meshlet culling, hardware and software rasterizers (both have variants for each raster bin), material passes."
-  />
-  <Figcaption>
 
-  New pipeline with programmable raster passes. We will have to create many variants of software and hardware rasterizers.
-
-  </Figcaption>
-</Figure>
 
 
 ### Sorting into raster bins
@@ -276,6 +266,11 @@ And here is a screenshot from relevant [DirectX-Specs](https://github.com/micros
 </Figure>
 
 That sounds like a good fit to solve the problem. I assume other parts of Nanite might make use of it too.
+
+### Work graphs in Vulkan
+
+A day after this article was published, [VK_EXT_device_generated_commands](https://github.com/KhronosGroup/Vulkan-Docs/blob/486e4b289053a7d64784e7ce791711843c60c235/appendices/VK_EXT_device_generated_commands.adoc) was released (Vulkan 1.3.296).
+
 
 ## Summary
 

@@ -216,7 +216,7 @@ The Gaussian distribution has a value even at infinity. This means that every Ga
 $$
 Error =
 1 -
-\int_{-r}^r \frac{e^{-x^2/2}} {\sqrt{2 \pi}}
+\int_{-r}^r \frac{e^{-x^2/2}} {\sqrt{2 \pi}} dx
 $$
 
 

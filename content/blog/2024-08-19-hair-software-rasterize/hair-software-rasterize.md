@@ -1,7 +1,7 @@
 ---
 title: "Software rasterizing hair"
 permalink: "/blog/hair-software-rasterize/"
-excerpt: "Using software rasterization to render hair. Covers point projection, quad software rasterization and segment-space calculations."
+excerpt: "Using software rasterization to render hair. Covers point projection, quad software rasterization, and segment-space calculations."
 date: 2024-08-19 12:00:00
 image: "./frostbitten-hair-static-img.jpg"
 draft: false
@@ -14,7 +14,7 @@ In the last few years, we have seen more rendering systems that lean on software
 * ["Rasterization"](https://www.scratchapixel.com/lessons/3d-basic-rendering/rasterization-practical-implementation/rasterization-stage.html) by Scratchapixel.
 * ["Rasterising a triangle"](https://jtsorlinis.github.io/rendering-tutorial/) by Jason Tsorlinis.
 
-In this article, we will see the rasterization algorithm for hair. Starting from a file that contains strand points in 3D space and ending on pixel attributes inside a quad. First, we will see the required 3D transformations to produce projected vertices. Then we will go over triangle rasterization basics, and see the same function applied to quads. We will also need coordinates inside each rasterized hair segment to compute attributes. For each section I will also link code from my "Frostbitten hair WebGPU" so you can see how this works in practice.
+In this article, we will see the rasterization algorithm for hair. Starting from a file that contains strand points in 3D space and ending on pixel attributes inside a quad. First, we will see the required 3D transformations to produce projected vertices. Then we will go over triangle rasterization basics, and see the same function applied to quads. We will also need coordinates inside each rasterized hair segment to compute attributes. For each section, I will also link the code from my "Frostbitten hair WebGPU" so you can see how this works in practice.
 
 <Figure>
   <BlogImage
@@ -45,7 +45,7 @@ Let's go over some terminology:
   />
   <Figcaption>
 
-  Single hair strand. The root is the first point in the strand, tip is the last. If there are 4 points, there are 3 hair segments. Each point has a tangent vector.
+  Single hair strand. The root is the first point in the strand, and the tip is the last. If there are 4 points, there are 3 hair segments. Each point has a tangent vector.
 
   </Figcaption>
 </Figure>
@@ -199,7 +199,7 @@ Let's now consider the relative positions of the 3 points. In the first example,
 
 > You might also notice that the result depends on the clockwise/counterclockwise order of vertices. This is useful for triangle culling. We will not use this property for hair.
 
-### Using edge function to rasterize triangles
+### Using the edge function to rasterize triangles
 
 Now we can check which "side" of the line a point (or a pixel) lies. If we have 3 lines, there will be an area that lies on the same side of each line.
 
@@ -216,7 +216,7 @@ Now we can check which "side" of the line a point (or a pixel) lies. If we have 
   </Figcaption>
 </Figure>
 
-This is how the simplest triangle rasterization works. For each pixel in the canvas, calculate the value for all 3 edge functions and check if **all** are negative (or positive depending on vertex winding). You can optimize this by calculating triangle bounds. For triangle that spans on vertices `v0`, `v1`, `v2` write following rasterization code:
+This is how the simplest triangle rasterization works. For each pixel in the canvas, calculate the value for all 3 edge functions and check if **all** are negative (or positive depending on vertex winding). You can optimize this by calculating triangle bounds. For triangle with vertices `v0`, `v1`, `v2` write following rasterization code:
 
 ```rust
 var boundRectMin = floor(min(min(v0, v1), v2));
@@ -264,7 +264,7 @@ Another issue is sampling. If you take a single sample per pixel, you should off
   </Figcaption>
 </Figure>
 
-### Using edge function to rasterize quads
+### Using the edge function to rasterize quads
 
 Rasterizing quads is much more complicated. You have to call `edgeFunction()` 4 times.
 
@@ -320,7 +320,7 @@ $$
 
 We are then iterating over $p=(x_p, y_p)$. A common optimization is to write the edge function in a form that matches $f = A \cdot x_p + B \cdot y_p + C$. This way, when we iterate over successive pixels in a row (only $x_p$ changes) we can just add $A$. The $B \cdot y_p + C$ part does not change. No reason to re-evaluate the whole edge function. Similar when switching to the next row. The code below might be helpful at this point.
 
-In a triangle, there are 3 edges. So we precompute 3 different values of A, B, C (9 floats). Given 2 vertices that create an edge, we have the following formulas:
+In a triangle, there are 3 edges. So we precompute 3 different values of A, B, and C (total 9 floats). Given 2 vertices that create an edge, we have the following formulas:
 
 $$
 A = y_a - y_b
@@ -339,6 +339,9 @@ $$
 For triangles, this is around 7% faster. Measured in one of the test scenes in [Nanite WebGPU](https://github.com/Scthe/nanite-webgpu).
 
 Since quad has 4 edges, we precompute 4 sets of A, B, C. Unfortunately, this is quite a lot of registers. In "Frostbitten hair WebGPU", [HairFinePass](https://github.com/Scthe/frostbitten-hair-webgpu/blob/d6306a69ab1cde4ef1321fc98c2040fd64ccac37/src/passes/swHair/shaderImpl/processHairSegment.wgsl.ts#L39) uses this optimization, while [HairTilesPass](https://github.com/Scthe/frostbitten-hair-webgpu/blob/501f01969b4bc65cb7df3b901c1ced4e2da0c84b/src/passes/swHair/hairTilesPass.wgsl.ts#L153) does not.
+
+> (EDIT 28.09) I've rewritten HairFinePass to parallelize over pixels in a tile. Now it also uses edge function.
+
 
 Quad rasterization if you use this optimization:
 
@@ -389,7 +392,7 @@ fn edgeC(v0: vec2f, v1: vec2f) -> EdgeC{
 }
 ```
 
-> Link to "Frostbitten hair WebGPU": [processHairSegment.wgsl.ts](https://github.com/Scthe/frostbitten-hair-webgpu/blob/501f01969b4bc65cb7df3b901c1ced4e2da0c84b/src/passes/swHair/shaderImpl/processHairSegment.wgsl.ts#L39) (part of [HairFinePass](https://github.com/Scthe/frostbitten-hair-webgpu/blob/501f01969b4bc65cb7df3b901c1ced4e2da0c84b/src/passes/swHair/hairFinePass.wgsl.ts)). My project has 2 different passess that use software rasterization. `HairTilesPass` is faster without an optimization.
+> Link to "Frostbitten hair WebGPU": [processHairSegment.wgsl.ts](https://github.com/Scthe/frostbitten-hair-webgpu/blob/501f01969b4bc65cb7df3b901c1ced4e2da0c84b/src/passes/swHair/shaderImpl/processHairSegment.wgsl.ts#L39) (part of [HairFinePass](https://github.com/Scthe/frostbitten-hair-webgpu/blob/501f01969b4bc65cb7df3b901c1ced4e2da0c84b/src/passes/swHair/hairFinePass.wgsl.ts)). My project has 2 different passes that use software rasterization. `HairTilesPass` is faster without this optimization.
 
 
 ## Segment-space coordinates
@@ -423,7 +426,7 @@ This leaves us with the last question: "How to calculate barycentric coordinates
 <Figure>
   <BlogImage
     src="./co-long-axis.png"
-    alt="Calculation of pixels projecteted onto segment axis."
+    alt="Calculation of pixels projected onto segment axis."
   />
   <Figcaption>
 
@@ -444,7 +447,7 @@ Given the value for the long axis, it's easier to get the second coordinate. Not
 <Figure>
   <BlogImage
     src="./co-short-axis.png"
-    alt="Calculation of pixel projecteted onto edge."
+    alt="Calculation of pixel projected onto the edge."
   />
   <Figcaption>
 
@@ -458,11 +461,31 @@ Given the value for the long axis, it's easier to get the second coordinate. Not
 3. Strand `width near the pixel` is a linear interpolation of start and end width using the coordinate for the long axis.
 4. Project the pixel onto one of the side edges of the segment.
 5. Calculate the distance from the pixel to the projected pixel.
-6. Divide this distance by segment `width near the pixel`. Saturate the result so that it is between 0 and 1.
+6. Divide this distance by the segment's `width near the pixel`. Saturate the result so that it is between 0 and 1.
 
 Alternatively, you could find points on both side edges: `e0 = mix(v00, v10, v)`, `e1 = mix(v01, v11, v)`. Then `u = distance(pixel - e0) / distance(e0 - e1)`.
 
 > Link to "Frostbitten hair WebGPU": [swRasterizeHair.wgsl.ts](https://github.com/Scthe/frostbitten-hair-webgpu/blob/501f01969b4bc65cb7df3b901c1ced4e2da0c84b/src/passes/swHair/shaderImpl/swRasterizeHair.wgsl.ts#L170).
+
+Once you have this value, use it to e.g. estimate alpha coverage:
+
+```rust
+fn getAlphaCoverage(interpolationWidth: f32) -> f32 {
+  // $interpolationWidth is in range 0..1.
+  // Transform it so strand middle is 1.0 and then 0.0 at edges.
+  var alpha = 1.0 - abs(interpolationWidth * 2. - 1.);
+
+  // you can change linear interpolation to quadratic
+  if (HAIR_USE_ALPHA_QUADRATIC) {
+    alpha = sqrt(alpha);
+  }
+  
+  // or modify alpha with a magic value if you want to make the hair thicker
+  alpha = saturate(alpha * HAIR_ALPHA_MULTIPLIER);
+  return alpha;
+}
+```
+
 
 ### Code
 
@@ -522,6 +545,28 @@ fn projectPointToLine(l1: vec2f, l2: vec2f, p: vec2f) -> vec2f {
   return d;
 }
 ```
+
+## Per-pixel linked lists and tiles
+
+To render nice, soft-looking hair you need to handle antialiasing and transparency. With thousands of hair strands, alpha blending is a challenge. There are many ways to achieve **order-independent transparency (OIT)**, but **per-pixel linked lists (PPLLs)** are the most common. The technique does the following (**for each pixel**):
+
+1. Collect hair samples into a list.
+2. Sort hair samples by depth.
+3. Blend the samples.
+
+Notice there are 2 phases to this algorithm. First, process each hair segment and write per-pixel data. In the second step, process the list for each pixel. These steps naturally map to 2 separate GPU commands.
+
+Yet, there is a flaw in this algorithm. How much memory to allocate? Often a magic `avgHairSamplesPerPixel` is introduced. Total allocation is then `screenSizeInPixels * avgHairSamplesPerPixel * sizeof(HairSample)`. Then someone will [come with a Retina display](https://github.com/Scthe/frostbitten-hair-webgpu/issues/1).
+
+["High-Performance Software Rasterization on GPUs"](https://research.nvidia.com/sites/default/files/pubs/2011-08_High-Performance-Software-Rasterization/laine2011hpg_paper.pdf) by Samuli Laine and Tero Karras has a different setup. We will use the idea of coarse and fine rasterizer to split the screen into tiles.
+
+The first step (coarse rasterizer) outputs a list of hair segments per tile. The memory needed is `tileCount * avgHairSegmentsPerTile * sizeof(HairSegmentId)`.
+
+In fine rasterizer, each workgroup  grabs a tile from a global list. The number of workgroups is fixed and independent of tile count. Use the GPU task queue to distribute the workload. One thread represents a single pixel. The first thread fetches hair segment data, projects it, and broadcasts the partial result. Then, each thread compares its pixel using the edge function. The results are stored in a temporary buffer of size `numberOfWorkgroups * tileSize * tileSize * avgHairSamplesPerPixel * sizeof(HairSample)`. Still inside the fine rasterizer, we sort and shade the pixels.
+
+I've glossed over how PPLLs are actually implemented using 2 separate buffers. One is for list heads, and one is for the actual data. I hope I gave you a good approximation of how [Frostbitten hair WebGPU](https://github.com/Scthe/frostbitten-hair-webgpu) works.
+
+
 
 ## Summary
 

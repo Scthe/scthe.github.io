@@ -16,7 +16,9 @@ First, we are going to see the initial Nanite pipeline as presented in ["Nanite 
 
 I assume the reader already has a working knowledge of GPU-driven rendering and meshlets. I will skip any explanation of two-pass occlusion culling. It is important but contributes nothing to what's described. I've also tried to skip Nanite-specific stuff to make it more accessible, although software rasterizer plays a big role in this post. This also applies to terms like "cluster". For Nanite, it refers to a combination of meshlet and per-instance data. I will usually stick to "meshlet" instead.
 
-Feel free to send me an email in case of any errors. Some stuff was simplified, but that's to keep the text brief.
+Feel free to send me an email if you see any errors. Some stuff was simplified, but that's to keep the text brief. Please do not email me anything not derived from the publicly accessible materials.
+
+
 
 ## Nanite in UE 5.0 (2022)
 
@@ -157,7 +159,7 @@ In UE 5.4, all the shading was moved to compute shaders - see slides 59 and 60 f
 
 ### Sorting into shading bins
 
-The slides do not define a shading bin. Let's use the simplest definition: a unique material (we are not even considering different triangles, etc.). We will revisit this definition later. Our goal is to generate a list of pixel locations for each material. This requires an allocation of size `screenPixelCount * vec2<u32>`. The algorithm is like one for raster bins and has the following stages:
+The slides do not define a shading bin. Let's use the simplest definition: a unique material (we are not even considering different triangles, depth discrepancy, etc.). We will revisit this definition later. Our goal is to generate a list of pixel locations for each material. This requires an allocation of size `screenPixelCount * vec2<u32>`. The algorithm is like one for raster bins and has the following stages:
 
 1. **Count** dispatches a thread per 2x2 pixel region (a **quad**). Counts the number of pixels per shading bin (material).
 2. **Reserve** dispatches a thread per shading bin. Calculates memory offsets in the before-mentioned array. This functions as a memory space reservation.
@@ -192,6 +194,35 @@ Or we could try to implement simple Variable Rate Shading. If all 4 pixels share
 > I recommend John Hable's ["Software VRS with Visibility Buffer Rendering"](http://filmicworlds.com/blog/software-vrs-with-visibility-buffer-rendering/) if you need a refresher on quad utilization and helper lanes.
 
 
+### Morton code assignments
+
+<Figure>
+  <BlogImage
+    src="./morton-code.png"
+    alt="Morton code for 64 elements."
+  />
+  <Figcaption>
+
+  Using [Morton code](https://en.wikipedia.org/wiki/Z-order_curve) to assign indices to 2x2 quads preserves locality. Image based on [work by David Eppstein](https://en.wikipedia.org/wiki/Z-order_curve#/media/File:Moser%E2%80%93de_Bruijn_addition.svg) originally published on Wikipedia and modified under CC0 license.
+
+  </Figcaption>
+</Figure>
+
+In the scatter phase, the threads are assigned to quads using [Morton code](https://en.wikipedia.org/wiki/Z-order_curve). Each number in the above diagram represents a 2x2 quad. Therefore, threads 0, 1, 2, and 3 are assigned to a 4x4 pixel area. Each thread can detect if its quad contains only a single material. By broadcasting the values inside the workgroup we can detect bigger patches:
+
+* Four consecutive (aligned to 4) threads sharing the same material indicate a 4x4 pixels VRS opportunity. E.g.
+    * Threads 0, 1, 2, and 3.
+    * Threads 4, 5, 6, and 7.
+    * ...
+    * Threads 60, 61, 62, and 63
+* Sixteen consecutive (aligned to 16) threads sharing the same material indicate an 8x8 pixels VRS opportunity. These are:
+    * Threads 0-15.
+    * Threads 16-31.
+    * Threads 32-47.
+    * Threads 48-63.
+
+
+
 ### Locality in shading bins
 
 Let's go back to the definition of shading bins, this time using slide 69:
@@ -218,7 +249,7 @@ I would assume this achieves the following:
 
 I have to say that this setup looks a bit strange. The reasoning is probably clear to people who have already implemented such systems.
 
-At this point, the presentation goes deeper into Variable Rate Shading, which would have been a separate article.
+At this point, the presentation goes deeper into Variable Rate Shading. We've already discussed most of the ideas.
 
 
 

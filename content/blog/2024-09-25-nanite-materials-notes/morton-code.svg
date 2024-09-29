@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   width="297mm"
+   height="210mm"
+   viewBox="0 0 1122.5197 793.70079"
+   enable-background="new 0 0 657 630"
+   xml:space="preserve"
+   sodipodi:docname="morton-code.svg"
+   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs177" /><sodipodi:namedview
+   id="namedview175"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   showgrid="false"
+   inkscape:zoom="0.98433754"
+   inkscape:cx="277.85184"
+   inkscape:cy="264.13704"
+   inkscape:window-width="1920"
+   inkscape:window-height="1057"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="g529"
+   inkscape:document-units="mm" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<g
+   id="g529"
+   inkscape:label="lines"
+   transform="translate(56.891054,9.1432051)"><rect
+     style="fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:1.90389;stop-color:#000000"
+     id="rect3098"
+     width="571.95825"
+     height="568.91058"
+     x="65.018349"
+     y="56.891056"
+     inkscape:label="bg"
+     inkscape:export-filename="morton-code.png"
+     inkscape:export-xdpi="201.4133"
+     inkscape:export-ydpi="201.4133" /><polyline
+     opacity="0.4"
+     fill="none"
+     stroke="#fec200"
+     stroke-width="24"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     points="  603,594 531,594 603,522 531,522 459,594 387,594 459,522 387,522 603,450 531,450 603,378 531,378 459,450 387,450 459,378  387,378 315,594 243,594 315,522 243,522 171,594 99,594 171,522 99,522 315,450 243,450 315,378 243,378 171,450 99,450 171,378  99,378 603,306 531,306 603,234.001 531,234.001 459,306 387,306 459,234.001 387,234.001 603,162 531,162 603,90 531,90 459,162  387,162 459,90 387,90 315,306 243,306 315,234 243,234 171,306 99,306 171,234 99,234 315,162 243,162 315,90 243,90 171,162  99,162 171,90 99,90 "
+     id="polyline2"
+     style="display:inline;stroke:#6ce600;stroke-opacity:1" /><polyline
+     fill="none"
+     stroke="#fec200"
+     stroke-width="6"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     points="603,594 531,594  603,522 531,522 459,594 387,594 459,522 387,522 603,450 531,450 603,378 531,378 459,450 387,450 459,378 387,378 315,594  243,594 315,522 243,522 171,594 99,594 171,522 99,522 315,450 243,450 315,378 243,378 171,450 99,450 171,378 99,378 603,306  531,306 603,234 531,234 459,306 387,306 459,234 387,234 603,162 531,162 603,90 531,90 459,162 387,162 459,90 387,90 315,306  243,306 315,234 243,234 171,306 99,306 171,234 99,234 315,162 243,162 315,90 243,90 171,162 99,162 171,90 99,90 "
+     id="polyline42"
+     style="display:inline;stroke:#4cea00;stroke-opacity:1" /><polyline
+     opacity="0.4"
+     fill="none"
+     stroke="#fec200"
+     stroke-width="16"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     points="  603,594 531,594 603,522 531,522 459,594 387,594 459,522 387,522 603,450 531,450 603,378 531,378 459,450 387,450 459,378  387,378 315,594 243,594 315,522 243,522 171,594 99,594 171,522 99,522 315,450 243,450 315,378 243,378 171,450 99,450 171,378  99,378 603,306 531,306 603,234.001 531,234.001 459,306 387,306 459,234.001 387,234.001 603,162 531,162 603,90 531,90 459,162  387,162 459,90 387,90 315,306 243,306 315,234 243,234 171,306 99,306 171,234 99,234 315,162 243,162 315,90 243,90 171,162  99,162 171,90 99,90 "
+     id="polyline44"
+     style="display:none;stroke:#ffc300;stroke-opacity:1" /></g><g
+   id="g524"
+   inkscape:label="numbers"
+   transform="translate(56.891054,9.1432051)"><text
+     transform="translate(89.9995,99)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text46">0</text><text
+     transform="translate(161.9995,98.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text48">1</text><text
+     transform="translate(89.9995,170.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text50">2</text><text
+     transform="translate(161.9995,170.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text52">3</text><text
+     transform="translate(234,99)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text54">4</text><text
+     transform="translate(305.9995,98.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text56">5</text><text
+     transform="translate(234,171)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text58">6</text><text
+     transform="translate(305.9995,170.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text60">7</text><text
+     transform="translate(89.9995,242.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text62">8</text><text
+     transform="translate(161.9995,242.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text64">9</text><text
+     transform="translate(80.9995,315)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text66">10</text><text
+     transform="translate(152.9995,315)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text68">11</text><text
+     transform="translate(224.9995,242.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text70">12</text><text
+     transform="translate(297,242.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text72">13</text><text
+     transform="translate(224.9995,315)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text74">14</text><text
+     transform="translate(297,315)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text76">15</text><text
+     transform="translate(369,98.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text78">16</text><text
+     transform="translate(441,98.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text80">17</text><text
+     transform="translate(369,170.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text82">18</text><text
+     transform="translate(441,170.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text84">19</text><text
+     transform="translate(513,98.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text86">20</text><text
+     transform="translate(585,98.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text88">21</text><text
+     transform="translate(513,170.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text90">22</text><text
+     transform="translate(585,170.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text92">23</text><text
+     transform="translate(369,242.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text94">24</text><text
+     transform="translate(441,242.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text96">25</text><text
+     transform="translate(369,315)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text98">26</text><text
+     transform="translate(441,315)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text100">27</text><text
+     transform="translate(513,242.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text102">28</text><text
+     transform="translate(585,242.9995)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text104">29</text><text
+     transform="translate(513,315)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text106">30</text><text
+     transform="translate(585,315)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text108">31</text><text
+     transform="translate(81,387)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text110">32</text><text
+     transform="translate(152.9995,387)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text112">33</text><text
+     transform="translate(80.9995,459)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text114">34</text><text
+     transform="translate(152.9995,459)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text116">35</text><text
+     transform="translate(224.9995,387)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text118">36</text><text
+     transform="translate(296.9995,387)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text120">37</text><text
+     transform="translate(224.9995,459)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text122">38</text><text
+     transform="translate(296.9995,459)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text124">39</text><text
+     transform="translate(81,531)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text126">40</text><text
+     transform="translate(152.9995,531)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text128">41</text><text
+     transform="translate(80.9995,603)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text130">42</text><text
+     transform="translate(152.9995,603)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text132">43</text><text
+     transform="translate(225,531)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text134">44</text><text
+     transform="translate(297,531)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text136">45</text><text
+     transform="translate(225,603)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text138">46</text><text
+     transform="translate(297,603)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text140">47</text><text
+     transform="translate(369,387)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text142">48</text><text
+     transform="translate(441,387)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text144">49</text><text
+     transform="translate(369,459)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text146">50</text><text
+     transform="translate(441,459)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text148">51</text><text
+     transform="translate(513,387)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text150">52</text><text
+     transform="translate(585,387)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text152">53</text><text
+     transform="translate(513,459)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text154">54</text><text
+     transform="translate(585,459)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text156">55</text><text
+     transform="translate(369,531)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text158">56</text><text
+     transform="translate(441,531)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text160">57</text><text
+     transform="translate(369,603)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text162">58</text><text
+     transform="translate(441,603)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text164">59</text><text
+     transform="translate(513,531)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text166">60</text><text
+     transform="translate(585,531)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text168">61</text><text
+     transform="translate(513,603)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text170">62</text><text
+     transform="translate(585,603)"
+     font-family="'Liberation Serif'"
+     font-style="normal"
+     font-size="36px"
+     id="text172">63</text></g>
+</svg>

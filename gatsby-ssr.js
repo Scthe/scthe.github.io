@@ -7,16 +7,22 @@ const PageThemeScriptTag = () => {
   const THEME_LIGHT_BG = "#fafafa";
   const THEME_DARK_BG = "#353535";
 
-  let isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const storageThemeColor = localStorage.getItem("app-theme");
-  if (storageThemeColor === "dark-theme") {
-    isLight = false;
-  }
-  setAppTheme(isLight);
+  // https://github.com/Scthe/ai-prompt-editor/blob/master/static/index.html
+  const osThemeDark = Boolean(
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  );
+  const storageThemeColor = localStorage.getItem('app-theme');
+  const storageThemeDark = storageThemeColor === 'dark-theme';
+  const isDarkTheme =
+    storageThemeColor !== undefined // has value, so decided by local storage
+      ? storageThemeColor === 'dark-theme'
+      : osThemeDark;
+  setAppTheme(!isDarkTheme);
 
-  function setAppTheme(nextIsLight) {
+  function setAppTheme(isLightTheme) {
     const el = document.documentElement;
-    if (nextIsLight) {
+
+    if (isLightTheme) {
       el.classList.remove("dark-theme");
       el.classList.add("light-theme");
       setMetaTheme(THEME_LIGHT_BG);
@@ -25,6 +31,11 @@ const PageThemeScriptTag = () => {
       el.classList.add("dark-theme");
       setMetaTheme(THEME_DARK_BG);
     }
+
+    localStorage.setItem(
+      'app-theme',
+      isLightTheme ? 'light-theme' : 'dark-theme'
+    );
   }
 
   function setMetaTheme(color) {

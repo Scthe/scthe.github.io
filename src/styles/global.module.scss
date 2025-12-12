@@ -9,7 +9,7 @@ html {
   --color-strong: #303030;
 
   background-color: var(--background-content);
-  word-spacing: 105%;
+  word-spacing: 0.3em;
 }
 
 html:global(.dark-theme) {

@@ -193,13 +193,13 @@ $$
 $$
 
 $$
-\lambda_2 = 0.5 \cdot (a+c + \sqrt{a^2 - 2ac + 4b^2 + c^2})
+\lambda_2 = 0.5 \cdot (a+c - \sqrt{a^2 - 2ac + 4b^2 + c^2})
 $$
 
 
 > Remember that ($a^2 - 2ac + 4b^2 + c^2) = (a-c)^2 + 4b^2$. Might make the implementation easier.
 
-The $\lambda_1$ and $\lambda_2$ (the eigenvalues) are the radiuses of the projected ellipsis along major and minor axes. Since the value for the square root is always &gt;1 (at least in our case), then $\lambda_1$ > $\lambda_2$. You would expect this from the ellipsis projection.
+The $\lambda_1$ and $\lambda_2$ (the eigenvalues) are the radii of the projected ellipsis along major and minor axes. Since the value for the square root is always &gt;1 (at least in our case), then $\lambda_1$ > $\lambda_2$. You would expect this from the ellipsis projection.
 
 Right now we have 2 options. We can either get the eigenvectors to derive vertex positions. This is not what the "3D Gaussian Splatting" paper did. They've collected all the Gaussians for each tile of their tiled renderer using conservative approximation. We will derive both solutions, starting with the one used in the paper.
 

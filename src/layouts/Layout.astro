@@ -1,0 +1,165 @@
+---
+import Seo from '../components/seo/Seo.astro';
+import TopNav from '../components/topNav';
+import Footer from '../components/footer';
+
+import { getSiteMeta } from '../constants';
+import { joinPaths, ensureSufix } from '../utils';
+import type { SeoProps } from '../components/seo/types';
+
+import layoutStyles from '../components/layout.module.scss';
+
+import '../styles/normalize.module.css';
+import '../styles/variables.module.scss';
+import '../styles/global.module.scss';
+import '../styles/fonts.module.css';
+import 'katex/dist/katex.min.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  canonicalUrl: string;
+  imagePublicUrl?: string;
+  type: SeoProps['type'];
+}
+
+const { title, description, canonicalUrl, imagePublicUrl, type } = Astro.props as Props; // prettier-ignore
+
+const siteMeta = getSiteMeta();
+
+
+// canonicalUrl
+const canonical = ensureSufix(
+  joinPaths(siteMeta.siteUrl || '', canonicalUrl),
+  '/',
+);
+
+// title - ensure has siteName
+const fullTitle = title.includes(siteMeta.title) ? title : `${title} - ${siteMeta.title}`;
+
+// image
+const imageFullPath = joinPaths(
+  siteMeta.siteUrl || '',
+  imagePublicUrl || siteMeta.defaultImage,
+);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{fullTitle}</title>
+    <link rel="canonical" href={canonical} />
+
+    <meta
+      name="viewport"
+      content="width=device-width, minimum-scale=1, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#fafafa" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <meta name="author" content={siteMeta.author?.name || ''} />
+    <meta name="description" content={description} />
+
+    {/* favicon */}
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+    <Seo
+      title={fullTitle}
+      description={description}
+      image={imageFullPath}
+      url={canonical}
+      type={type}
+    />
+
+    <!-- google analytics (gtag) -->
+    <!-- TODO uncomment GA. Skip it in dev mode. Extract into src/analytics/page.astro -->
+    <!--
+    <script
+      is:inline
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-66646958-1"
+    ></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'UA-66646958-1', {
+        anonymize_ip: true,
+        cookie_expires: 0,
+      });
+    </script>
+     -->
+
+    <!-- light/dark theme bootstrap: must run before first paint -->
+    <script is:inline>
+      ;(function () {
+        window.setAppTheme = setAppTheme;
+        const THEME_LIGHT_BG = '#fafafa';
+        const THEME_DARK_BG = '#353535';
+
+        // https://github.com/Scthe/ai-prompt-editor/blob/master/static/index.html
+        const osThemeDark = Boolean(
+          window.matchMedia('(prefers-color-scheme: dark)').matches,
+        );
+        const storageThemeColor = localStorage.getItem('app-theme');
+        const isDarkTheme =
+          storageThemeColor !== undefined // has value, so decided by local storage
+            ? storageThemeColor === 'dark-theme'
+            : osThemeDark;
+        setAppTheme(!isDarkTheme);
+
+        function setAppTheme(isLightTheme) {
+          const el = document.documentElement;
+
+          if (isLightTheme) {
+            el.classList.remove('dark-theme');
+            el.classList.add('light-theme');
+            setMetaTheme(THEME_LIGHT_BG);
+          } else {
+            el.classList.remove('light-theme');
+            el.classList.add('dark-theme');
+            setMetaTheme(THEME_DARK_BG);
+          }
+
+          localStorage.setItem(
+            'app-theme',
+            isLightTheme ? 'light-theme' : 'dark-theme',
+          );
+        }
+
+        function setMetaTheme(color) {
+          let el = document.querySelector('meta[name="theme-color"]');
+          if (el == null) {
+            el = document.createElement('meta');
+            el.setAttribute('name', 'theme-color');
+            document.head.appendChild(el);
+          }
+          el.setAttribute('content', color);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div class={layoutStyles.heroWrapper}>
+      <div />
+    </div>
+
+    <TopNav
+      siteTitle={siteMeta.title}
+      githubAccount={siteMeta.author?.githubAccount || ''}
+      client:load
+    />
+
+    <main class={layoutStyles.content}>
+      <div class={layoutStyles.contentInner}>
+        <slot />
+      </div>
+    </main>
+
+    <Footer />
+  </body>
+</html>

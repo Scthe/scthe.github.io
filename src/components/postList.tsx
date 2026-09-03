@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as styles from './postList.module.scss';
-import PostListItem, { PostListItemProps } from './postListItem';
+import PostListItem from './postListItem';
+import type { PostListItemProps } from './postListItem';
 
 interface Props {
   posts: PostListItemProps[];

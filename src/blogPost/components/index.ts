@@ -1,20 +1,21 @@
+import CodeBlock, { CodeBlockWrapper } from './codeBlock';
+import CrossPostLink from './crossPostLink';
+import { Figcaption, Figure } from './figure';
+import { ImageRaw } from './imageRaw';
 import Heading from './heading';
 import BlogImage from './image';
-import CodeBlock, { CodeBlockWrapper } from './codeBlock';
 import MarkdownLink from './link';
-import { Figure, Figcaption, RawImage } from './figure';
-import CrossPostLink from './crossPostLink';
 import TableOfContents from './tableOfContent';
 
 export {
-  Heading,
   BlogImage,
   CodeBlock,
-  MarkdownLink,
   CodeBlockWrapper,
-  Figure,
-  Figcaption,
-  RawImage,
   CrossPostLink,
+  Figcaption,
+  Figure,
+  Heading,
+  MarkdownLink,
+  ImageRaw,
   TableOfContents,
 };

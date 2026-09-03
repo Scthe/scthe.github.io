@@ -33,3 +33,13 @@
   left: 0px;
   background-color: transparent;
 }
+
+/* Markdown `![alt](./x.png)` images render through Astro's native `<Image>`
+ * component, which does not get the `.rawImages` class.
+ These global rules keep those images centered/max-width. */
+:global(.markdown) img,
+.rawImages {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}

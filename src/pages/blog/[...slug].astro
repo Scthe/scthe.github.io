@@ -1,0 +1,131 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { createElement } from 'react';
+
+import Layout from '../../layouts/Layout.astro';
+import PageTitle from '../../components/pageTitle';
+import TableOfContents from '../../blogPost/components/tableOfContent';
+import Heading from '../../blogPost/components/heading';
+import CodeBlock, {
+  CodeBlockWrapper,
+} from '../../blogPost/components/codeBlock';
+import MarkdownLink from '../../blogPost/components/link';
+import { Figure, Figcaption,  } from '../../blogPost/components/figure';
+import CrossPostLink from '../../blogPost/components/crossPostLink';
+import BlogImageIsland from '../../blogPost/components/imageIsland.astro';
+import { getPostImageRecords } from '../../blogPost/components/imageLookup';
+import { ImageRaw } from '../../blogPost/components/imageRaw';
+
+import { buildTableOfContentFromBody } from '../../utils/tableOfContent';
+
+import '../../blogPost/_text.module.scss';
+import '../../blogPost/_lists.module.scss';
+import '../../blogPost/_tables.module.scss';
+import { slugFromPermalink } from 'src/utils';
+
+
+
+// TODO add table of contents like in https://atlassian.design/foundations/color (it even scrolls nicely) as <nav> with aria-label="Table of contents"
+// TODO "Published on:" text before date
+// TODO more internal links
+// TODO scroll to top
+// TODO sentry
+// TODO [P5] table <caption>, row header etc.
+// TODO [P5] Use reduced-motion for gifs?
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+// TODO [migration] markdown looks weird: http://localhost:8080/blog/rag-with-context/#embeddings
+//                  Missing: require(`katex/dist/katex.min.css`); ?
+// TODO [migration] test all import.meta.env.PROD usages
+
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const isProdBuild = import.meta.env.PROD;
+
+  return posts
+    .filter((post) => (isProdBuild ? !post.data.draft : true))
+    .filter((post) => post.data.permalink && post.data.permalink.length > 0)
+    .map((post) => ({
+      params: { slug: slugFromPermalink(post.data.permalink) },
+      props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+
+// render the body; headings are derived from the raw body below
+const { Content } = await render(post);
+
+// image database
+const images = await getPostImageRecords(post.data.permalink);
+const normalizeSrc = (src: any) =>
+  String(src ?? '')
+    .trim()
+    .replace(/^\.\//, '')
+    .replace(/^\//, '');
+const getImageBySrc = (src: string) => images.get(normalizeSrc(src));
+
+const toc = buildTableOfContentFromBody(post.body ?? '');
+
+// all posts indexed for <CrossPostLink> validation
+const allPosts = (await getCollection('blog')).map((entry) => ({
+  permalink: entry.data.permalink,
+  toc: buildTableOfContentFromBody(entry.body ?? ''),
+}));
+
+
+// cover image for OG/SEO (falls back to the default image in the Layout)
+const coverSrc = post.data.image
+  ? getImageBySrc(post.data.image)?.src
+  : undefined;
+
+const components: Record<string, any> = {
+  h2: (p: any) => createElement(Heading, { ...p, level: '2' }),
+  h3: (p: any) => createElement(Heading, { ...p, level: '3' }),
+  pre: CodeBlockWrapper,
+  code: CodeBlock,
+  Figure,
+  Figcaption,
+  a: MarkdownLink,
+  img: (p: any) =>
+    createElement(ImageRaw, {
+      ...p,
+      image:
+        typeof p?.src === 'string'
+          ? getImageBySrc(p.src) ?? null
+          : null,
+    }),
+  BlogImage: BlogImageIsland,
+  CrossPostLink: (p: any) =>
+    createElement(CrossPostLink, {
+      ...p,
+      allPosts,
+      currentPermalink: post.data.permalink,
+    }),
+};
+---
+
+<Layout
+  title={post.data.title}
+  description={post.data.excerpt}
+  canonicalUrl={post.data.permalink}
+  imagePublicUrl={coverSrc}
+  type={{
+    type: 'article',
+    datePublished: post.data.date,
+    dateModified: post.data.date,
+  }}
+>
+  <PageTitle title={post.data.title} date={post.data.date} />
+
+  <TableOfContents headings={toc} client:load />
+
+  <div class="markdown">
+    <Content components={components} />
+  </div>
+</Layout>

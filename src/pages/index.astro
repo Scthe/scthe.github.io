@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+
+import Layout from '../layouts/Layout.astro';
+import PageTitle from '../components/pageTitle';
+import PostList from '../components/postList';
+
+import { getSiteMeta } from '../constants';
+
+const siteMeta = getSiteMeta();
+const title: string = siteMeta.title;
+const description: string = siteMeta.description;
+
+// TODO double check filtering (both prod and dev mode)
+const isProdBuild = import.meta.env.PROD;
+const posts = (await getCollection('blog'))
+  .filter((post) => (isProdBuild ? !post.data.draft : true))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Layout
+  title={title}
+  description={description}
+  type={{ type: 'website' }}
+  canonicalUrl=""
+>
+  <PageTitle title="All articles" />
+  <PostList
+    posts={posts.map((post) => ({
+      date: post.data.date,
+      title: post.data.title,
+      excerpt: post.data.excerpt,
+      permalink: post.data.permalink,
+      absolutePath: post.filePath ?? '',
+    }))}
+  />
+</Layout>

@@ -15,13 +15,9 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
-    "plugins": [{ "name": "typescript-plugin-css-modules" }]
+    "plugins": [{ "name": "typescript-plugin-css-modules" }],
+    "types": ["@types/gtag.js"]
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.astro", "**/*.js"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    ".vercel",
-    "_references"
-  ]
+  "exclude": ["node_modules", "dist", ".vercel", "_references"]
 }

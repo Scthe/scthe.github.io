@@ -3,19 +3,13 @@ import cx from 'classnames';
 
 import * as styles from './figure.module.scss';
 
-type PT = any;
+type Props = any;
 
-export const Figure = ({ className, ...props }: PT) => {
+export const Figure = ({ className, ...props }: Props) => {
   return <figure className={cx(styles.figure, className)} {...props} />;
 };
 
 /** figcaption requires blank lines before and after!!! */
-export const Figcaption = (props: PT) => (
+export const Figcaption = (props: Props) => (
   <figcaption className={styles.figcaption} {...props} />
-);
-
-/** Raw images using ` ![Alt text](./cnn-all.gif)` */
-export const RawImage = (props: PT) => (
-  // eslint-disable-next-line jsx-a11y/alt-text
-  <img className={styles.rawImages} {...props} />
 );

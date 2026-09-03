@@ -1,57 +1,35 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import * as React from 'react';
-import { graphql, useStaticQuery } from 'gatsby';
 
 import { useMode } from '../../hooks/useMode';
-import useGetBlogPost from '../../hooks/useGetBlogPost';
-import { urlify } from './heading';
+import type { TOCEntry } from '../../utils/tableOfContent';
+import { generateHeaderUrl } from '../../utils/generateHeaderUrl';
 
 import * as styles from './tableOfContent.module.scss';
 import MarkdownLink from './link';
 
-interface Props {}
+interface Props {
+  headings: TOCEntry[] | null | undefined;
+}
 
-export type TOCEntry = {
-  title?: string;
-  // url?: string; // does not work if title has '/'
-  items?: TOCEntry[];
-};
-
-const TableOfContents: React.FC<Props> = () => {
-  const pageData = useGetBlogPost();
+const TableOfContents: React.FC<Props> = ({ headings }) => {
   const mode = useMode();
+
   const [isExpanded, setExpanded] = React.useState(false);
   const toggleExpanded = React.useCallback(
     () => setExpanded((e) => !e),
     [setExpanded],
   );
 
-  const { allMdx } = useStaticQuery<GatsbyTypes.TableOfContentsQuery>(graphql`
-    query TableOfContents {
-      allMdx {
-        nodes {
-          frontmatter {
-            permalink
-          }
-          tableOfContents(maxDepth: 3)
-        }
-      }
-    }
-  `);
+  // artificial entry that collects all h2
+  const rootEntry: TOCEntry | null =
+    headings != null && headings.length > 0 ? { items: headings } : null;
 
-  const page = allMdx.nodes.find(
-    (page) => page.frontmatter?.permalink === pageData.frontmatter?.permalink,
-  );
-  if (page == null) {
+  if (rootEntry == null) {
     if (mode === 'development') {
-      console.warn('TableOfContents: Page not found', pageData);
+      console.warn('TableOfContents: no headings found');
     }
-    return null;
-  }
-
-  const rootEntry = page.tableOfContents as TOCEntry | null;
-  if (!rootEntry || !rootEntry.items || rootEntry.items.length === 0) {
     return null;
   }
 
@@ -85,7 +63,7 @@ const TocEntryLink: React.FC<{ entry: TOCEntry; level: number }> = ({
       {entry.title ? (
         <li className={styles.tocEntryItem} data-toc-level={level}>
           <MarkdownLink
-            href={`#${urlify(entry.title)}`}
+            href={`#${generateHeaderUrl(entry.title)}`}
             className={styles.tocEntryLink}
           >
             {entry.title}

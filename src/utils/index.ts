@@ -1,11 +1,4 @@
-import { formatISO, format, parseISO } from 'date-fns';
-import { useMode } from '../hooks/useMode';
-import filterDraftPosts from './filterDraftPosts';
-
-export type ArrayItemType<T extends readonly unknown[]> =
-  T extends readonly (infer R)[] ? R : never;
-
-export type EnsureDefined<T> = T extends undefined | null ? never : T;
+import { format, formatISO, parseISO } from 'date-fns';
 
 export type Maybe<T> = T | undefined | null;
 
@@ -36,47 +29,29 @@ export const joinPaths = (...strs: string[]): string => {
   return [removeSufix(start.trim(), '/'), ...parts].join('/');
 };
 
+/**
+ * The route slug for a permalink. `src/pages/blog/[...slug]` already owns the
+ * `/blog/` prefix, so `/blog/md-test/` -> `md-test`.
+ */
+export const slugFromPermalink = (permalink: string): string => {
+  const path = permalink.replace(/^\/+/, '').replace(/\/+$/, '');
+  return path.split('/').slice(1).join('/');
+};
+
+// TODO [migration] test
 export const gaEvent = (
   eventName: string,
   params: Gtag.ControlParams | Gtag.EventParams | Gtag.CustomParams,
 ) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const mode = useMode();
-  if (mode === 'production') {
-    typeof window !== 'undefined' && window.gtag('event', eventName, params);
+  const isProdBuild = import.meta.env.PROD;
+
+  if (typeof window !== 'undefined' && isProdBuild) {
+    const gtag = (window as { gtag?: (...args: unknown[]) => void }).gtag;
+    if (typeof gtag === 'function') {
+      gtag('event', eventName, params);
+    }
   }
 };
-
-export const getAbsolutePath = (
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  parent: { readonly absolutePath: string } | {} | null,
-): string | null => {
-  return parent && 'absolutePath' in parent ? parent.absolutePath : null;
-};
-
-export const getRelativeDirectory = (
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  parent: { readonly relativeDirectory: string } | {} | null,
-): string | null => {
-  return parent && 'relativeDirectory' in parent
-    ? parent.relativeDirectory
-    : null;
-};
-
-export const maybeNull2Undefined = <T>(x: T | null): T | undefined => {
-  return x != null ? x : undefined;
-};
-
-type DraftablePostFm = { readonly draft: boolean | null };
-type DraftablePost = { readonly frontmatter: DraftablePostFm | null };
-
-/** Typesafe `filterDraftPosts()` */
-export function filterDraftPostsTS<T extends DraftablePost>(
-  a0: readonly T[],
-  a1: boolean,
-): T[] {
-  return filterDraftPosts(a0, a1);
-}
 
 /// DATES
 

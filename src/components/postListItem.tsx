@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Link } from 'gatsby';
 
 import { useMode } from '../hooks/useMode';
 import Date from './date';
@@ -30,9 +29,9 @@ const PostListItem: React.FC<PostListItemProps> = ({
     <article className={styles.postItem} itemType="http://schema.org/Article">
       <header>
         <h2 className={styles.postItemTitle} itemProp="headline">
-          <Link to={permalink} itemProp="url">
+          <a href={permalink} itemProp="url">
             {title}
-          </Link>
+          </a>
         </h2>
 
         <div className={styles.postItemMetaRow}>
@@ -47,13 +46,13 @@ const PostListItem: React.FC<PostListItemProps> = ({
       <footer>
         <span className={styles.postItemReadMore}>
           Continue reading
-          <Link
-            to={permalink}
+          <a
+            href={permalink}
             tabIndex={-1}
             className={styles.postItemReadMoreLink}
           >
             {title}
-          </Link>
+          </a>
           <span aria-hidden="true"> &rarr;</span>
         </span>
       </footer>

@@ -1,63 +1,51 @@
 import * as React from 'react';
-import { graphql, useStaticQuery } from 'gatsby';
-import { BuildMode, useMode } from '../../hooks/useMode';
+import type { TOCEntry } from '../../utils/tableOfContent';
+import type { Maybe } from '../../utils';
+import { useMode } from '../../hooks/useMode';
+import { generateHeaderUrl } from '../../utils/generateHeaderUrl';
 import MarkdownLink from './link';
-import { urlify } from './heading';
-import { TOCEntry } from './tableOfContent';
-import useGetBlogPost, { CurrentBlogPost } from '../../hooks/useGetBlogPost';
-import { ArrayItemType, Maybe } from 'src/utils';
 
-type Query = GatsbyTypes.CrossPostLinkQuery;
-type LinkedPage = ArrayItemType<Query['allMdx']['nodes']> & {
-  readonly tableOfContents: TOCEntry[];
-};
+type LinkedPage = { permalink: string; toc: TOCEntry[] };
 
 type Props = React.PropsWithChildren<{
   permalink?: string;
   paragraph?: string;
+  allPosts?: LinkedPage[];
+  /** Permalink of the post this component is rendered in. */
+  currentPermalink?: string;
 }>;
 
-const CrossPostLink: React.FC<Props> = ({ permalink, paragraph, children }) => {
+const CrossPostLink: React.FC<Props> = ({
+  permalink,
+  paragraph,
+  children,
+  allPosts = [],
+  currentPermalink = '',
+}) => {
+  const headerTitle = paragraph ?? '';
   const mode = useMode();
-  const currentPost = useGetBlogPost();
+  const debugName = `CrossPostLink(page='${permalink}', header='${headerTitle}')`;
 
-  const { allMdx } = useStaticQuery<Query>(graphql`
-    query CrossPostLink {
-      allMdx {
-        nodes {
-          tableOfContents(maxDepth: 3)
-          frontmatter {
-            permalink
-          }
-        }
-      }
-    }
-  `);
-
-  const [linksToSelf, linkedPage] = getPage(allMdx, currentPost, permalink);
+  const [linksToSelf, linkedPage] = getLinkedPage(
+    allPosts,
+    currentPermalink,
+    permalink,
+  );
   if (linkedPage == null) {
-    const debugName = `CrossPostLink('${permalink}', '${paragraph}')`;
     if (mode === 'development') {
-      console.warn(`${debugName}, page not found`);
+      console.warn(`${debugName}: page not found`);
     }
-    return children;
+    return <>{children}</>;
   }
 
   // construct url
   const pageUrl = getPageUrl(linksToSelf, permalink);
-  const paragraphUrl = getParagraphUrl(
-    mode,
-    linkedPage.tableOfContents,
-    paragraph,
-  );
+  const paragraphUrl = getHeaderUrlFragment(linkedPage.toc, headerTitle);
+  if (headerTitle && !paragraphUrl && mode === 'development') {
+    console.warn(`${debugName}: paragraph not found. Available header titles:`, linkedPage.toc); // prettier-ignore
+  }
 
   const finalUrl = `${pageUrl}${paragraphUrl}`;
-  /*console.log(permalink, paragraph, {
-    linkedPage,
-    pageUrl,
-    paragraphUrl,
-    finalUrl,
-  });*/
   return finalUrl.length > 0 ? (
     <MarkdownLink href={finalUrl}>{children}</MarkdownLink>
   ) : (
@@ -68,28 +56,26 @@ const CrossPostLink: React.FC<Props> = ({ permalink, paragraph, children }) => {
 export default CrossPostLink;
 
 function matchPermalink(s0: Maybe<string>, s1: Maybe<string>): boolean {
-  if (!s0 || !s1) {
-    return false;
-  }
-  return s0 === s1;
+  return Boolean(s0 && s1 && s0 === s1);
 }
 
-function getPage(
-  allMdx: Query['allMdx'],
-  currentPost: CurrentBlogPost,
+function getLinkedPage(
+  allPosts: LinkedPage[],
+  currentPermalink: string,
   permalink?: string,
 ): [boolean, LinkedPage | undefined] {
   let linksToSelf = false;
+
   // user has not provided permalink prop.
   // use current post
   if (permalink === undefined || permalink.length === 0) {
     linksToSelf = true;
-    permalink = currentPost.frontmatter?.permalink || undefined;
+    permalink = currentPermalink;
   }
-  const linkedPage = allMdx.nodes.find((page) => {
-    const pl = page.frontmatter?.permalink;
-    return matchPermalink(pl, permalink);
-  });
+
+  const linkedPage = allPosts.find((page) =>
+    matchPermalink(page.permalink, permalink),
+  );
   return [linksToSelf, linkedPage];
 }
 
@@ -97,49 +83,36 @@ function getPageUrl(linksToSelf: boolean, permalink: Maybe<string>): string {
   return linksToSelf ? '' : permalink!;
 }
 
-function findParagraph(
-  toc: TOCEntry,
-  paragraph: string | undefined,
-): TOCEntry | undefined {
-  const searchParagraph = (
-    toc: TOCEntry,
-    depth: number,
-  ): TOCEntry | undefined => {
-    if (depth >= 3) {
-      return undefined;
-    }
-    if (toc.title === paragraph) {
-      return toc;
-    }
-    for (const tt of toc.items || []) {
-      const res = searchParagraph(tt, depth + 1);
-      if (res) return res;
-    }
-    return undefined;
-  };
-
-  if (!paragraph) {
-    return undefined;
-  }
-  return searchParagraph(toc, 0);
-}
-
-function getParagraphUrl(
-  mode: BuildMode,
-  toc: TOCEntry,
-  title?: string | undefined,
-): string {
-  if (!title || title.length === 0) {
+/** Get URL fragment to the specified header */
+function getHeaderUrlFragment(toc: TOCEntry[], title: string): string {
+  if (title.length === 0) {
     return '';
   }
 
-  const isValidParagraphTitle = findParagraph(toc, title) !== undefined;
+  if (checkHeaderExists(toc, title, 0)) {
+    return '#' + generateHeaderUrl(title);
+  }
 
-  if (isValidParagraphTitle) {
-    return '#' + urlify(title);
-  }
-  if (mode === 'development') {
-    console.warn(`CrossPostLink: paragraph '${title}' not found`, toc);
-  }
   return '';
+}
+
+function checkHeaderExists(
+  entries: TOCEntry[],
+  headerTitle: string,
+  depth: number,
+): boolean {
+  if (depth >= 3) return false;
+
+  for (const entry of entries) {
+    if (entry.title === headerTitle) {
+      return true;
+    }
+
+    const children = entry.items ?? [];
+    if (checkHeaderExists(children, headerTitle, depth + 1)) {
+      return true;
+    }
+  }
+
+  return false;
 }

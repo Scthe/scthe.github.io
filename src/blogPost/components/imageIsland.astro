@@ -1,0 +1,21 @@
+---
+import type { ImageRecord } from '../../utils/images';
+import { resolvePostImage } from './imageLookup';
+import BlogImage from './image';
+
+interface Props {
+  src: string;
+  alt: string;
+}
+
+const { src, alt } = Astro.props as Props;
+
+// `Astro.url.pathname` matches the post's permalink (e.g. `/blog/md-test/`),
+// which is what `resolvePostImage` keys the image records by.
+const image: ImageRecord | null = await resolvePostImage(
+  Astro.url.pathname,
+  src,
+);
+---
+
+<BlogImage client:load src={src} alt={alt} image={image} />

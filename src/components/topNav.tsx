@@ -1,33 +1,20 @@
 import * as React from 'react';
-import { Link, useStaticQuery, graphql } from 'gatsby';
 import { toggleThemeFn } from '../utils/themeToggleScript';
 import * as styles from './topNav.module.scss';
 
-const TopNav: React.FC = () => {
-  const { site } = useStaticQuery<GatsbyTypes.TopNavQuery>(
-    graphql`
-      query TopNav {
-        site {
-          siteMetadata {
-            title
-            author {
-              githubAccount
-            }
-          }
-        }
-      }
-    `,
-  );
-  const title = site!.siteMetadata!.title;
-  const githubAccount = site!.siteMetadata!.author!.githubAccount;
+interface Props {
+  siteTitle: string;
+  githubAccount: string;
+}
 
+const TopNav: React.FC<Props> = ({ siteTitle, githubAccount }) => {
   return (
     <header className={styles.topNav}>
       <ul className={styles.topNavContent}>
         <li className={styles.topNavHome}>
-          <Link to="/" aria-label="Scthe's blog - home">
-            {title}
-          </Link>
+          <a href="/" aria-label="Scthe's blog - home">
+            {siteTitle}
+          </a>
         </li>
 
         <li>

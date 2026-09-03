@@ -25,7 +25,7 @@
       "@typescript-eslint/parser": [".ts", ".tsx"]
     },
     "import/resolver": {
-      "ts": {
+      "typescript": {
         "alwaysTryTypes": true // always try to resolve types under `<roo/>@types` directory even it doesn't contain any source code, like `@types/unist`
       }
     }
@@ -49,6 +49,8 @@
       "warn",
       { "varsIgnorePattern": "^h$|^_", "argsIgnorePattern": "^_" }
     ],
+    // Astro's env.d.ts uses `/// <reference types="astro/client" />` etc.
+    "@typescript-eslint/triple-slash-reference": "off",
     "import/order": [
       "error",
       {
@@ -62,18 +64,13 @@
       }
     ],
     "import/no-duplicates": "off", // default eslint is good enough?
-    "import/no-unused-modules": [
-      "warn",
-      {
-        "unusedExports": true,
-        "ignoreExports": ["src/pages", "src/templates"]
-      }
-    ],
     // we have TS for following:
     "import/namespace": "off",
     "import/no-named-as-default": "off",
     "import/default": "off",
     "import/no-named-as-default-member": "off",
-    "import/named": "off"
+    "import/named": "off",
+    // astro:* and astro:content/assets virtual modules can't be resolved by ESLint
+    "import/no-unresolved": "off"
   }
 }

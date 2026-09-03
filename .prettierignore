@@ -1,6 +1,8 @@
 .yarn
 yarn.lock
 public
+dist
+.astro
 
 _references
 src/__generated__

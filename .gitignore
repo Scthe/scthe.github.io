@@ -9,6 +9,10 @@
 # production
 /build
 
+# astro files
+dist/
+.astro/
+
 # misc
 .DS_Store
 *.pem
@@ -24,21 +28,8 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# gatsby files
-.cache/
-public
-
 # Mac files
 .DS_Store
-
-# Generated files
-apollo.config.js
-generated/*
-!generated/Readme.md
-
-# GraphQL schema
-src/__generated__/*
-!src/__generated__/.keep
 
 # deploy
 .vercel
@@ -48,7 +39,3 @@ references
 _references
 node_modules
 *.code-workspace
-
-# gatsby migration
-__to_migrate/_site
-__to_migrate/.sass-cache

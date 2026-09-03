@@ -1,31 +1,27 @@
 {
+  "extends": "astro/tsconfigs/base",
   "compilerOptions": {
-    "module": "esnext",
-    "target": "es5",
-    "moduleResolution": "node",
-    "jsx": "preserve",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "baseUrl": "./",
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "baseUrl": ".",
     "noEmit": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    /* Additional Options */
     "strict": true,
+    "allowJs": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": false,
-    "removeComments": true,
-    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
-    "strictNullChecks": true,
-    "allowJs": true,
     "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
-  "exclude": ["node_modules", "out", "_references"],
-  "include": ["**/*.ts", "**/*.tsx", "**/*.js"]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.astro", "**/*.js"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".vercel",
+    "_references"
+  ]
 }

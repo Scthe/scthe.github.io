@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import PageTitle from '../components/pageTitle';
-import Link from '../blogPost/components/link';
+import { PageTitle } from '../components/pageTitle';
+import { MarkdownLink } from '../blogPost/components/link';
 
 // TODO [P5] add links to popular articles here
 
@@ -26,7 +26,7 @@ import Link from '../blogPost/components/link';
       marginTop: '2rem',
     }}
   >
-    <Link href="/" aria-label="Home page"> Okay, go home </Link>
+    <MarkdownLink href="/" aria-label="Home page"> Okay, go home </MarkdownLink>
   </div>
 </Layout>
 

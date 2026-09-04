@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useMode } from '../hooks/useMode';
-import Date from './date';
+import { Date } from './date';
 import * as styles from './postListItem.module.scss';
 
 export interface PostListItemProps {
@@ -12,7 +12,7 @@ export interface PostListItemProps {
   absolutePath: string;
 }
 
-const PostListItem: React.FC<PostListItemProps> = ({
+export const PostListItem: React.FC<PostListItemProps> = ({
   title,
   date,
   permalink,
@@ -59,5 +59,3 @@ const PostListItem: React.FC<PostListItemProps> = ({
     </article>
   );
 };
-
-export default PostListItem;

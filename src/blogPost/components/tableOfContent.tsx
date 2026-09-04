@@ -7,13 +7,13 @@ import type { TOCEntry } from '../../utils/tableOfContent';
 import { generateHeaderUrl } from '../../utils/generateHeaderUrl';
 
 import * as styles from './tableOfContent.module.scss';
-import MarkdownLink from './link';
+import { MarkdownLink } from './link';
 
 interface Props {
   headings: TOCEntry[] | null | undefined;
 }
 
-const TableOfContents: React.FC<Props> = ({ headings }) => {
+export const TableOfContents: React.FC<Props> = ({ headings }) => {
   const mode = useMode();
 
   const [isExpanded, setExpanded] = React.useState(false);
@@ -50,8 +50,6 @@ const TableOfContents: React.FC<Props> = ({ headings }) => {
     </div>
   );
 };
-
-export default TableOfContents;
 
 const TocEntryLink: React.FC<{ entry: TOCEntry; level: number }> = ({
   entry,

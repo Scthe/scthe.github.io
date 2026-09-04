@@ -3,7 +3,7 @@ import type { TOCEntry } from '../../utils/tableOfContent';
 import type { Maybe } from '../../utils';
 import { useMode } from '../../hooks/useMode';
 import { generateHeaderUrl } from '../../utils/generateHeaderUrl';
-import MarkdownLink from './link';
+import { MarkdownLink } from './link';
 
 type LinkedPage = { permalink: string; toc: TOCEntry[] };
 
@@ -15,7 +15,7 @@ type Props = React.PropsWithChildren<{
   currentPermalink?: string;
 }>;
 
-const CrossPostLink: React.FC<Props> = ({
+export const CrossPostLink: React.FC<Props> = ({
   permalink,
   paragraph,
   children,
@@ -52,8 +52,6 @@ const CrossPostLink: React.FC<Props> = ({
     <>{children}</>
   );
 };
-
-export default CrossPostLink;
 
 function matchPermalink(s0: Maybe<string>, s1: Maybe<string>): boolean {
   return Boolean(s0 && s1 && s0 === s1);

@@ -1,13 +1,13 @@
 import * as React from 'react';
 import * as styles from './postList.module.scss';
-import PostListItem from './postListItem';
+import { PostListItem } from './postListItem';
 import type { PostListItemProps } from './postListItem';
 
 interface Props {
   posts: PostListItemProps[];
 }
 
-const PostList: React.FC<Props> = ({ posts }) => {
+export const PostList: React.FC<Props> = ({ posts }) => {
   return (
     <div className={styles.postsList}>
       <ol className={styles.postsListInner}>
@@ -20,5 +20,3 @@ const PostList: React.FC<Props> = ({ posts }) => {
     </div>
   );
 };
-
-export default PostList;

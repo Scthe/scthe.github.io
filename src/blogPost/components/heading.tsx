@@ -6,7 +6,7 @@ type Props = React.PropsWithChildren<{
   level: '2' | '3';
 }>;
 
-const Heading: React.FC<Props> = ({ level, children }) => {
+export const Heading: React.FC<Props> = ({ level, children }) => {
   const HeadingTag = `h${level}` as keyof React.JSX.IntrinsicElements;
   const id = generateHeaderUrl(children);
 
@@ -24,5 +24,3 @@ const Heading: React.FC<Props> = ({ level, children }) => {
     </HeadingTag>
   );
 };
-
-export default Heading;

@@ -8,11 +8,9 @@ type Props = React.PropsWithChildren<{
   href: string;
 }>;
 
-const MarkdownLink: React.FC<Props> = ({ href, className, ...rest }) => {
+export const MarkdownLink: React.FC<Props> = ({ href, className, ...rest }) => {
   const clazzName = cx(styles.linkStyle, className);
 
   // eslint-disable-next-line jsx-a11y/anchor-has-content
   return <a className={clazzName} href={href} {...rest} />;
 };
-
-export default MarkdownLink;

@@ -34,7 +34,7 @@ interface Props {
   image: ImageRecord | null;
 }
 
-const BlogImage: React.FC<Props> = ({ src, alt, image }) => {
+export const BlogImage: React.FC<Props> = ({ src, alt, image }) => {
   const imgRef = useRef<HTMLImageElement>(null);
   const [imageloaded, setImageloaded] = useState(false);
   const onImgLoaded = useCallback(() => setImageloaded(true), []);
@@ -91,5 +91,3 @@ const BlogImage: React.FC<Props> = ({ src, alt, image }) => {
     </Zoom>
   );
 };
-
-export default BlogImage;

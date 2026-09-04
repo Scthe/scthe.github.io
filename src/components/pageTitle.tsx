@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import Date from './date';
+import { Date } from './date';
 import * as styles from './pageTitle.module.scss';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
   date?: Date;
 }
 
-const PageTitle: React.FC<Props> = ({ title, subtitle, date }) => {
+export const PageTitle: React.FC<Props> = ({ title, subtitle, date }) => {
   return (
     <header className={styles.postsMeta}>
       <h1 className={styles.contentTitle}>{title}</h1>
@@ -24,5 +24,3 @@ const PageTitle: React.FC<Props> = ({ title, subtitle, date }) => {
     </header>
   );
 };
-
-export default PageTitle;

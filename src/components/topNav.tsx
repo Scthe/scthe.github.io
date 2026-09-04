@@ -7,7 +7,7 @@ interface Props {
   githubAccount: string;
 }
 
-const TopNav: React.FC<Props> = ({ siteTitle, githubAccount }) => {
+export const TopNav: React.FC<Props> = ({ siteTitle, githubAccount }) => {
   return (
     <header className={styles.topNav}>
       <ul className={styles.topNavContent}>
@@ -69,5 +69,3 @@ const TopNav: React.FC<Props> = ({ siteTitle, githubAccount }) => {
     </header>
   );
 };
-
-export default TopNav;

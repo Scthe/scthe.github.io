@@ -6,12 +6,10 @@ interface Props {
   className?: string;
 }
 
-const Date: React.FC<Props> = ({ className, date }) => {
+export const Date: React.FC<Props> = ({ className, date }) => {
   return (
     <time className={className} dateTime={dateToXmlSchema(date)}>
       {dateFmt(date)}
     </time>
   );
 };
-
-export default Date;

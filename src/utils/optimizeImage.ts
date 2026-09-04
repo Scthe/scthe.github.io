@@ -11,6 +11,7 @@ export interface ImageRecord {
   height: number;
 }
 
+// TODO no need for so many widths
 const RESIZE_WIDTHS = [400, 750, 1080, 1366, 1920];
 
 const OPTIMIZABLE_EXT_RE = /\.(png|jpe?g|webp|avif|tiff)$/i;

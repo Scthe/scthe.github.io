@@ -70,7 +70,9 @@ function toCodeString(node: React.ReactNode): string {
   }
   if (node != null && typeof node === 'object') {
     const props = (
-      node as { props?: { children?: React.ReactNode; value?: React.ReactNode } }
+      node as {
+        props?: { children?: React.ReactNode; value?: React.ReactNode };
+      }
     ).props;
     if (props != null) {
       return toCodeString(props.children ?? props.value);

@@ -11,7 +11,7 @@ import CodeBlock, {
   CodeBlockWrapper,
 } from '../../blogPost/components/codeBlock';
 import MarkdownLink from '../../blogPost/components/link';
-import { Figure, Figcaption,  } from '../../blogPost/components/figure';
+import { Figure, Figcaption } from '../../blogPost/components/figure';
 import CrossPostLink from '../../blogPost/components/crossPostLink';
 import BlogImageIsland from '../../blogPost/components/imageIsland.astro';
 import { getPostImageRecords } from '../../blogPost/components/imageLookup';
@@ -23,8 +23,6 @@ import '../../blogPost/_text.module.scss';
 import '../../blogPost/_lists.module.scss';
 import '../../blogPost/_tables.module.scss';
 import { slugFromPermalink } from 'src/utils';
-
-
 
 // TODO add table of contents like in https://atlassian.design/foundations/color (it even scrolls nicely) as <nav> with aria-label="Table of contents"
 // TODO "Published on:" text before date
@@ -41,7 +39,6 @@ interface Props {
 // TODO [migration] markdown looks weird: http://localhost:8080/blog/rag-with-context/#embeddings
 //                  Missing: require(`katex/dist/katex.min.css`); ?
 // TODO [migration] test all import.meta.env.PROD usages
-
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -78,7 +75,6 @@ const allPosts = (await getCollection('blog')).map((entry) => ({
   toc: buildTableOfContentFromBody(entry.body ?? ''),
 }));
 
-
 // cover image for OG/SEO (falls back to the default image in the Layout)
 const coverSrc = post.data.image
   ? getImageBySrc(post.data.image)?.src
@@ -95,10 +91,7 @@ const components: Record<string, any> = {
   img: (p: any) =>
     createElement(ImageRaw, {
       ...p,
-      image:
-        typeof p?.src === 'string'
-          ? getImageBySrc(p.src) ?? null
-          : null,
+      image: typeof p?.src === 'string' ? (getImageBySrc(p.src) ?? null) : null,
     }),
   BlogImage: BlogImageIsland,
   CrossPostLink: (p: any) =>

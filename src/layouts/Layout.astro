@@ -27,7 +27,6 @@ const { title, description, canonicalUrl, imagePublicUrl, type } = Astro.props a
 
 const siteMeta = getSiteMeta();
 
-
 // canonicalUrl
 const canonical = ensureSufix(
   joinPaths(siteMeta.siteUrl || '', canonicalUrl),
@@ -35,7 +34,9 @@ const canonical = ensureSufix(
 );
 
 // title - ensure has siteName
-const fullTitle = title.includes(siteMeta.title) ? title : `${title} - ${siteMeta.title}`;
+const fullTitle = title.includes(siteMeta.title)
+  ? title
+  : `${title} - ${siteMeta.title}`;
 
 // image
 const imageFullPath = joinPaths(
@@ -96,7 +97,7 @@ const imageFullPath = joinPaths(
 
     <!-- light/dark theme bootstrap: must run before first paint -->
     <script is:inline>
-      ;(function () {
+      (function () {
         window.setAppTheme = setAppTheme;
         const THEME_LIGHT_BG = '#fafafa';
         const THEME_DARK_BG = '#353535';
@@ -145,7 +146,7 @@ const imageFullPath = joinPaths(
   </head>
   <body>
     <div class={layoutStyles.heroWrapper}>
-      <div />
+      <div></div>
     </div>
 
     <TopNav

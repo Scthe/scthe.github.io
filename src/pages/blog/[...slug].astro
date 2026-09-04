@@ -34,8 +34,6 @@ interface Props {
   post: CollectionEntry<'blog'>;
 }
 
-// TODO [migration] markdown looks weird: http://localhost:8080/blog/rag-with-context/#embeddings
-//                  Missing: require(`katex/dist/katex.min.css`); ?
 // TODO [migration] test all import.meta.env.PROD usages
 
 export async function getStaticPaths() {

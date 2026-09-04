@@ -7,16 +7,12 @@ import vercel from '@astrojs/vercel';
 import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
-import rehypePreserveCodeLanguage from './src/utils/rehypePreserveCodeLanguage';
 
-// math (KaTeX) + GitHub-flavored markdown. Syntax highlighting is handled
-// by the React `CodeBlock` component (prism-react-renderer), not Shiki.
+// math (KaTeX) + GitHub-flavored markdown. Syntax highlighting is handled by
+// `@astrojs/prism` (`syntaxHighlight: 'prism'`) at build time.
 const markdownProcessor = unified({
   remarkPlugins: [remarkMath, remarkGfm],
-  rehypePlugins: [
-    [rehypeKatex, { strict: 'ignore', throwOnError: false }],
-    rehypePreserveCodeLanguage,
-  ],
+  rehypePlugins: [[rehypeKatex, { strict: 'ignore', throwOnError: false }]],
 });
 
 export default defineConfig({
@@ -29,7 +25,7 @@ export default defineConfig({
     port: 8080,
   },
   markdown: {
-    syntaxHighlight: false,
+    syntaxHighlight: 'prism',
     processor: markdownProcessor,
   },
   integrations: [

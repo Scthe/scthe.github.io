@@ -1,0 +1,25 @@
+---
+import * as styles from './codeblock.module.scss';
+
+// Renders a fenced code block highlighted by `@astrojs/prism`.
+//
+// The markdown pipeline (`syntaxHighlight: 'prism'`) already replaces each
+// <pre> with `<pre class="language-*" data-language="*"><code>…tokens…</code></pre>`.
+// This component only layers the site's theme styling on top and passes the
+// highlighted tokens through untouched (inline <code> is left to the markdown
+// defaults in `_text.module.scss`).
+
+// TODO [P5] <figure>, <figcaption>
+// TODO [P5] small hint about language in top right (with border radius), hides on code hover
+
+interface Props {
+  class?: string;
+  'data-language'?: string;
+}
+
+const { class: className, 'data-language': dataLanguage } =
+  Astro.props as Props;
+const classList = [styles.highlight, className].filter(Boolean).join(' ');
+---
+
+<pre class={classList} data-language={dataLanguage}><slot /></pre>

@@ -7,9 +7,7 @@ import Layout from '../../layouts/Layout.astro';
 import PageTitle from '../../components/pageTitle';
 import TableOfContents from '../../blogPost/components/tableOfContent';
 import Heading from '../../blogPost/components/heading';
-import CodeBlock, {
-  CodeBlockWrapper,
-} from '../../blogPost/components/codeBlock';
+import CodeBlock from '../../blogPost/components/CodeBlock.astro';
 import MarkdownLink from '../../blogPost/components/link';
 import { Figure, Figcaption } from '../../blogPost/components/figure';
 import CrossPostLink from '../../blogPost/components/crossPostLink';
@@ -83,8 +81,7 @@ const coverSrc = post.data.image
 const components: Record<string, any> = {
   h2: (p: any) => createElement(Heading, { ...p, level: '2' }),
   h3: (p: any) => createElement(Heading, { ...p, level: '3' }),
-  pre: CodeBlockWrapper,
-  code: CodeBlock,
+  pre: CodeBlock,
   Figure,
   Figcaption,
   a: MarkdownLink,

@@ -1,3 +1,4 @@
+// TODO ts?
 export const toggleThemeFn = () => {
   const isLight = document.documentElement.classList.contains('light-theme');
   window.setAppTheme(!isLight); // see script above

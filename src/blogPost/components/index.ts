@@ -1,4 +1,4 @@
-import CodeBlock, { CodeBlockWrapper } from './codeBlock';
+import CodeBlock from './CodeBlock.astro';
 import CrossPostLink from './crossPostLink';
 import { Figcaption, Figure } from './figure';
 import { ImageRaw } from './imageRaw';
@@ -10,7 +10,6 @@ import TableOfContents from './tableOfContent';
 export {
   BlogImage,
   CodeBlock,
-  CodeBlockWrapper,
   CrossPostLink,
   Figcaption,
   Figure,

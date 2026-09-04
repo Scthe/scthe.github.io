@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { generateHeaderUrl } from '../../utils/generateHeaderUrl';
+import { generateHeaderUrl } from '../utils/generateHeaderUrl';
 import * as styles from './heading.module.scss';
 
 type Props = React.PropsWithChildren<{

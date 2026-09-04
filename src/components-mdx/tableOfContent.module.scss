@@ -1,4 +1,4 @@
-@use '../../styles/mixins' as *;
+@use '../styles/mixins' as *;
 
 .tocWrapper {
   --toc-margin-bottom: var(--post-header-margin-top);

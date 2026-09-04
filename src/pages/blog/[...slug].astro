@@ -5,21 +5,21 @@ import { createElement } from 'react';
 
 import Layout from '../../layouts/Layout.astro';
 import { PageTitle } from '../../components/pageTitle';
-import { TableOfContents } from '../../blogPost/components/tableOfContent';
-import { Heading } from '../../blogPost/components/heading';
-import CodeBlock from '../../blogPost/components/CodeBlock.astro';
-import { MarkdownLink } from '../../blogPost/components/link';
-import { Figure, Figcaption } from '../../blogPost/components/figure';
-import { CrossPostLink } from '../../blogPost/components/crossPostLink';
-import BlogImageIsland from '../../blogPost/components/imageIsland.astro';
-import { getPostImageRecords } from '../../blogPost/components/imageLookup';
-import { ImageRaw } from '../../blogPost/components/imageRaw';
+import { TableOfContents } from '../../components-mdx/tableOfContent';
+import { Heading } from '../../components-mdx/heading';
+import CodeBlock from '../../components-mdx/CodeBlock.astro';
+import { MarkdownLink } from '../../components-mdx/link';
+import { Figure, Figcaption } from '../../components-mdx/figure';
+import { CrossPostLink } from '../../components-mdx/crossPostLink';
+import BlogImageIsland from '../../components-mdx/imageIsland.astro';
+import { getPostImageRecords } from '../../blogPostImagesCollection';
+import { ImageRaw } from '../../components-mdx/imageRaw';
 
 import { buildTableOfContentFromBody } from '../../utils/tableOfContent';
 
-import '../../blogPost/_text.module.scss';
-import '../../blogPost/_lists.module.scss';
-import '../../blogPost/_tables.module.scss';
+import '../../components-mdx/_text.module.scss';
+import '../../components-mdx/_lists.module.scss';
+import '../../components-mdx/_tables.module.scss';
 import { slugFromPermalink } from 'src/utils';
 
 // TODO add table of contents like in https://atlassian.design/foundations/color (it even scrolls nicely) as <nav> with aria-label="Table of contents"

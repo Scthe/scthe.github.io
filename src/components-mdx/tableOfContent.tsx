@@ -2,9 +2,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import * as React from 'react';
 
-import { useMode } from '../../hooks/useMode';
-import type { TOCEntry } from '../../utils/tableOfContent';
-import { generateHeaderUrl } from '../../utils/generateHeaderUrl';
+import { useMode } from '../hooks/useMode';
+import type { TOCEntry } from '../utils/tableOfContent';
+import { generateHeaderUrl } from '../utils/generateHeaderUrl';
 
 import * as styles from './tableOfContent.module.scss';
 import { MarkdownLink } from './link';

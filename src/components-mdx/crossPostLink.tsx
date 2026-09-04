@@ -1,8 +1,8 @@
 import * as React from 'react';
-import type { TOCEntry } from '../../utils/tableOfContent';
-import type { Maybe } from '../../utils';
-import { useMode } from '../../hooks/useMode';
-import { generateHeaderUrl } from '../../utils/generateHeaderUrl';
+import type { TOCEntry } from '../utils/tableOfContent';
+import type { Maybe } from '../utils';
+import { useMode } from '../hooks/useMode';
+import { generateHeaderUrl } from '../utils/generateHeaderUrl';
 import { MarkdownLink } from './link';
 
 type LinkedPage = { permalink: string; toc: TOCEntry[] };

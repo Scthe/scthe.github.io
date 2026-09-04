@@ -1,12 +1,12 @@
 import type { ImageMetadata } from 'astro';
 import { getCollection } from 'astro:content';
 
-import { optimizeImage, type ImageRecord } from '../../utils/optimizeImage';
+import { optimizeImage, type ImageRecord } from './utils/optimizeImage';
 
 // All post images, resolved relative to this file:
-//   src/blogPost/components/../../../content/blog/**  ->  repo/content/blog/**
+//   src/blogPostImagesCollection.ts/../content/blog/**  ->  repo/content/blog/**
 const imageModules = import.meta.glob<ImageMetadata>(
-  '../../../content/blog/**/*.{png,jpg,jpeg,gif,webp,avif,svg,tiff}',
+  '../content/blog/**/*.{png,jpg,jpeg,gif,webp,avif,svg,tiff}',
   { eager: true, import: 'default' },
 );
 
@@ -56,7 +56,7 @@ export async function getPostImageRecords(
   const records = new Map<string, ImageRecord | null>();
 
   if (dir != null) {
-    const prefix = `../../../content/blog/${dir}/`;
+    const prefix = `../content/blog/${dir}/`;
     for (const [moduleKey, meta] of Object.entries(imageModules)) {
       if (moduleKey.startsWith(prefix)) {
         const normSrc = normalizeSrc(moduleKey.slice(prefix.length));

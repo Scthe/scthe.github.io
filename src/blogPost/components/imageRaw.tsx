@@ -1,7 +1,7 @@
 import * as React from 'react';
 import cx from 'classnames';
 
-import type { ImageRecord } from '../../utils/images';
+import type { ImageRecord } from '../../utils/optimizeImage';
 import * as stylesImg from './image.module.scss';
 
 interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {

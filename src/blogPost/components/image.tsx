@@ -10,7 +10,7 @@ import * as ZoomModule from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
 import _ZoomRaw from 'react-medium-image-zoom';
-import type { ImageRecord } from '../../utils/images';
+import type { ImageRecord } from '../../utils/optimizeImage';
 import * as styles from './image.module.scss';
 
 type ZoomProps = ComponentProps<typeof _ZoomRaw>;

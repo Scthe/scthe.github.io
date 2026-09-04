@@ -1,12 +1,7 @@
 import type { ImageMetadata } from 'astro';
 import { getCollection } from 'astro:content';
 
-import {
-  buildImageRecord,
-  buildPassThroughRecord,
-  canOptimizeImage,
-  type ImageRecord,
-} from '../../utils/images';
+import { optimizeImage, type ImageRecord } from '../../utils/optimizeImage';
 
 // All post images, resolved relative to this file:
 //   src/blogPost/components/../../../content/blog/**  ->  repo/content/blog/**
@@ -65,12 +60,7 @@ export async function getPostImageRecords(
     for (const [moduleKey, meta] of Object.entries(imageModules)) {
       if (moduleKey.startsWith(prefix)) {
         const normSrc = normalizeSrc(moduleKey.slice(prefix.length));
-        records.set(
-          normSrc,
-          canOptimizeImage(normSrc)
-            ? await buildImageRecord(meta)
-            : buildPassThroughRecord(meta),
-        );
+        records.set(normSrc, await optimizeImage(normSrc, meta));
       }
     }
   }

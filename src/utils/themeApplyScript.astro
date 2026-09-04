@@ -1,0 +1,51 @@
+---
+// light/dark theme bootstrap: must run before first paint
+---
+
+<script is:inline>
+  (function () {
+    window.setAppTheme = setAppTheme;
+    const THEME_LIGHT_BG = '#fafafa';
+    const THEME_DARK_BG = '#353535';
+
+    // https://github.com/Scthe/ai-prompt-editor/blob/master/static/index.html
+    const osThemeDark = Boolean(
+      window.matchMedia('(prefers-color-scheme: dark)').matches,
+    );
+    const storageThemeColor = localStorage.getItem('app-theme');
+    const isDarkTheme =
+      storageThemeColor !== undefined // has value, so decided by local storage
+        ? storageThemeColor === 'dark-theme'
+        : osThemeDark;
+    setAppTheme(!isDarkTheme);
+
+    function setAppTheme(isLightTheme) {
+      const el = document.documentElement;
+
+      if (isLightTheme) {
+        el.classList.remove('dark-theme');
+        el.classList.add('light-theme');
+        setMetaTheme(THEME_LIGHT_BG);
+      } else {
+        el.classList.remove('light-theme');
+        el.classList.add('dark-theme');
+        setMetaTheme(THEME_DARK_BG);
+      }
+
+      localStorage.setItem(
+        'app-theme',
+        isLightTheme ? 'light-theme' : 'dark-theme',
+      );
+    }
+
+    function setMetaTheme(color) {
+      let el = document.querySelector('meta[name="theme-color"]');
+      if (el == null) {
+        el = document.createElement('meta');
+        el.setAttribute('name', 'theme-color');
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', color);
+    }
+  })();
+</script>

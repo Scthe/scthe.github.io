@@ -1,4 +1,4 @@
-@import '../../styles/mixins';
+@use '../../styles/mixins' as *;
 
 .figure {
   @include margin-v(var(--post-element-margin-top), 0);

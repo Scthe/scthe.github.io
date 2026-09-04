@@ -1,4 +1,4 @@
-@import '../styles/mixins';
+@use '../styles/mixins' as *;
 
 :global(.markdown .table_wrapper) {
   @extend %post-margins-h;

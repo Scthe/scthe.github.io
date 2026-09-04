@@ -1,4 +1,4 @@
-@import '../../styles/mixins';
+@use '../../styles/mixins' as *;
 
 // anchors for each paragraph added from js
 $color-anchor-js: #cccccc;

@@ -433,7 +433,7 @@ $$
 Previously, when calculating $$\delta^{(l)}_i$$ we used:
 
 1. derivative of this node's value: ${f_a}'(x^{(l)}_i)$,
-1. all weights connected to $x^{(l)}_i$$: $$W^{(l)}_{ji}$,
+1. all weights connected to $x^{(l)}_i$: $W^{(l)}_{ji}$,
 1. $\delta^{(l+1)}_j$ for node at the other end of this weight
 
 Turns out the only changes are the sums and indexes. Before, we summed over **all** nodes in next layer (it was 'fully-connected layer' after all), now we only interact with handful of nodes. Let's write what is what:

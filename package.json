@@ -20,7 +20,8 @@
     "lint": "eslint src --ext ts --ext tsx --ext js --ext jsx",
     "lint-fix": "yarn lint --fix",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,astro,scss,css}\"",
-    "test-all": "yarn lint && yarn type-check",
+    "validate-latex": "node scripts/validateLatex.ts",
+    "test-all": "yarn lint && yarn type-check && yarn validate-latex",
     "knip": "knip"
   },
   "dependencies": {

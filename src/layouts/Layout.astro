@@ -11,10 +11,11 @@ import type { SeoProps } from '../components/seo/types';
 
 import layoutStyles from '../components/layout.module.scss';
 
-import '../styles/normalize.module.css';
-import '../styles/variables.module.scss';
-import '../styles/global.module.scss';
-import '../styles/fonts.module.css';
+import '../styles/normalize.css';
+import '../styles/variables.scss';
+import '../styles/global.scss';
+import '../styles/fonts.css';
+
 // MUST stay on the same katex version as rehype-katex's renderer (0.16.x):
 // katex 0.17+ renamed the inner class names (.sizing -> .katex-sizing etc.),
 // so a newer stylesheet would leave the rendered math unstyled/overlapping.

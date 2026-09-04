@@ -1,6 +1,6 @@
 @use '../styles/mixins' as *;
 
-:global(.markdown) {
+.markdown {
   ul,
   ol,
   dl {

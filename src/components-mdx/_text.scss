@@ -2,7 +2,7 @@
 
 $blockquote-left-border: #ddd;
 
-:global(.markdown) {
+.markdown {
   // paragraph text
   & > p {
     @extend %word-wrap;
@@ -68,6 +68,6 @@ $blockquote-left-border: #ddd;
 }
 
 // katex formulas
-:global(.katex .newline) {
+.katex .newline {
   margin-bottom: 1em;
 }

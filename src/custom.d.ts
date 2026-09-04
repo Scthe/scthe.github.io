@@ -10,6 +10,8 @@ declare module '*.module.scss';
 // export default classes;
 // }
 
+declare module '*.scss';
+
 interface Window {
   setAppTheme: (isLightTheme: boolean) => void;
 }

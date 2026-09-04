@@ -12,7 +12,7 @@ html {
   word-spacing: 0.3em;
 }
 
-html:global(.dark-theme) {
+html.dark-theme {
   --background-content: #353535;
   /* dark shadow on dark background? Don't bother.. */
   --shadow-content: transparent;

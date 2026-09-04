@@ -68,8 +68,13 @@ function toCodeString(node: React.ReactNode): string {
   if (Array.isArray(node)) {
     return node.map((c) => toCodeString(c)).join('');
   }
-  if (node != null && typeof node === 'object' && 'props' in node) {
-    return toCodeString(node.props.children ?? node.props.value);
+  if (node != null && typeof node === 'object') {
+    const props = (
+      node as { props?: { children?: React.ReactNode; value?: React.ReactNode } }
+    ).props;
+    if (props != null) {
+      return toCodeString(props.children ?? props.value);
+    }
   }
 
   return '' + node;

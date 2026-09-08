@@ -39,3 +39,4 @@ references
 _references
 node_modules
 *.code-workspace
+scripts/screenshots

@@ -7,6 +7,7 @@ import vercel from '@astrojs/vercel';
 import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
+import { getSiteMeta } from './src/constants';
 
 // math (KaTeX) + GitHub-flavored markdown. Syntax highlighting is handled by
 // `@astrojs/prism` (`syntaxHighlight: 'prism'`) at build time.
@@ -15,8 +16,10 @@ const markdownProcessor = unified({
   rehypePlugins: [[rehypeKatex, { strict: 'ignore', throwOnError: false }]],
 });
 
+const SITE_STATIC = getSiteMeta();
+
 export default defineConfig({
-  site: 'https://www.sctheblog.com', // Also in robots.txt!
+  site: SITE_STATIC.siteUrl,
   trailingSlash: 'always',
   output: 'static',
   publicDir: 'static', // dir with static resources
@@ -28,6 +31,10 @@ export default defineConfig({
     syntaxHighlight: 'prism',
     processor: markdownProcessor,
   },
+  build: {
+    // inline all CSS into <style> tags in <head>; emit no separate .css files
+    inlineStylesheets: 'always',
+  },
   integrations: [
     react(),
     mdx({
@@ -35,7 +42,12 @@ export default defineConfig({
       // math + GFM are guaranteed for both `.mdx` files.
       processor: markdownProcessor,
     }),
-    sitemap({}),
-    vercel(),
+    sitemap({
+      lastmod: new Date(),
+    }),
+    vercel({
+      webAnalytics: { enabled: false },
+      imageService: false,
+    }),
   ],
 });

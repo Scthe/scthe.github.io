@@ -5,8 +5,8 @@
   --toc-content-header-spacing: 0.2em;
   --toc-left-border-spacing: var(--post-padding-h);
   --toc-sublevel-intend: var(--post-padding-h-desktop);
-  --toc-font-size-level0: calc(var(--font-size-base) * 1.2);
-  --toc-font-size-level1: var(--font-size-image-caption);
+  --toc-font-size-level0: var(--font-size-toc);
+  --toc-font-size-level1: var(--font-size-toc);
 
   @extend %post-margins-h;
   margin-bottom: var(--toc-margin-bottom);

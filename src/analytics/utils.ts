@@ -1,4 +1,3 @@
-// TODO [migration] test
 export const gaEvent = (
   eventName: string,
   params: Gtag.ControlParams | Gtag.EventParams | Gtag.CustomParams,

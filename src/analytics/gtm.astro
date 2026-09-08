@@ -1,6 +1,8 @@
 ---
+import { IS_PROD_BUILD } from "src/constants";
+
 // Google Analytics (gtag). Only rendered in productions builds.
-const isProdBuild = import.meta.env.PROD;
+const isProdBuild = IS_PROD_BUILD;
 ---
 
 {isProdBuild && (

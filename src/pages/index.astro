@@ -5,16 +5,14 @@ import Layout from '../layouts/Layout.astro';
 import { PageTitle } from '../components/pageTitle';
 import { PostList } from '../components/postList';
 
-import { getSiteMeta } from '../constants';
+import { getSiteMeta, IS_PROD_BUILD } from '../constants';
 
 const siteMeta = getSiteMeta();
 const title: string = siteMeta.title;
 const description: string = siteMeta.description;
 
-// TODO [migration] double check filtering (both prod and dev mode)
-const isProdBuild = import.meta.env.PROD;
 const posts = (await getCollection('blog'))
-  .filter((post) => (isProdBuild ? !post.data.draft : true))
+  .filter((post) => (IS_PROD_BUILD ? !post.data.draft : true))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 

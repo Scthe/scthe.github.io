@@ -21,6 +21,7 @@ import '../../components-mdx/_text.scss';
 import '../../components-mdx/_lists.scss';
 import '../../components-mdx/_tables.scss';
 import { slugFromPermalink } from 'src/utils';
+import { IS_PROD_BUILD } from 'src/constants';
 
 // TODO add table of contents like in https://atlassian.design/foundations/color (it even scrolls nicely) as <nav> with aria-label="Table of contents"
 // TODO "Published on:" text before date
@@ -34,14 +35,11 @@ interface Props {
   post: CollectionEntry<'blog'>;
 }
 
-// TODO [migration] test all import.meta.env.PROD usages
-
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  const isProdBuild = import.meta.env.PROD;
 
   return posts
-    .filter((post) => (isProdBuild ? !post.data.draft : true))
+    .filter((post) => (IS_PROD_BUILD ? !post.data.draft : true))
     .filter((post) => post.data.permalink && post.data.permalink.length > 0)
     .map((post) => ({
       params: { slug: slugFromPermalink(post.data.permalink) },

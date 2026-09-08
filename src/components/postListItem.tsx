@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { useMode } from '../hooks/useMode';
 import { Date } from './date';
 import * as styles from './postListItem.module.scss';
+import { IS_DEV_BUILD } from 'src/constants';
 
 export interface PostListItemProps {
   title: string;
@@ -19,9 +19,8 @@ export const PostListItem: React.FC<PostListItemProps> = ({
   excerpt,
   absolutePath,
 }) => {
-  const mode = useMode();
   const isValid = title && date;
-  if (mode === 'development' && !isValid) {
+  if (IS_DEV_BUILD && !isValid) {
     console.warn(`Probably invalid post file: '${absolutePath}'`);
   }
 

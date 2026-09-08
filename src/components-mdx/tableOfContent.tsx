@@ -2,20 +2,18 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import * as React from 'react';
 
-import { useMode } from '../hooks/useMode';
 import type { TOCEntry } from '../utils/tableOfContent';
 import { generateHeaderUrl } from '../utils/generateHeaderUrl';
 
 import * as styles from './tableOfContent.module.scss';
 import { MarkdownLink } from './link';
+import { IS_DEV_BUILD } from 'src/constants';
 
 interface Props {
   headings: TOCEntry[] | null | undefined;
 }
 
 export const TableOfContents: React.FC<Props> = ({ headings }) => {
-  const mode = useMode();
-
   const [isExpanded, setExpanded] = React.useState(false);
   const toggleExpanded = React.useCallback(
     () => setExpanded((e) => !e),
@@ -27,7 +25,7 @@ export const TableOfContents: React.FC<Props> = ({ headings }) => {
     headings != null && headings.length > 0 ? { items: headings } : null;
 
   if (rootEntry == null) {
-    if (mode === 'development') {
+    if (IS_DEV_BUILD) {
       console.warn('TableOfContents: no headings found');
     }
     return null;

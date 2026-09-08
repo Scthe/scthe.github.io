@@ -1,3 +1,6 @@
+export const IS_PROD_BUILD = import.meta.env.PROD;
+export const IS_DEV_BUILD = import.meta.env.DEV;
+
 const SITE_STATIC = {
   title: `Scthe's blog`,
   description: `Mostly some programming stuff`,
@@ -15,7 +18,7 @@ const SITE_STATIC = {
  * the old `useSiteMeta()` did.
  */
 export function getSiteMeta() {
-  if (import.meta.env.DEV) {
+  if (IS_DEV_BUILD) {
     return { ...SITE_STATIC, siteUrl: `http://localhost:8080` } as const;
   }
   return SITE_STATIC;

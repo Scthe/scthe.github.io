@@ -1,9 +1,9 @@
 import * as React from 'react';
 import type { TOCEntry } from '../utils/tableOfContent';
 import type { Maybe } from '../utils';
-import { useMode } from '../hooks/useMode';
 import { generateHeaderUrl } from '../utils/generateHeaderUrl';
 import { MarkdownLink } from './link';
+import { IS_DEV_BUILD } from 'src/constants';
 
 type LinkedPage = { permalink: string; toc: TOCEntry[] };
 
@@ -23,7 +23,6 @@ export const CrossPostLink: React.FC<Props> = ({
   currentPermalink = '',
 }) => {
   const headerTitle = paragraph ?? '';
-  const mode = useMode();
   const debugName = `CrossPostLink(page='${permalink}', header='${headerTitle}')`;
 
   const [linksToSelf, linkedPage] = getLinkedPage(
@@ -32,7 +31,7 @@ export const CrossPostLink: React.FC<Props> = ({
     permalink,
   );
   if (linkedPage == null) {
-    if (mode === 'development') {
+    if (IS_DEV_BUILD) {
       console.warn(`${debugName}: page not found`);
     }
     return <>{children}</>;
@@ -41,7 +40,7 @@ export const CrossPostLink: React.FC<Props> = ({
   // construct url
   const pageUrl = getPageUrl(linksToSelf, permalink);
   const paragraphUrl = getHeaderUrlFragment(linkedPage.toc, headerTitle);
-  if (headerTitle && !paragraphUrl && mode === 'development') {
+  if (IS_DEV_BUILD && headerTitle && !paragraphUrl) {
     console.warn(`${debugName}: paragraph not found. Available header titles:`, linkedPage.toc); // prettier-ignore
   }
 

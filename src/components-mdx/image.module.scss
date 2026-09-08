@@ -5,13 +5,11 @@
   margin: 0 auto 0;
   max-width: 100%;
   height: auto; // preserve aspect ratio when width&height provided
-  background-color: var(--background-content);
   transition: opacity 0.5s ease 0s;
 }
 @include dark-mode {
   .image {
     filter: var(--dark-mode-image-filter);
-    background-color: var(--background-image-dark);
   }
 }
 
@@ -21,8 +19,12 @@
   opacity: 1;
 }
 
-.finalImage {
-  background-color: transparent;
+// inside the dialog
+[data-rmiz-modal-content='true'] {
+  .image {
+    // Hide alt text
+    color: transparent;
+  }
 }
 
 .imgWrapper {

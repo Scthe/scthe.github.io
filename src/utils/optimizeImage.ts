@@ -11,8 +11,7 @@ export interface ImageRecord {
   height: number;
 }
 
-// TODO no need for so many widths
-const RESIZE_WIDTHS = [400, 750, 1080, 1366, 1920];
+const RESIZE_WIDTHS = [900, 1366, 1920];
 
 const OPTIMIZABLE_EXT_RE = /\.(png|jpe?g|webp|avif|tiff)$/i;
 
@@ -23,6 +22,9 @@ function canOptimizeImage(url: string): boolean {
 
 /** Process an image with Astro's sharp pipeline + generate a blurred thumb. */
 async function processImage(meta: ImageMetadata): Promise<ImageRecord> {
+  // remove transparency. Since we assume the image might contain black text, we set it to something light even though it's unfortunate in dark theme.
+  const background = '#fafafa'; // same as var(--background-content)
+
   const hi = await getImage({
     src: meta,
     // NOTE: omit `format` entirely — Astro's sharp service chokes on
@@ -31,12 +33,14 @@ async function processImage(meta: ImageMetadata): Promise<ImageRecord> {
     quality: 90,
     widths: RESIZE_WIDTHS,
     sizes: '100vw',
+    background,
   });
   const lo = await getImage({
     src: meta,
     format: 'webp',
     width: 32,
     quality: 60,
+    background,
   });
   return {
     src: hi.src,

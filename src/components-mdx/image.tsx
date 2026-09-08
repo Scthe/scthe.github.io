@@ -1,6 +1,7 @@
 import React, {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type ComponentProps,
@@ -28,6 +29,16 @@ const Zoom =
 
 //////////////////////////
 
+/*
+Warning: previous versions used CSS background-color to add some background in case
+the image has some transparency. This causes a problem when this background color
+is shown in a split second before the image is downloaded or even inserted into DOM
+from cache. Seen as a bright flash in dark mode when opening a dark image.
+To fix, just set a background as a part of image preprocessing
+
+See 2aea82f5abc77f9464db8aec0b9fb092320f1d0e for old version of this fix.
+*/
+
 interface Props {
   src: string;
   alt: string;
@@ -35,13 +46,13 @@ interface Props {
 }
 
 export const BlogImage: React.FC<Props> = ({ src, alt, image }) => {
-  const imgRef = useRef<HTMLImageElement>(null);
-  const [imageloaded, setImageloaded] = useState(false);
-  const onImgLoaded = useCallback(() => setImageloaded(true), []);
+  const imgElRef = useRef<HTMLImageElement>(null);
+  const [isImageloaded, setIsImageloaded] = useState(false);
+  const onImgLoaded = useCallback(() => setIsImageloaded(true), []);
 
-  // handle when image accessed from cache
+  // img immediately accessible (from the start): accessed from cache
   useEffect(() => {
-    if (imgRef.current?.complete) {
+    if (imgElRef.current?.complete) {
       onImgLoaded();
     }
   }, [onImgLoaded]);
@@ -56,7 +67,8 @@ export const BlogImage: React.FC<Props> = ({ src, alt, image }) => {
         <img
           src={src}
           alt={alt}
-          className={cx(styles.image, styles.finalImage)}
+          className={cx(styles.image)}
+          onLoad={onImgLoaded}
         />
       ) : (
         <>
@@ -66,7 +78,7 @@ export const BlogImage: React.FC<Props> = ({ src, alt, image }) => {
               backgroundImage: `url("${image.placeholder}")`,
               width: image.width,
               aspectRatio: `${image.width} / ${image.height}`,
-              opacity: imageloaded ? 0 : 1,
+              opacity: isImageloaded ? 0 : 1,
             }}
           ></span>
           <div className={styles.imgWrapper}>
@@ -78,12 +90,12 @@ export const BlogImage: React.FC<Props> = ({ src, alt, image }) => {
               loading="lazy"
               width={image.width}
               height={image.height}
-              className={cx(styles.image, styles.finalImage)}
+              className={cx(styles.image)}
               style={{
-                opacity: imageloaded ? 1 : 0.01,
+                opacity: isImageloaded ? 1 : 0.01,
               }}
               onLoad={onImgLoaded}
-              ref={imgRef}
+              ref={imgElRef}
             />
           </div>
         </>
